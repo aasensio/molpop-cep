@@ -1,0 +1,688 @@
+          *** MOLPOP-CEP  May 16, 08 ***
+* C+
+* These lines are echoed in the output because they start with a '*'
+* Instructions for data input are found at the end of the input file		
+      Using file with physical conditions : Samples/C+/test.physical
+      Molecule --- C+
+      Number of levels =  2
+      NO LINE OVERLAP USED
+      Coupled escape probability with ALI
+      Using Thermal Doppler Width =   0.0 km/s
+      FWHM =   0.0 km/s
+      NO SATURATION EFFECTS
+      Aspect Ratio = 1
+    1.  Relative weight of collision partner from column =  6
+        Collision rates from data file C+_H2p.kij
+        Collision rate coefficients for C+-H2_para collisions                   
+        Leiden database                                                         
+    2.  Relative weight of collision partner from column =  7
+        Collision rates from data file C+_H2o.kij
+        Collision rate coefficients for C+-H2_ortho collisions                  
+        Leiden database                                                         
+    3.  Relative weight of collision partner from column =  8
+        Collision rates from data file C+_H.kij
+        Collision rate coefficients for C+-H collisions                         
+        Leiden database                                                         
+    4.  Relative weight of collision partner from column =  9
+        Collision rates from data file C+_e.kij
+        Collision rate coefficients for C+-e collisions                         
+        Leiden database                                                         
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 339.4 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 339.4 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 339.4 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 339.4 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 339.4 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 339.4 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 339.4 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 339.4 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 339.4 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 339.4 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 339.4 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 339.4 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 339.4 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 339.4 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 339.4 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 339.4 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 339.4 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 339.4 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 339.4 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 339.4 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 339.4 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 339.4 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 318.2 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 318.2 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 318.2 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 318.2 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 318.2 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 318.2 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 318.2 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 318.2 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 318.2 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 318.2 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 328.1 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 328.1 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 328.1 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 328.1 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 328.1 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 328.1 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 328.1 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 328.1 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 328.1 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 328.1 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 328.1 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 328.1 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 328.1 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 328.1 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 328.1 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 328.1 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 328.1 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 328.1 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 328.1 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 328.1 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 328.1 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 328.1 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 328.1 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 328.1 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 328.1 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 328.1 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 328.1 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 328.1 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 328.1 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 328.1 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 307.6 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 307.6 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 307.6 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 307.6 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 307.6 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 307.6 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 307.6 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 307.6 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 307.6 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 307.6 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 307.6 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 307.6 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 307.6 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 307.6 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 307.6 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 307.6 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 307.6 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 307.6 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 307.6 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 307.6 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 307.6 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 307.6 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 307.6 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 307.6 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 307.6 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 307.6 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 307.6 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 307.6 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 307.6 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 307.6 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 307.6 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 307.6 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 288.4 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 288.4 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 288.4 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 288.4 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 270.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 270.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 270.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 270.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 270.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 270.3 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 253.4 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 253.4 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 253.4 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 253.4 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 253.4 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+    *** T = 253.4 K is above the values tabulated in DataBase/Coll/C+_H2o.kij
+    *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
+
+      External Radiation field includes:
+        - 3K Cosmic Background
+        - Dust with Td =  100.0 K and Tau(v) = 3.00E+00
+--------------------------------- Transitions --------------------------------
+
+  i -> j     micron          GHz            K        Aij, s^{-1}   Cij, s^{-1}
+
+  2    1   1.57741E+02   1.90053E+03   9.12112E+01   2.30000E-06   0.00000E+00
+------------------------------------------------------------------------------
+
+------------------------------------------------------------------------------
+
+ *****************************************************
+     CEP
+  GENERAL DATA
+ *****************************************************
+ N. active transitions
+           1
+ N. levels
+           2
+ 
+ ***********************
+  Level information   
+  g    Energy [cm^-1]  
+ ***********************
+  1    2.0      0.0000
+  2    4.0     63.3950
+ 
+ ***********************
+  Transition information
+  up  low  freq [GHz]  Aul [s^-1]  detailed (y/n)
+ ***********************
+  1    2    1   1900.534287   0.920000E-05    yes                
+ 
+ 
+ *******************************************************************************
+ N(mol) [cm^-2]:  0.16187E+18   -  R [cm]:  0.23143E+19    -  nzones:  234
+ *******************************************************************************
+  up    low     optical depth        cooling         N(up)/N(low)    I_center(mu=1.000)
+   2     1       0.35808E+00       0.17269E-02       0.85658E+00       0.13571E-10

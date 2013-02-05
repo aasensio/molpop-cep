@@ -1,0 +1,18 @@
+%
+%   This is a sample master input file for MOLPOP
+%   This sample is ready to run and should serve to check
+%   the first run of the program.
+%   Each input file will generate a corresponding output in the 
+%   same directory. It can be checked against the output file with
+%   the same name in subdireectory OutpuTest
+%
+%Samples/OH/Offer_rates
+%Samples/C+/C+
+%Samples/SiO/SiO
+%Samples/H2O/para
+%Samples/H2O/ortho
+%Samples/OH/Hard_Sphere
+Samples/CO/Flower_rates_const
+%Samples/CO/Flower_rates
+%Samples/CO/Basecol
+% end of file
