@@ -541,7 +541,7 @@ contains
 			
 ! Output in velocity [km/s] and emergent flux
 			do j = 1, 100
-				write(32,FMT='(5(2X,E12.5))') freq_axis(j) / dtran(2,it) * PC / 1.d5, (flux_out(k,j),k=1,3)
+				write(32,*) freq_axis(j) / dtran(2,it) * PC / 1.d5, (flux_out(k,j),k=1,3)
 			enddo
 		enddo
 				
