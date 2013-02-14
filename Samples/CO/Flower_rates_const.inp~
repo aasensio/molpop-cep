@@ -55,7 +55,7 @@
        or H2 column exceeds        N_col = 1.E20 cm^-2
     Precision in grid CEP convergence (0 to ignore convergence) = 0
     
-    Output mu for intensity = 0.5
+    Output mu for intensity = 1.0
     
 
   PRINT CONTROL PARAMATERS
