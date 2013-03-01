@@ -1,0 +1,8 @@
+Einstein coefficients A_ij for CO
+Reference: CDMS
+
+  i         j         A_ij in s^{-1}
+>
+  2         1         7.880e-08
+  3         2         2.650e-07
+  3         1         1.810e-14

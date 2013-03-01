@@ -1,0 +1,8 @@
+Einstein coefficients A_ij for O
+Reference: CDMS
+
+  i         j         A_ij in s^{-1}
+>
+  2         1         8.910E-05
+  3         2         1.340E-10
+  3         1         1.750E-05

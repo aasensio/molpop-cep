@@ -10,4 +10,9 @@ When adding another molecule make sure to terminate  data lines with CR.
 'H2O_para'       48       18.0      
 'OH'             32       17.0      
 'SiO_vib'       100       44.0      
-'C+'              2       12.0
+'C+'               2       12.01
+'C'               3        12.01
+'H2O_para_leiden'   45    18.0
+'o2'             48     32.00
+'H2O_ortho_leiden'    45     18.00
+'O'                3       16.00
