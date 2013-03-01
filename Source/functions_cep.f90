@@ -903,21 +903,21 @@ contains
 		
 ! Solve the linear system
 		
-! 		allocate(indx(nl))
-! 		tol = 1.d-10
-! 		call ludcmp(A,indx,tol)
-! 		call lubksb(A,indx,B)
-! 		deallocate(indx)
+		allocate(indx(nl))
+		tol = 1.d-10
+		call ludcmp(A,indx,tol)
+		call lubksb(A,indx,B)
+		deallocate(indx)
 		
-		call svdcmp(a,nl,nl,nl,nl,w,v)
-		
-		wmax = maxval(w)
-		wmin = wmax * 1.d-6
-		do j = 1, nl
- 			if (w(j) < wmin) w(j) = 0.d0
-		enddo
-		call svbksb(a,w,v,nl,nl,nl,nl,B,x)
-		B = x
+! 		call svdcmp(a,nl,nl,nl,nl,w,v)
+! 		
+! 		wmax = maxval(w)
+! 		wmin = wmax * 1.d-6
+! 		do j = 1, nl
+!  			if (w(j) < wmin) w(j) = 0.d0
+! 		enddo
+! 		call svbksb(a,w,v,nl,nl,nl,nl,B,x)
+! 		B = x
 		
 
 ! Maximum relative change
