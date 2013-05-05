@@ -2,15 +2,6 @@
 * C+
 * These lines are echoed in the output because they start with a '*'
 * Instructions for data input are found at the end of the input file		
-      Using file with physical conditions : Samples/C+/test.physical
-      Molecule --- C+
-      Number of levels =  2
-      NO LINE OVERLAP USED
-      Coupled escape probability with ALI
-      Using Thermal Doppler Width =   0.0 km/s
-      FWHM =   0.0 km/s
-      NO SATURATION EFFECTS
-      Aspect Ratio = 1
     1.  Relative weight of collision partner from column =  6
         Collision rates from data file C+_H2p.kij
         Collision rate coefficients for C+-H2_para collisions                   
@@ -27,6 +18,15 @@
         Collision rates from data file C+_e.kij
         Collision rate coefficients for C+-e collisions                         
         Leiden database                                                         
+      Using file with physical conditions : Samples/C+/test.physical
+      Molecule --- C+      
+      Number of levels =  2
+      NO LINE OVERLAP USED
+      Coupled escape probability with ALI
+      Using Thermal Doppler Width =   0.0 km/s
+      FWHM =   0.0 km/s
+      NO SATURATION EFFECTS
+      Aspect Ratio = 1
 
     *** T = 350.3 K is above the values tabulated in DataBase/Coll/C+_H2p.kij
     *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
@@ -648,7 +648,7 @@
 
       External Radiation field includes:
         - 3K Cosmic Background
-        - Dust with Td =  100.0 K and Tau(v) = 3.00E+00
+        - Dust with Td =  100.0 K and Tau(v) =  3.00E+00
 --------------------------------- Transitions --------------------------------
 
   i -> j     micron          GHz            K        Aij, s^{-1}   Cij, s^{-1}
@@ -685,4 +685,4 @@
  N(mol) [cm^-2]:  0.16187E+18   -  R [cm]:  0.23143E+19    -  nzones:  234
  *******************************************************************************
   up    low     optical depth        cooling         N(up)/N(low)    I_center(mu=1.000)
-   2     1       0.35808E+00       0.17269E-02       0.85658E+00       0.13571E-10
+   2     1       0.35800E+00       0.17260E-02       0.85673E+00       0.13573E-10

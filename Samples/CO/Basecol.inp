@@ -2,10 +2,16 @@
 * These lines are echoed in the output because they start with a '*'
 * Instructions for data input are found at the end of the input file		
 		Method (LVG, slab, CEP-NEWTON, CEP-NAG or CEP-ALI) = slab
-		Data directory = DataBase_Basecol
-      Molecule = CO_rotation
+		Molecule = CO_rotation
+		Data directory = DataBase_Basecol      
       Number of energy levels = 11
       vib_max =  0
+      Number of collision partners = 1
+                weight / column for CEP = 1
+        collision rates option= table
+                     data file = CO_60.kij
+            calculation option = sqrt(T)
+                scaling factor = 1.0
       File listing physical conditions = none
       Gas Temperature = 100k      
       n = 1.0e4 
@@ -14,12 +20,7 @@
       dlogV/dlogr = 1.0 (in effect only for LVG)
       overlap = off      
       Include maser saturation = no      
-      Number of collision partners = 1
-                weight / column for CEP = 1
-        collision rates option= table
-                     data file = CO_60.kij
-            calculation option = sqrt(T)
-                scaling factor = 1.0
+      
 
       Optional External Radiation:
       diluted blackbody fields:                                       

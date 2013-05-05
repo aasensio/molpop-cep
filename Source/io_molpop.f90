@@ -50,10 +50,7 @@ contains
 	   	error = error_message(opt,str)
       	return
       END IF
-      
-! Input the root directory for the database
-      call rdinps2(iequal,15,path_database,L,Nocase)
-      
+            
 !     Decide whether to output PLOTTING file
 !       call rdinps2(iequal,15,str,L,UCASE)      
 !       if(str(1:L) .eq. 'NO') then
@@ -71,6 +68,9 @@ contains
       
 !     read what molecule is used
       call rdinps2(iequal,iunit,STR,L,Nocase)
+! Input the root directory for the database
+      call rdinps2(iequal,15,path_database,L2,Nocase)
+
       
 !
 ! ********* ME: From now (Oct 27, 2005) on, all data files are in subdirectory DataBase 
@@ -83,7 +83,7 @@ contains
       endif
       open(11, file=trim(adjustl(path_database))//'/mol_list.dat', status='old')      
 !     First read Header lines
-      call Pass_Header(11)
+      call Pass_Header(11)      
       do while(.not. (mol_name(1:size(mol_name)).eq.STR(1:L)))
          k=0
          read(11, *,iostat=k) mol_name, N_max, mol_mass
@@ -156,6 +156,14 @@ contains
 			return
       endif
       
+ !     Load molecular data:		
+      call data(error)      
+      if (error) return
+      
+! Read collisional partners 
+      call read_collisions(iequal)
+
+      
 ! Read the filename with the spatial variation of the physical conditions
       call rdinps2(iequal,15,file_physical_conditions,L2,Nocase)
 
@@ -195,9 +203,9 @@ contains
          write(unit,"(6x,'Number of levels = ',I2)")n
          if (trim(adjustl(file_physical_conditions)) == 'none') then
          	write(unit,'(6x,a,f6.1,a)') 'Tgas = ',T, ' K'
-         	write(unit,'(6x,a,1pe8.2,a)') 'n_H2 = ',nh2, ' cm-3'
-         	write(unit,'(6x,3a,1pe8.2)') 'n_', s_mol(1:size(s_mol)),'/n_H2 = ',xmol
-         	write(unit,'(6x,3a,1pe8.2,a)') 'n_',s_mol(1:size(s_mol)),' = ', nmol, ' cm-3'
+         	write(unit,'(6x,a,1pe9.2,a)') 'n_H2 = ',nh2, ' cm-3'
+         	write(unit,'(6x,3a,1pe9.2)') 'n_', s_mol(1:size(s_mol)),'/n_H2 = ',xmol
+         	write(unit,'(6x,3a,1pe9.2,a)') 'n_',s_mol(1:size(s_mol)),' = ', nmol, ' cm-3'
          endif
       end do
             
@@ -353,13 +361,6 @@ contains
          error = error_message(opt,str)
         	return
       end if
-
-!     Load molecular data:		
-      call data(error)      
-      if (error) return
-      
-! Read collisional partners 
-      call read_collisions(iequal)
                         
 !     and load collision rates
 		if (trim(adjustl(file_physical_conditions)) == 'none') then
@@ -429,9 +430,9 @@ contains
          	Tbb = rdinp(iequal,15)
          	call rdinps2(iequal,15,str,L,UCASE)
          	
-		 		write(16,"(8x,'- Black-body with T =',f7.1,'K  Dilution factor = ',1pe8.2)") Tbb, W 
+		 		write(16,"(8x,'- Black-body with T =',f7.1,'K  Dilution factor = ',1pe9.2)") Tbb, W 
        		if (i_sum .eq. 1) then
-       			write(17,"(8x,'- Black-body with T =',f7.1,'K  Dilution factor = ',1pe8.2)") Tbb, W
+       			write(17,"(8x,'- Black-body with T =',f7.1,'K  Dilution factor = ',1pe9.2)") Tbb, W
        		endif
        	
          	do i = 2, n
@@ -470,9 +471,9 @@ contains
          if(tau_d .gt. 0) then
          	T_d   = rdinp(iequal,15)
          	call rdinps2(iequal,15,str,L,UCASE)
-           	write(16,"(8x,'- Dust with Td ='f7.1,' K and Tau(v) = ',1pe8.2)") T_d, tau_d
+           	write(16,"(8x,'- Dust with Td ='f7.1,' K and Tau(v) = ',1pe9.2)") T_d, tau_d
         		if (i_sum .eq. 1) then
-        			write(17,"(8x,'- Dust with Td ='f7.1, ' K and Tau(v) = ',1pe8.2)") T_d, tau_d 
+        			write(17,"(8x,'- Dust with Td ='f7.1, ' K and Tau(v) = ',1pe9.2)") T_d, tau_d 
         		endif
            	call dust_rad(T_d,tau_d,str,L)
 	   	end if 
@@ -708,10 +709,10 @@ contains
        	write(16,*)'Correct for Finite Number of Rotational Levels'
        	write(16,*)'Using Method of Lockett & Elitzur,ApJ,399,704'
 	 		write(16,123)nmol
-123  		format(' Original Molecular Density = ',1pe8.2)
+123  		format(' Original Molecular Density = ',1pe9.2)
         	nmol=nmol*part_func(t,mol_const,j_max)
        	write(16,124)nmol
-124  		format(' Recalculated Molecular Density = ',1pe8.2)       
+124  		format(' Recalculated Molecular Density = ',1pe9.2)
       end if
       
 !    
@@ -990,7 +991,7 @@ contains
 !
 !         read atomic data (energy levels and Einstein coefficients)
 !
-      call attach2(mol_name, '.lev', fn_lev)
+      call attach2(mol_name, '.molecule', fn_lev)
       inquire(file=fn_lev,exist=stat)
       if (.not.stat) then
       	print *, 'Error when opening file ', fn_lev
@@ -999,9 +1000,8 @@ contains
 		open(4, err=800, file=fn_lev, status='unknown')
 		call Pass_Header(4)
 		do i=1,n
-			read(4,*,end=6) in,g(i),fr(i),ledet(i)
+			read(4,*,end=5) in,g(i),fr(i),ledet(i)
 		end do
-6     close(4)
 
       do i=1,n
         	if(i .gt. 1) then
@@ -1011,15 +1011,9 @@ contains
           	end do
         	end if
       end do
-      call attach2(mol_name, '.aij', fn_aij)
-      inquire(file=fn_aij,exist=stat)
-      if (.not.stat) then
-      	print *, 'Error when opening file ', fn_aij
-      	stop
-      endif
-      open(4, err=810, file=fn_aij, status='unknown')
-      
-!     Get past Header lines
+
+      !     Get past Header lines
+		read(4,*)
       call Pass_Header(4)
       do while(.true.)
       	read(4,*,end=5)  i,j,temp
@@ -1165,7 +1159,7 @@ contains
       if(kpr .eq. 0) return
 
 !     kpr > 0;  more detailed printing
-      write(16,FMT='(/2X,A,1pe8.2,A,5X,A,1pe8.2,A,5X,A,1pe8.2,A,/2X,A,1pe8.2,A)') &
+      write(16,FMT='(/2X,A,1pe9.2,A,5X,A,1pe9.2,A,5X,A,1pe9.2,A,/2X,A,1pe9.2,A)') &
       	&'R = ',R,'cm', 'H2 column = ',HCOL,'cm-2','mol column = ',MCOL,&
       	&' cm-2','Total emission = ',TCOOL,' erg/s/mol '
 			

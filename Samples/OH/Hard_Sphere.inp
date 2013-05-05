@@ -2,10 +2,15 @@
 * These lines are echoed in the output because they start with a '*'
 * Instructions for data input are found at the end of the input file
 		Method (LVG, slab, CEP-NEWTON, CEP-NAG or CEP-ALI) = slab
-		Data directory = DataBase
-      Molecule = OH
+		Molecule = OH
+		Data directory = DataBase      
       Number of energy levels = 20
       vib_max = 0
+      Number of collision partners = 1
+               weight / column for CEP = 1
+        collision rates option = hard_sphere                     
+                     x-section = 1.d-15  cm^2
+                scaling factor = 1.
       File listing physical conditions = none
       Gas Temperature = 150 k         
       n = 1.0e5 cm-3
@@ -14,11 +19,7 @@
       dlogV/dlogr = 1.0 (in effect only for LVG)
       overlap = off            
       Include maser saturation = no      
-      Number of collision partners = 1
-               weight / column for CEP = 1
-        collision rates option = hard_sphere                     
-                     x-section = 1.d-15  cm^2
-                scaling factor = 1.
+      
 
       Optional External Radiation:
       diluted blackbody fields:

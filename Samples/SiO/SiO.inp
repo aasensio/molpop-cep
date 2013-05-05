@@ -2,10 +2,14 @@
 * Note that 20 rotational levels are always included in each vib level
 * Instructions for data input are found at the end of the input file
 		Method (LVG, slab, CEP-NEWTON, CEP-NAG or CEP-ALI) = slab
-		Data directory = DataBase
-      Molecule = SiO_vib
+		Molecule = SiO_vib
+		Data directory = DataBase      
       Number of energy levels = 80 
       vib_max = 4   jmax = 19  rot_const = 1.04 K
+      Number of collision partners = 1
+                weight / column for CEP = 1
+        collision rates option = SiO_ROVIB
+                scaling factor = 1.0
       File listing physical conditions = none
       Gas Temperature = 1200 K            
       n = 1.0e9
@@ -14,10 +18,7 @@
       dlogV/dlogr = 1. (in effect only for LVG)
       overlap = off                        
       Include maser saturation = yes      
-      Number of collision partners = 1
-                weight / column for CEP = 1
-        collision rates option = SiO_ROVIB
-                scaling factor = 1.0
+      
       
       External Radiation:  (CMB always included)
       Geometrically diluted blackbody fields:

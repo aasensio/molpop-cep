@@ -2,18 +2,10 @@
 * These lines are echoed in the output because they start with a '*'
 * Instructions for data input are found at the end of the input file
 		Method (LVG, slab, CEP-NEWTON, CEP-NAG or CEP-ALI) = slab
-      Data directory = DataBase
       Molecule = OH
+      Data directory = DataBase      
       Number of energy levels = 24
       vib_max = 0
-      File listing physical conditions = none
-      Gas Temperature = 50 k     
-      n = 1.0e4 cm-3
-      Molecular abundance (n_mol/n) = 1.0e-6
-      Velocity = 12 km/sec (Enter Doppler Width for slab)
-      dlogV/dlogr = 1 (in effect only for LVG)
-      overlap = on              
-      Include maser saturation = yes
       Number of collision partners = 2
  weight / column in file (CEP) = 3
         collision rates option = table
@@ -25,6 +17,15 @@
                      data file = OH_H2p.kij
             calculation option = sqrt(T)
                 scaling factor = 1.
+      File listing physical conditions = none
+      Gas Temperature = 50 k     
+      n = 1.0e4 cm-3
+      Molecular abundance (n_mol/n) = 1.0e-6
+      Velocity = 12 km/sec (Enter Doppler Width for slab)
+      dlogV/dlogr = 1 (in effect only for LVG)
+      overlap = on              
+      Include maser saturation = yes
+      
 
       Optional External Radiation:
       diluted blackbody fields:

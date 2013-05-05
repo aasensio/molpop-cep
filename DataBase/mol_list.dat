@@ -16,3 +16,4 @@ When adding another molecule make sure to terminate  data lines with CR.
 'o2'             48     32.00
 'H2O_ortho_leiden'    45     18.00
 'O'                3       16.00
+'HCN'             26       27.02

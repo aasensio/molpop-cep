@@ -2,18 +2,10 @@
 * These lines are echoed in the output because they start with a '*'
 * Instructions for data input are found at the end of the input file		
 		Method (LVG, slab, CEP-NEWTON, CEP-NAG or CEP-ALI) = CEP-NEWTON
-		Data directory = DataBase
-      Molecule = CO
+		Molecule = CO
+		Data directory = DataBase      
       Number of energy levels = 11
       vib_max =  0
-      File listing physical conditions = none
-      Gas Temperature = 100k      
-      n = 1.0e4 
-      Molecular abundance (n_mol/n) = 1.0e-4
-      Velocity = 1 km/sec (linewidth for slab)
-      dlogV/dlogr = 1.0 (in effect only for LVG)
-      overlap = off      
-      Include maser saturation = no      
       Number of collision partners = 2
                weight / column for CEP = 1
         collision rates option= table
@@ -25,6 +17,15 @@
                      data file = CO_H2p.kij
             calculation option = sqrt(T)
                 scaling factor = 1.0
+      File listing physical conditions = none
+      Gas Temperature = 100k      
+      n = 1.0e4 
+      Molecular abundance (n_mol/n) = 1.0e-4
+      Velocity = 1 km/sec (linewidth for slab)
+      dlogV/dlogr = 1.0 (in effect only for LVG)
+      overlap = off      
+      Include maser saturation = no      
+      
 
       Optional External Radiation:
       diluted blackbody fields:                                       

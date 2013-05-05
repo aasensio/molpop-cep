@@ -2,10 +2,16 @@
 * These lines are echoed in the output because they start with a '*'
 * Instructions for data input are found at the end of the input file
 		Method (LVG, slab, CEP-NEWTON, CEP-NAG or CEP-ALI) = slab
-		Data directory = DataBase
-      Molecule = H2O_ortho
+		Molecule = H2O_ortho
+		Data directory = DataBase      
       Number of energy levels = 45
       vib_max = 0
+      Number of collision partners = 1
+             weight / column for CEP = 1
+        collision rates option = table
+                     data file = H2Oo_H2.kij
+            calculation option = sqrt(T)
+                scaling factor = 1.0
       File listing physical conditions = none
       Gas Temperature = 500 k       
       n = 5.0e8 cm-3
@@ -14,13 +20,7 @@
       dlogV/dlogr = 1.0 (in effect only for LVG)
       overlap = off            
       Include maser saturation = no      
-
-      Number of collision partners = 1
-             weight / column for CEP = 1
-        collision rates option = table
-                     data file = H2Oo_H2.kij
-            calculation option = sqrt(T)
-                scaling factor = 1.0
+      
 
       Optional External Radiation:
       diluted blackbody fields:
