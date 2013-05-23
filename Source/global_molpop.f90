@@ -45,7 +45,8 @@ implicit none
 
    logical l_mol_part,l_mol_ROT 
    character*32  mol_name,s_mol
-   integer i_mol
+   integer i_mol, N_max
+   integer dustAbsorption
    real(kind=8) mol_mass,mol_d
 
 

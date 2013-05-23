@@ -37,9 +37,9 @@ contains
 			if (kbeta > 3 .and. trim(adjustl(file_physical_conditions)) /= 'none') then
 				write(16,"(4x,I1,'.  Relative weight of collision partner from column = ',I2)") i, int(fr_col(i))
 			else
-				write(16,"(4x,I1,'.  Relative weight of collision partner = ',f4.2)") i, fr_col(i)
+				write(16,"(4x,I1,'.  Relative weight of collision partner = ',f5.2)") i, fr_col(i)
 				if(i_sum .eq. 1) then
-					write(17,"(4x,I1,'.  Relative weight of collision partner = ',f4.2)") i, fr_col(i)
+					write(17,"(4x,I1,'.  Relative weight of collision partner = ',f5.2)") i, fr_col(i)
 				endif
 			endif
         	
@@ -54,48 +54,48 @@ contains
           	L = size(fn_kij(i))
           	
 !       Read collision tables from file: collision_tables.dat
-				inquire(file=trim(adjustl(path_database))//'/Coll/collision_tables.dat',&
-					exist=stat)
-      		if (.not.stat) then
-      			print *, 'Error when opening file ',&
-      				trim(adjustl(path_database))//'/Coll/collision_tables.dat'
-      			stop
-      		endif
-      
-          	open(10, file=trim(adjustl(path_database))//'/Coll/collision_tables.dat', status='old')
-	    		TableName = 'dummy'
-	    		rewind 10
-	    		
-!        First read Header lines
-	    		call Pass_Header(10)
-	    		do while(.not.(fn_kij(i)(1:L) .eq. TableName))
-              	k = 0
-		    		read(10,'(a)',iostat = k) str
-              	if (k .eq. -1) then
-!                  No match:
-               	str = fn_kij(i)(1:L)
-	             	OPT = 'table filename'
-	             	error = error_message(opt,str)
-						return          
-		     		end if
-		    		TableName = str(1:size(str))
-		    		read(10,'(a)') str
-		    		TableInfo1 = str(1:size(str))
-		    		read(10,'(a)') str
-		    		TableInfo2 = str(1:size(str))
-		    		read(10,'(a)') str
-          	end do
-				close(10)	
+! 				inquire(file=trim(adjustl(path_database))//'/Coll/collision_tables.dat',&
+! 					exist=stat)
+!       		if (.not.stat) then
+!       			print *, 'Error when opening file ',&
+!       				trim(adjustl(path_database))//'/Coll/collision_tables.dat'
+!       			stop
+!       		endif
+!       
+!           	open(10, file=trim(adjustl(path_database))//'/Coll/collision_tables.dat', status='old')
+! 	    		TableName = 'dummy'
+! 	    		rewind 10
+! 	    		
+! !        First read Header lines
+! 	    		call Pass_Header(10)
+! 	    		do while(.not.(fn_kij(i)(1:L) .eq. TableName))
+!               	k = 0
+! 		    		read(10,'(a)',iostat = k) str
+!               	if (k .eq. -1) then
+! !                  No match:
+!                	str = fn_kij(i)(1:L)
+! 	             	OPT = 'table filename'
+! 	             	error = error_message(opt,str)
+! 						return          
+! 		     		end if
+! 		    		TableName = str(1:size(str))
+! 		    		read(10,'(a)') str
+! 		    		TableInfo1 = str(1:size(str))
+! 		    		read(10,'(a)') str
+! 		    		TableInfo2 = str(1:size(str))
+! 		    		read(10,'(a)') str
+!           	end do
+! 				close(10)	
 				
 !         Proper match:
 
-2         	write(16,"(8x,'Collision rates from data file ',a,/8x,a,/8x,a)") fn_kij(i)(1:L),&
-					TableInfo1, TableInfo2
-          	if (i_sum .eq.1) then
-          		write(17,"(8x,'Collision rates from data file ',a,/8x,a,/8x,a)") fn_kij(i)(1:L),&
-          			TableInfo1, TableInfo2
-          	endif
-          	
+! 2         	write(16,"(8x,'Collision rates from data file ',a,/8x,a,/8x,a)") fn_kij(i)(1:L),&
+! 					TableInfo1, TableInfo2
+!           	if (i_sum .eq.1) then
+!           		write(17,"(8x,'Collision rates from data file ',a,/8x,a,/8x,a)") fn_kij(i)(1:L),&
+!           			TableInfo1, TableInfo2
+!           	endif
+          	                    	
           	if(Option(1:LOpt) .eq. 'SQRT(T)') then
             	i_col_exsub(i) = 1
           	else if(Option(1:LOpt) .eq. 'CONST') then
@@ -111,6 +111,17 @@ contains
         		call attach2(trim(adjustl(path_database))//'/Coll/',fn_kij(i)(1:L),str)
         		L = size(str)
         		fn_kij(i)(1:L) = str(1:L)
+        		
+        		inquire(file=fn_kij(i)(1:L),exist=stat)
+          	if (.not.stat) then
+					print *, 'Error when opening file ', fn_kij(i)(1:L)
+					stop
+				endif
+				
+2         	write(16,"(8x,'Collision rates from data file ',a,/8x,a,/8x,a)") fn_kij(i)(1:L)
+          	if (i_sum .eq.1) then
+          		write(17,"(8x,'Collision rates from data file ',a,/8x,a,/8x,a)") fn_kij(i)(1:L)
+          	endif
         		
 			else if(Method(1:LMeth) .eq. 'SIO_ROVIB') then
 				gxsec(i) = rdinp(iequal,15)

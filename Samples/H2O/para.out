@@ -2,10 +2,9 @@
 * Sample run for para H2O.
 * These lines are echoed in the output because they start with a '*'
 * Instructions for data input are found at the end of the input file
-    1.  Relative weight of collision partner = 1.00
-        Collision rates from data file H2Op_H2.kij
-        Collision rate coefficients for H2O_para-H2 collisions; corrected from H
-        Green et al 1993, ApJS 85, 181                                          
+    1.  Relative weight of collision partner =  1.00
+        Collision rates from data file DataBase/Coll/H2Op_H2.kij
+
       Molecule --- H2O_para
       Number of levels = 45
       Tgas =  500.0 K
@@ -32,12 +31,12 @@ FAILED ON LINEAR EQUATIONS AT R = 0
 
  *** TERMINATED. FAILED ON INITIAL SOLUTION
   POPULATIONS:
-  0.000000E+00    0.000000E+00    0.000000E+00    0.000000E+00    0.000000E+00
-  0.000000E+00    0.000000E+00    0.000000E+00    0.000000E+00    0.000000E+00
-  0.000000E+00    0.000000E+00    0.000000E+00    0.000000E+00    0.000000E+00
-  0.000000E+00    0.000000E+00    0.000000E+00    0.000000E+00    0.000000E+00
-  0.000000E+00    0.000000E+00    0.000000E+00    0.000000E+00    0.000000E+00
-  0.000000E+00    0.000000E+00    0.000000E+00    0.000000E+00    0.000000E+00
-  0.000000E+00    0.000000E+00    0.000000E+00    0.000000E+00    0.000000E+00
-  0.000000E+00    0.000000E+00    0.000000E+00    0.000000E+00    0.000000E+00
-  0.000000E+00    0.000000E+00    0.000000E+00    0.000000E+00    1.000000E+00
+  3.867534E-01    2.822469E-01    2.852389E-01    2.586200E-01    2.006084E-01
+  1.770446E-01    2.246575E-01    1.247316E-01    1.927604E-01    4.484520E-01
+  5.888266E-01    1.172584E-01    8.859469E-01    3.613318E-01    1.478761E-01
+  3.334281E+00    3.246559E+00    5.384854E-01    2.852762E-01    4.230733E+00
+  1.191777E+01    7.864779E+00    1.959254E+00    8.813871E+01    8.214039E-01
+  8.279094E+01    4.333079E+01    8.265509E+00    5.702535E+02    3.541185E+00
+  2.902720E+02    1.698329E+02    8.024403E+03    4.630165E+02    7.259306E+03
+  6.127489E+01    2.327286E+01    5.213001E+03    9.429878E+04    3.029666E+03
+  4.751999E+04    5.509855E+02    2.344429E+02    3.024344E+04    2.266025E+06

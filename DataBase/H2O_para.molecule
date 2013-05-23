@@ -1,6 +1,10 @@
 Rotational energy levels of the vibrational ground state for para-H2O
 Reference: HITRAN database, Rothman L.S., et al., 1987,Appl. Opt., 26, 4078
 
+N. levels and molecular mass
+>
+48  18.d0
+
      N       g      Energy in cm^{-1}            Level details
 >
      1       1       0.0000000e+00      'J =  0,  K- =  0,  K+ =  0'

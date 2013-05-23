@@ -18,6 +18,7 @@
       dlogV/dlogr = 1. (in effect only for LVG)
       overlap = off                        
       Include maser saturation = yes      
+      Dust absorption = 0
       
       
       External Radiation:  (CMB always included)

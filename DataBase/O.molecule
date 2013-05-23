@@ -1,6 +1,10 @@
 Rotational energy levels for the ground state of O
 Reference: CDMS
 
+N. levels and molecular mass
+>
+3  16.d0
+
      N        g      Energy in cm^{-1}    Level details
 >
      1        5           0.0000           'J =   2'

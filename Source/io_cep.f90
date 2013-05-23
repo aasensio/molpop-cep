@@ -34,7 +34,7 @@ contains
 		endif
 		
 ! Read data concerning the strategy to follow
-		read(28,FMT='(E13.5,2X,E13.5,2X,E13.5,2X,I1,2X,E13.5,2X,I4,2X,F5.3)') tau_threshold,&
+		read(28,FMT='(E13.5,2X,E13.5,2X,E13.5,2X,I1,2X,E13.5,2X,I4,2X,F6.3)') tau_threshold,&
 			r_threshold, col_threshold, kthick_strategy, precision, n_iters, mu_output
 		
 ! Start from optically thin		
@@ -383,7 +383,7 @@ contains
 		write(16,*)
 		write(16,*) '***********************'
 		write(16,*) ' Level information   '
-		write(16,*) ' g    Energy [cm^-1]  '
+		write(16,*) ' index  g    Energy [cm^-1]  '
 		write(16,*) '***********************'
 		do i = 1, nl
 			write(16,FMT='(I3,2X,F5.1,2X,F10.4)') i, dlevel(2,i), dlevel(1,i)/PC
@@ -405,7 +405,7 @@ contains
 			enddo
 			up = itran(1,i)
 			low = itran(2,i)
-			write(16,FMT='(I3,2X,I3,2X,I3,2X,F12.6,2X,E13.6,3X,A)') i, itran(1,i), itran(2,i), &
+			write(16,FMT='(I3,2X,I3,2X,F12.6,2X,E13.6,3X,A)') itran(1,i), itran(2,i), &
 				dtran(2,i)/1.d9,&
 				dtran(1,i)*(pi8c2*dtran(2,i)**2)*(dlevel(2,up)/dlevel(2,low)), selected
 		enddo
@@ -449,7 +449,7 @@ contains
 			total_radius, '    -  nzones: ', nz
 		write(16,*) '*******************************************************************************'
 		
-		write(16,FMT='(1X,A,F5.3,A)') ' up    low     optical depth        cooling         N(up)/N(low)    I_center(mu=',&
+		write(16,FMT='(1X,A,F6.3,A)') ' up    low     optical depth        cooling         N(up)/N(low)    I_center(mu=',&
 			mu_output,')'
 
 		allocate(Slte(nz))

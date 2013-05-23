@@ -1,0 +1,31 @@
+no title defined
+source database : cdms
+N : rotational quantum number
+
+N. levels and molecular mass
+>
+7  29.01
+
+  N     g   Energy in cm^{-1}
+>
+  1     1        0.000000e+00                                                   'N = 0  '
+  2     3        3.107900e+00                                                   'N = 1  '
+  3     5        9.323700e+00                                                   'N = 2  '
+  4     7        1.864720e+01                                                   'N = 3  '
+  5     9        3.107820e+01                                                   'N = 4  '
+  6    11        4.661650e+01                                                   'N = 5  '
+  7    13        6.526160e+01                                                   'N = 6  '
+
+
+
+Einstein coefficients A_ij for N2H+ 
+source database : cdms
+       i       j            A_ij (s^{-1})    
+>
+       2       1        3.627944e-05
+       3       2        3.482851e-04
+       4       3        1.259367e-03
+       5       4        3.095015e-03
+       6       5        6.181579e-03
+       7       6        1.084594e-02
+

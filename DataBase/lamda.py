@@ -28,14 +28,20 @@ class molpop():
 		print "Writing radiative data..."
 		
 		molName = file.split('.')[0]
+		nLevels = int(data[5])
+		molMass = float(data[3])
 		
 		f = open(molName+"_lamda.molecule", "w")
 		f.write('Energy levels and radiative transitions of molecule\n')
-		f.write(file+'\n')
+		f.write(file+'\n')		
+		f.write('\n')
+		f.write('N. levels and molecular mass\n')
+		f.write('>\n')
+		f.write('%d   %f\n'%(nLevels,molMass))
 		f.write('\n')
 		f.write('      N        g      Energy in cm^{-1}    Level details\n')
 		f.write('>\n')
-		nLevels = int(data[5])
+		
 		for i in range(nLevels):
 			temp = data[7+i].split()
 			f.write(temp[0]+'   '+temp[2]+'   '+temp[1]+"   '"+temp[3]+"'\n")
@@ -54,13 +60,7 @@ class molpop():
 			f.write(temp[1]+' '+temp[2]+'  '+temp[3]+'\n')
 			
 		f.close()
-		
-		molMass = data[3]
-		f = open('mol_list.dat',"a")
-		
-		f.write("'"+molName+"_lamda'  "+str(nLevels)+'  '+molMass+'\n')
-		f.close()				
-		
+						
 		pointer = 7 + nLevels + 1 + nTransitions + 1 + 1 + 1
 
 # File with collisional rates
@@ -108,14 +108,6 @@ class molpop():
 				
 			f.close()
 			
-			f = open('Coll/collision_tables.dat',"a")
-			f.write(fileName+'\n')
-			f.write('Collision rate coefficients for '+whichCollision[1]+'\n')
-			f.write('LAMDA database (imported with lambda.py)\n')
-			f.write('   ******************\n')
-			f.close()
-			#IPython.embed()
-
 
 # Parse the directory with all the molecules
 parser = AnchorParser()
@@ -124,14 +116,18 @@ print "List of available molecules"
 parser.feed(data)
 
 # Select the desired molecule
-nb = int(raw_input("Select which one to download (0-"+str(parser.loop-1)+") "))
+nb = raw_input("Select which one to download (separated with spaces if many) (0-"+str(parser.loop-1)+") ")
 
-print "Downloading "+parser.files[nb]
+nb = nb.split()
+
+for iterator in nb:
+	indexMolecule = int(iterator)
+	print "Downloading "+parser.files[indexMolecule]
 
 # Download the molecule and parse it, generating the appropriate files
-ur = urllib.urlopen('http://home.strw.leidenuniv.nl/~moldata/datafiles/'+parser.files[nb])
-data = ur.readlines()
+	ur = urllib.urlopen('http://home.strw.leidenuniv.nl/~moldata/datafiles/'+parser.files[indexMolecule])
+	data = ur.readlines()
 
-mol = molpop()
+	mol = molpop()
 
-mol.parse(parser.files[nb],data)
+	mol.parse(parser.files[indexMolecule],data)

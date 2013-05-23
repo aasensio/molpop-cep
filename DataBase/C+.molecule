@@ -1,6 +1,10 @@
 Energy levels for C+
 Reference: CDMS
 
+N. levels and molecular mass
+>
+2  12.01d0
+
      N        g      Energy in cm^{-1}    Level details
 >
      1        2           0.0000           'J =   0.5'

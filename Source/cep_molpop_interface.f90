@@ -26,7 +26,7 @@ contains
 		endif
 		
 ! tau_threshold, r_threshold, col_threshold, kthick_strategy, precision, mu_output
-		write(28,FMT='(E13.5,2X,E13.5,2X,E13.5,2X,I1,2X,E13.5,2X,I4,2X,F5.3)') taum, rm, &
+		write(28,FMT='(E13.5,2X,E13.5,2X,E13.5,2X,I1,2X,E13.5,2X,I4,2X,F6.3)') taum, rm, &
 			colm, kthick, acc, itmax, mu_output		
 		
 ! Save precision in CEP, number of printings per decade and maximum number of

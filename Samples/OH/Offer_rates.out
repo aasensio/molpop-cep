@@ -2,15 +2,13 @@
 * Sample run for OH with Offer et al collision rates
 * These lines are echoed in the output because they start with a '*'
 * Instructions for data input are found at the end of the input file
-    1.  Relative weight of collision partner = 3.00
-        Collision rates from data file OH_H2o.kij
-        Collision rate coefficients for OH-H2_ortho collisions                  
-        Offer et al 1994, JCP 100, 362                                          
-    2.  Relative weight of collision partner = 1.00
-        Collision rates from data file OH_H2p.kij
-        Collision rate coefficients for OH-H2_para collisions                   
-        Offer et al 1994, JCP 100, 362                                          
-      Molecule --- OH      
+    1.  Relative weight of collision partner =  3.00
+        Collision rates from data file DataBase/Coll/OH_H2o.kij
+
+    2.  Relative weight of collision partner =  1.00
+        Collision rates from data file DataBase/Coll/OH_H2p.kij
+
+      Molecule --- OH
       Number of levels = 24
       Tgas =   50.0 K
       n_H2 =  1.00E+04 cm-3

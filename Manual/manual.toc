@@ -19,16 +19,16 @@
 \contentsline {subsection}{\numberline {4.9}Solution Controls}{11}{subsection.4.9}
 \contentsline {section}{\numberline {5}Output}{12}{section.5}
 \contentsline {section}{\numberline {6}Molecular Data and the BASECOL Database}{14}{section.6}
-\contentsline {subsection}{\numberline {6.1}Energy levels}{15}{subsection.6.1}
-\contentsline {subsection}{\numberline {6.2}Radiative Transitions}{16}{subsection.6.2}
-\contentsline {subsection}{\numberline {6.3}Collisional Rates}{16}{subsection.6.3}
-\contentsline {subsection}{\numberline {6.4}The Basecol Database}{17}{subsection.6.4}
-\contentsline {section}{\numberline {A}APPENDIX}{19}{appendix.A}
-\contentsline {subsection}{\numberline {A.1}Formulation of the problem}{19}{subsection.A.1}
-\contentsline {subsubsection}{\numberline {A.1.1}Coupled Escape Probability}{20}{subsubsection.A.1.1}
-\contentsline {section}{\numberline {B}Numerical implementation}{21}{appendix.B}
-\contentsline {subsection}{\numberline {B.1}Internal radiation}{22}{subsection.B.1}
-\contentsline {subsection}{\numberline {B.2}Numerical evaluation of the auxiliary functions}{23}{subsection.B.2}
-\contentsline {subsection}{\numberline {B.3}External radiation}{23}{subsection.B.3}
-\contentsline {subsection}{\numberline {B.4}Solution of the final equations}{23}{subsection.B.4}
-\contentsline {section}{\numberline {C}Cooling and emergent radiation}{24}{appendix.C}
+\contentsline {subsection}{\numberline {6.1}Energy levels and radiative transitions}{14}{subsection.6.1}
+\contentsline {subsection}{\numberline {6.2}Collisional Rates}{16}{subsection.6.2}
+\contentsline {subsection}{\numberline {6.3}The LAMBDA Database}{16}{subsection.6.3}
+\contentsline {subsection}{\numberline {6.4}The Basecol Database}{16}{subsection.6.4}
+\contentsline {section}{\numberline {A}APPENDIX}{18}{appendix.A}
+\contentsline {subsection}{\numberline {A.1}Formulation of the problem}{18}{subsection.A.1}
+\contentsline {subsubsection}{\numberline {A.1.1}Coupled Escape Probability}{19}{subsubsection.A.1.1}
+\contentsline {section}{\numberline {B}Numerical implementation}{20}{appendix.B}
+\contentsline {subsection}{\numberline {B.1}Internal radiation}{21}{subsection.B.1}
+\contentsline {subsection}{\numberline {B.2}Numerical evaluation of the auxiliary functions}{22}{subsection.B.2}
+\contentsline {subsection}{\numberline {B.3}External radiation}{22}{subsection.B.3}
+\contentsline {subsection}{\numberline {B.4}Solution of the final equations}{22}{subsection.B.4}
+\contentsline {section}{\numberline {C}Cooling and emergent radiation}{23}{appendix.C}

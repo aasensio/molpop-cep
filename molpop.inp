@@ -6,13 +6,12 @@
 %   same directory. It can be checked against the output file with
 %   the same name in subdireectory OutpuTest
 %
-%Samples/OH/Offer_rates
+Samples/OH/Offer_rates
 %Samples/C+/C+
 %Samples/SiO/SiO
-%Samples/H2O/para
+Samples/H2O/para
 %Samples/H2O/ortho
 %Samples/OH/Hard_Sphere
-%Samples/CO/Flower_rates_const
-%Samples/CO/Flower_rates
-%Samples/CO/Basecol
+Samples/CO/Flower_rates_const
+Samples/CO/Flower_rates
 % end of file

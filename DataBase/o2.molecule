@@ -1,6 +1,10 @@
 MOLPOP Energy levels file generated from the Leiden database file o2.dat.txt
 Molecular species:  O2 from the 2010 update of the combined
 
+N. levels and molecular mass
+>
+48  32.d0
+
     N     g      Energy in cm^{-1}     Level details
 >
     1     1        0.000000E+00        '01_00'

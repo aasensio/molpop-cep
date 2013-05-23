@@ -1,6 +1,10 @@
 MOLPOP Energy levels file generated from the Leiden database file oh2o@daniel.dat
 Molecular species: Ortho H2O spectroscopy from JPL / Holger
 
+N. levels and molecular mass
+>
+45  18.d0
+
     N     g      Energy in cm^{-1}     Level details
 >
     1     9        2.379436E+01        '1_0_1'

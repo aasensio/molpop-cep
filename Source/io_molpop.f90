@@ -12,7 +12,7 @@ contains
 	use coll_molpop
       
    integer i,j, npr, iunit, L, L2, L3
-	integer k, N_max, npoints_local
+	integer k, npoints_local
 	integer :: j_max, vib_max
 	integer unit,unit2,mol_maxlev
 	double precision aux,xm4, w,Tbb,tau_d, T_d, Lbol,dist, temp
@@ -76,27 +76,30 @@ contains
 ! ********* ME: From now (Oct 27, 2005) on, all data files are in subdirectory DataBase 
 !
 !     Read molecular information from file: mol_list.dat
-		inquire(file=trim(adjustl(path_database))//'/mol_list.dat',exist=stat)
-      if (.not.stat) then
-      	print *, 'Error when opening file ', trim(adjustl(path_database))//'/mol_list.dat'
-      	stop
-      endif
-      open(11, file=trim(adjustl(path_database))//'/mol_list.dat', status='old')      
-!     First read Header lines
-      call Pass_Header(11)      
-      do while(.not. (mol_name(1:size(mol_name)).eq.STR(1:L)))
-         k=0
-         read(11, *,iostat=k) mol_name, N_max, mol_mass
-         
-         if (k .eq. -1) then
-!          No match:
-         	OPT = 'molecule name'
-           	error = error_message(opt,str)
-        		return
-         end if
-!           read(11, *) N_max, mol_mass, mol_const, j_max
-      end do
-5    	close(11)
+! 		inquire(file=trim(adjustl(path_database))//'/mol_list.dat',exist=stat)
+!       if (.not.stat) then
+!       	print *, 'Error when opening file ', trim(adjustl(path_database))//'/mol_list.dat'
+!       	stop
+!       endif
+      
+      mol_name = STR(1:L)
+      
+!       open(11, file=trim(adjustl(path_database))//'/mol_list.dat', status='old')      
+! !     First read Header lines
+!       call Pass_Header(11)      
+!       do while(.not. (mol_name(1:size(mol_name)).eq.STR(1:L)))
+!          k=0
+!          read(11, *,iostat=k) mol_name, N_max, mol_mass
+!          
+!          if (k .eq. -1) then
+! !          No match:
+!          	OPT = 'molecule name'
+!            	error = error_message(opt,str)
+!         		return
+!          end if
+! !           read(11, *) N_max, mol_mass, mol_const, j_max
+!       end do
+! 5    	close(11)
 
 !
 1   	call clear_string(len(s_mol),s_mol)
@@ -145,6 +148,10 @@ contains
 	   	mol_const = rdinp(iequal,15)
 		endif
 	
+            
+ !     Load molecular data:		
+      call data(error)
+      if (error) return
       
 !     Test whether the desired number of levels is larger than the number of tabulated levels
       if (n .gt. N_max) then
@@ -155,10 +162,7 @@ contains
 			error = error_message(opt,str)
 			return
       endif
-      
- !     Load molecular data:		
-      call data(error)      
-      if (error) return
+
       
 ! Read collisional partners 
       call read_collisions(iequal)
@@ -361,6 +365,9 @@ contains
          error = error_message(opt,str)
         	return
       end if
+      
+! Test whether we want dust absorption
+		dustAbsorption = rdinp(iequal,15)
                         
 !     and load collision rates
 		if (trim(adjustl(file_physical_conditions)) == 'none') then
@@ -998,6 +1005,8 @@ contains
       	stop
       endif
 		open(4, err=800, file=fn_lev, status='unknown')
+		call Pass_Header(4)
+		read(4,*) N_max, mol_mass
 		call Pass_Header(4)
 		do i=1,n
 			read(4,*,end=5) in,g(i),fr(i),ledet(i)
