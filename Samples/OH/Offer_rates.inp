@@ -46,6 +46,7 @@
 %             Distance from source = 1.E15 cm
 %             Illumination from (left/right/both/internal) = internal
     
+    Solution method (NEWTON/ALI, non-important for single-zone) = none
     Accuracy in solution of the equations               = 1.0e-4
     Maximum number of iterations to solve               = 100
     

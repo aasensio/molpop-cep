@@ -1,7 +1,7 @@
 * C+
 * These lines are echoed in the output because they start with a '*'
 * Instructions for data input are found at the end of the input file		
-		Method (LVG, slab, CEP-NEWTON, CEP-NAG or CEP-ALI) = CEP-ALI
+		Method (LVG, slab, LVGPP, CEP) = CEP
       Molecule = C+
       Data directory = DataBase
       Number of energy levels = 2
@@ -56,6 +56,7 @@
 %             Distance from source = 1.E15 cm
 %             Illumination from (left/right/both/internal) = internal
     
+    Solution method (NEWTON/ALI, non-important for single-zone) = ALI
     Accuracy in solution of the equations               = 1.0e-3
     Maximum number of iterations to solve               = 50    
     Solution strategy = fixed

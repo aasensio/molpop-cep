@@ -33,18 +33,32 @@ contains
 !         read type of escape probability approach
       call rdinps2(iequal,15,str,L,UCASE)
 
+!       IF(str(1:L) .eq. 'LVG') THEN
+!       	kbeta = 0
+!       ELSE IF(str(1:L) .eq. 'LVGPP') THEN
+! 			kbeta = -1
+!       ELSE IF(str(1:L) .eq. 'SLAB') THEN
+!         	kbeta = 2
+! 		ELSE IF(str(1:L) .eq. 'CEP-NEWTON') THEN
+!         	kbeta = 3			
+! 		ELSE IF(str(1:L) .eq. 'CEP-ALI') THEN
+!         	kbeta = 4			
+! 		ELSE IF(str(1:L) .eq. 'CEP-NAG') THEN
+!         	kbeta = 5					
+! 		ELSE
+! 	   	OPT = 'escape probability'
+! 	   	error = error_message(opt,str)
+!       	return
+!       END IF
+      
       IF(str(1:L) .eq. 'LVG') THEN
       	kbeta = 0
       ELSE IF(str(1:L) .eq. 'LVGPP') THEN
 			kbeta = -1
       ELSE IF(str(1:L) .eq. 'SLAB') THEN
         	kbeta = 2
-		ELSE IF(str(1:L) .eq. 'CEP-NEWTON') THEN
-        	kbeta = 3			
-		ELSE IF(str(1:L) .eq. 'CEP-ALI') THEN
-        	kbeta = 4			
-		ELSE IF(str(1:L) .eq. 'CEP-NAG') THEN
-        	kbeta = 5					
+		ELSE IF(str(1:L) .eq. 'CEP') THEN
+        	kbeta = 3		
 		ELSE
 	   	OPT = 'escape probability'
 	   	error = error_message(opt,str)
@@ -496,6 +510,18 @@ contains
         	if (error) return
  		end if
  		
+
+! Method of solution. If single-zone, we don't care because we always use Newton
+! If CEP, we can use NEWTON or ALI
+		call rdinps2(iequal,15,str,L,UCASE)
+		if (kbeta == 3) then
+			IF(str(1:L) .eq. 'NEWTON') THEN
+         	kbeta = 3			
+			ELSE IF(str(1:L) .eq. 'ALI') THEN
+         	kbeta = 4
+         endif
+		endif
+
 ! ACC    - ACCURACY REQUIRED IN THE SOLUTION
       ACC     = rdinp(iequal,iunit)
       itmax   = rdinp(iequal,iunit)

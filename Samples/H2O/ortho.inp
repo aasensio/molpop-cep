@@ -1,7 +1,7 @@
 * Sample run for ortho H2O. 
 * These lines are echoed in the output because they start with a '*'
 * Instructions for data input are found at the end of the input file
-		Method (LVG, slab, CEP-NEWTON, CEP-NAG or CEP-ALI) = slab
+		Method (LVG, slab, LVGPP, CEP) = slab
 		Molecule = H2O_ortho
 		Data directory = DataBase      
       Number of energy levels = 45
@@ -39,6 +39,7 @@
 %             ditsance from source = 1.E15 cm
 %             Illumination from (left/right/both/internal) = internal
     
+    Solution method (NEWTON/ALI, non-important for single-zone) = none
     Accuracy in solution of the equations               = 1.0e-4
     Maximum number of iterations to solve               = 50
     

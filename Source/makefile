@@ -19,7 +19,7 @@
 # ifort (comment these lines if you want to use another compiler)
 COMPILER = ifort
 FLAGS = -fpp
-OPTIONS = -c -g -traceback
+OPTIONS = -c -O3 
 	
 
 # Use "YES" if NAG library is available
