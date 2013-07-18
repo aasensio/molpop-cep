@@ -147,22 +147,7 @@ contains
 	   	j_max     = rdinp(iequal,15)
 	   	mol_const = rdinp(iequal,15)
 		endif
-	
-            
- !     Load molecular data:		
-      call data(error)
-      if (error) return
-      
-!     Test whether the desired number of levels is larger than the number of tabulated levels
-      if (n .gt. N_max) then
-      	WRITE (16,"(/,' *** Cannot specify N_levels = ', I3,/,&
-                &' *** Maximum allowed for ',a,' is ',I3)") n, s_mol(1:size(s_mol)), N_max
-			OPT = 'number of levels of'
-			str = s_mol(1:size(s_mol))
-			error = error_message(opt,str)
-			return
-      endif
-
+	           
       
 ! Read collisional partners 
       call read_collisions(iequal)
@@ -195,6 +180,21 @@ contains
       	write(6, "(' *** T = ',F10.2,' is a bit much!')") T
 	      goto 1
       end if
+      
+ !     Load molecular data:		
+      call data(error)
+      if (error) return
+      
+!     Test whether the desired number of levels is larger than the number of tabulated levels
+      if (n .gt. N_max) then
+      	WRITE (16,"(/,' *** Cannot specify N_levels = ', I3,/,&
+                &' *** Maximum allowed for ',a,' is ',I3)") n, s_mol(1:size(s_mol)), N_max
+			OPT = 'number of levels of'
+			str = s_mol(1:size(s_mol))
+			error = error_message(opt,str)
+			return
+      endif
+
       
 !       temp  = rdinp(iequal,15)
       
@@ -474,7 +474,7 @@ contains
 !     optionally add dust radiation
 		tau_d = 1.		
 		do while (tau_d.gt.0.)
-      	tau_d = rdinp(iequal,15)         
+      	tau_d = rdinp(iequal,15)      	
          if(tau_d .gt. 0) then
          	T_d   = rdinp(iequal,15)
          	call rdinps2(iequal,15,str,L,UCASE)

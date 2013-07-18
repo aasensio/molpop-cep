@@ -76,7 +76,7 @@
         energy in GHz              = on
         energy in K                = off
         Einstein coefficients A_ij = on
-        collision rates C_ij       = off
+        collision rates C_ij       = on
       Stop after printing molecular data = off
 
       Messages from NEWTON (off or on) = on

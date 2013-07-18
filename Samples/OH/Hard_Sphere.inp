@@ -18,7 +18,8 @@
       Velocity = 1 km/sec (linewidth for slab)
       dlogV/dlogr = 1.0 (in effect only for LVG)
       overlap = off            
-      Include maser saturation = no      
+      Include maser saturation = no
+      Dust absorption = 0
       
 
       Optional External Radiation:

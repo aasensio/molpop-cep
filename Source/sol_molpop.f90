@@ -23,7 +23,7 @@ contains
 	LOGICAL ERROR,LINEAR
 
       SUMW = VSUM(WE,N)
-
+      
 ! DECREASING STRATEGY. LOOK FOR A RADIUS THAT GIVES ALL OPACITIES LARGER THAN A THRESHOLD
 ! ASSUME THAT THE POPULATIONS ARE IN LTE
       IF (KTHICK.EQ.1) THEN
@@ -506,7 +506,7 @@ contains
       
       allocate(p(num,num))
 		allocate(dp(num,num,num))
-		
+				
       DO I = 1,N
          F(I) = 0.
          DO J = 1,N
@@ -541,7 +541,7 @@ contains
          END IF
 !
 !        COLLISIONS:
-!
+!			
          IF (.NOT.LINEAR) THEN
            RATE = ISN*C(UP,LOW)*(X(UP)-X(LOW))
            F(K) = F(K) + RATE

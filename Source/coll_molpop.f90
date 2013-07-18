@@ -187,7 +187,7 @@ contains
          	c(i,j)=0.0
         	end do
       end do
-
+		
       do l=1,n_col      	
       	select case (i_col_src(l))
       		case(1)
@@ -199,6 +199,7 @@ contains
 			end select
 			
       end do
+      
       return
 	end subroutine loadcij
 
