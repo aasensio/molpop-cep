@@ -66,7 +66,7 @@ implicit none
 	real(kind=8) :: NHarray
 	character*60 T_tag
 	character*80 ver  
-	ver = '*** MOLPOP-CEP  May 16, 08 ***'
+	ver = '*** MOLPOP-CEP  July 23, 2013 ***'
 !
 !        code uses the input method of DUSTY 
 !        the file mol.inp contains a list of molecule specific input files
@@ -118,8 +118,8 @@ implicit none
       call attach2(apath, '.out', fn_out)
       call attach2(apath, '.plot', fn_sum)
       open(16, file=fn_out, status='unknown')
-      write(6,'('' working on '',a)') fn_out(1:size(fn_out))
-      write(16,'(10x,a)') ver(1:size(ver))
+      write(6,'('' working on '',a)') fn_out(1:fsize(fn_out))
+      write(16,'(10x,a)') ver(1:fsize(ver))
       quit = .false.
       call input(quit)
       

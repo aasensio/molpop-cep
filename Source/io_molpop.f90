@@ -122,7 +122,7 @@ contains
 ! Now it's safe to attach the directory to the molecule name 
 !
       call attach2(trim(adjustl(path_database))//'/',mol_name,str)
-      mol_name = str(1: size(str))
+      mol_name = str(1: fsize(str))
       
 !     the number of levels to be used
       n = rdinp(iequal,15)
@@ -192,7 +192,7 @@ contains
 				   										   
 	   if (int(T) > 10000) then
       	write(6, "(' *** T = ',F10.2,' is a bit much!')") T
-	      goto 1
+! 	      goto 1
       end if
       
  !     Load molecular data:		
@@ -202,9 +202,9 @@ contains
 !     Test whether the desired number of levels is larger than the number of tabulated levels
       if (n .gt. N_max) then
       	WRITE (16,"(/,' *** Cannot specify N_levels = ', I3,/,&
-                &' *** Maximum allowed for ',a,' is ',I3)") n, s_mol(1:size(s_mol)), N_max
+                &' *** Maximum allowed for ',a,' is ',I3)") n, s_mol(1:fsize(s_mol)), N_max
 			OPT = 'number of levels of'
-			str = s_mol(1:size(s_mol))
+			str = s_mol(1:fsize(s_mol))
 			error = error_message(opt,str)
 			return
       endif
@@ -221,9 +221,9 @@ contains
          write(unit,"(6x,'Number of levels = ',I2)")n
          if (trim(adjustl(file_physical_conditions)) == 'none') then
          	write(unit,'(6x,a,f6.1,a)') 'Tgas = ',T, ' K'
-         	write(unit,'(6x,a,1pe9.2,a)') 'n_H2 = ',nh2, ' cm-3'
-         	write(unit,'(6x,3a,1pe9.2)') 'n_', s_mol(1:size(s_mol)),'/n_H2 = ',xmol
-         	write(unit,'(6x,3a,1pe9.2,a)') 'n_',s_mol(1:size(s_mol)),' = ', nmol, ' cm-3'
+         	write(unit,'(6x,a,1pe9.2,a)') 'n_tot = ',nh2, ' cm-3'
+         	write(unit,'(6x,3a,1pe9.2)') 'n_', s_mol(1:fsize(s_mol)),'/n_tot = ',xmol
+         	write(unit,'(6x,3a,1pe9.2,a)') 'n_',s_mol(1:fsize(s_mol)),' = ', nmol, ' cm-3'
          endif
       end do
             
@@ -291,42 +291,42 @@ contains
         	kbeta = 3			
         	WRITE (16,"(6x,'Coupled escape probability with Newton')")
         	if (i_sum .eq. 1) WRITE (17,"(6x,'Coupled escape probability with Newton')")
-        	IF (V.GT.VT) THEN
-	     		WRITE (16,"(6X,'Using Entered Doppler Width = ',F5.1,' km/s')") V
-	  			if (i_sum .eq. 1)WRITE (17,"(6X,'Using Entered Doppler Width = ',F5.1,' km/s')") V
-	   	ELSE
-           	V = VT
-	     		WRITE (16,"(6X,'Using Thermal Doppler Width = ',F5.1,' km/s')") V
-	  			if (i_sum .eq. 1)WRITE (17,"(6X,'Using Thermal Doppler Width = ',F5.1,' km/s')") V
-	   	END IF
-	   	write(16,"(6x,'FWHM = ',f5.1,' km/s')")V*1.665
-	   	if (i_sum .eq. 1)write(17,"(6x,'Full Width half-max = ',f5.1,' km/s')")V*1.665
+!         	IF (V.GT.VT) THEN
+! 	     		WRITE (16,"(6X,'Using Entered Doppler Width = ',F5.1,' km/s')") V
+! 	  			if (i_sum .eq. 1)WRITE (17,"(6X,'Using Entered Doppler Width = ',F5.1,' km/s')") V
+! 	   	ELSE
+!            	V = VT
+! 	     		WRITE (16,"(6X,'Using Thermal Doppler Width = ',F5.1,' km/s')") V
+! 	  			if (i_sum .eq. 1)WRITE (17,"(6X,'Using Thermal Doppler Width = ',F5.1,' km/s')") V
+! 	   	END IF
+! 	   	write(16,"(6x,'FWHM = ',f5.1,' km/s')")V*1.665
+! 	   	if (i_sum .eq. 1)write(17,"(6x,'Full Width half-max = ',f5.1,' km/s')")V*1.665
 		ELSE IF(kbeta == 4) THEN        		
         	WRITE (16,"(6x,'Coupled escape probability with ALI')")
         	if (i_sum .eq. 1) WRITE (17,"(6x,'Coupled escape probability with ALI')")
-        	IF (V.GT.VT) THEN
-	     		WRITE (16,"(6X,'Using Entered Doppler Width = ',F5.1,' km/s')") V
-	  			if (i_sum .eq. 1)WRITE (17,"(6X,'Using Entered Doppler Width = ',F5.1,' km/s')") V
-	   	ELSE
-           	V = VT
-	     		WRITE (16,"(6X,'Using Thermal Doppler Width = ',F5.1,' km/s')") V
-	  			if (i_sum .eq. 1)WRITE (17,"(6X,'Using Thermal Doppler Width = ',F5.1,' km/s')") V
-	   	END IF
-	   	write(16,"(6x,'FWHM = ',f5.1,' km/s')")V*1.665
-	   	if (i_sum .eq. 1)write(17,"(6x,'Full Width half-max = ',f5.1,' km/s')")V*1.665
+!         	IF (V.GT.VT) THEN
+! 	     		WRITE (16,"(6X,'Using Entered Doppler Width = ',F5.1,' km/s')") V
+! 	  			if (i_sum .eq. 1)WRITE (17,"(6X,'Using Entered Doppler Width = ',F5.1,' km/s')") V
+! 	   	ELSE
+!            	V = VT
+! 	     		WRITE (16,"(6X,'Using Thermal Doppler Width = ',F5.1,' km/s')") V
+! 	  			if (i_sum .eq. 1)WRITE (17,"(6X,'Using Thermal Doppler Width = ',F5.1,' km/s')") V
+! 	   	END IF
+! 	   	write(16,"(6x,'FWHM = ',f5.1,' km/s')")V*1.665
+! 	   	if (i_sum .eq. 1)write(17,"(6x,'Full Width half-max = ',f5.1,' km/s')")V*1.665
 		ELSE IF(kbeta == 5) THEN        		
         	WRITE (16,"(6x,'Coupled escape probability with NAG-NEWTON')")
         	if (i_sum .eq. 1) WRITE (17,"(6x,'Coupled escape probability with ALI')")
-        	IF (V.GT.VT) THEN
-	     		WRITE (16,"(6X,'Using Entered Doppler Width = ',F5.1,' km/s')") V
-	  			if (i_sum .eq. 1)WRITE (17,"(6X,'Using Entered Doppler Width = ',F5.1,' km/s')") V
-	   	ELSE
-	         V = VT
-	     		WRITE (16,"(6X,'Using Thermal Doppler Width = ',F5.1,' km/s')") V
-	  			if (i_sum .eq. 1)WRITE (17,"(6X,'Using Thermal Doppler Width = ',F5.1,' km/s')") V
-	   	END IF
-	   	write(16,"(6x,'FWHM = ',f5.1,' km/s')")V*1.665
-	   	if (i_sum .eq. 1)write(17,"(6x,'Full Width half-max = ',f5.1,' km/s')")V*1.665
+!         	IF (V.GT.VT) THEN
+! 	     		WRITE (16,"(6X,'Using Entered Doppler Width = ',F5.1,' km/s')") V
+! 	  			if (i_sum .eq. 1)WRITE (17,"(6X,'Using Entered Doppler Width = ',F5.1,' km/s')") V
+! 	   	ELSE
+! 	         V = VT
+! 	     		WRITE (16,"(6X,'Using Thermal Doppler Width = ',F5.1,' km/s')") V
+! 	  			if (i_sum .eq. 1)WRITE (17,"(6X,'Using Thermal Doppler Width = ',F5.1,' km/s')") V
+! 	   	END IF
+! 	   	write(16,"(6x,'FWHM = ',f5.1,' km/s')")V*1.665
+! 	   	if (i_sum .eq. 1)write(17,"(6x,'Full Width half-max = ',f5.1,' km/s')")V*1.665
 		ELSE
 	   	OPT = 'escape probability'
 	   	error = error_message(opt,str)
@@ -380,6 +380,9 @@ contains
         	return
       end if
       
+! Test whether we want dust absorption
+		call rdinps2(iequal,15,dustFile,LdustFile,Nocase)
+		
 ! Test whether we want dust absorption
 		dustAbsorption = rdinp(iequal,15)
                         
@@ -1109,11 +1112,19 @@ contains
 !     Attach original Summary to Output file
 		unit = 16
       write(unit,"(/T35,'SUMMARY')")
-      write(unit,FMT='(/6x,A,8x,A,3x,A,5x,A,3X,A,/6x,A,10x,A,8x,A,5x,A)') &
+!       write(unit,FMT='(/6x,A,8x,A,3x,A,5x,A,3X,A,/6x,A,10x,A,8x,A,5x,A)') &
+!       	&'R','H2 column','mol column','emission',&
+! 	   	&'xi','cm','cm-2','cm-2','erg/s/mol'
+! 		do i = n1, n2, dn
+!       	write(unit,'(6(1pe12.3))') (final(k,i), k = 1,5)
+!       end do
+	   	
+! xi is not anymore output (A. Asensio Ramos 23/07/2013)
+	   write(unit,FMT='(/6x,A,8x,A,3x,A,5x,A,3X,/6x,A,10x,A,8x,A,5x,A)') &
       	&'R','H2 column','mol column','emission',&
-	   	&'xi','cm','cm-2','cm-2','erg/s/mol'
+	   	&'cm','cm-2','cm-2','erg/s/mol'
       do i = n1, n2, dn
-      	write(unit,'(6(1pe12.3))') (final(k,i), k = 1,5)
+      	write(unit,'(6(1pe12.3))') (final(k,i), k = 1,4)
       end do
       
       if(n_tr .eq. 0) return

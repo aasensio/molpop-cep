@@ -18,6 +18,7 @@
       dlogV/dlogr = 1. (in effect only for LVG)
       overlap = off                        
       Include maser saturation = yes      
+      Dust properties file = DataBase/dustISM.dat
       Dust absorption = 0
       
       
@@ -75,7 +76,7 @@ PRINT CONTROL PARAMATERS
 
       Messages from NEWTON (off or on) = off
       Messages from step-size selector (off or on) = on
-      Printing output for initial guess (off or on) = off
+      Printing output for initial guess (off or on) = on
 
       information on each step (off or on)= on
       print detailed populations (off or on) = off

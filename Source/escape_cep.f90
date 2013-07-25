@@ -904,11 +904,19 @@ contains
 			endif
 			p = -fvec
 			
-			allocate(indx(n))
-			tol = 1.d-10
-			call ludcmp(fjac,indx,tol)
-			call lubksb(fjac,indx,p)
-			deallocate(indx)
+			if (n <= 1000) then
+! Use LU decomposition
+				allocate(indx(n))
+				tol = 1.d-10
+				call ludcmp(fjac,indx,tol)
+				call lubksb(fjac,indx,p)
+				deallocate(indx)
+				
+			else
+! Use BiCGStab			
+				call bicgstab(fjac,p)
+			
+			endif
 		              
 			errx=0.d0  ! Check root convergence.
 			!x = x + p

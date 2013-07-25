@@ -51,7 +51,7 @@ contains
         		gxsec(i) = rdinp(iequal,15)
         	
           	i_col_src(i) = 1
-          	L = size(fn_kij(i))
+          	L = fsize(fn_kij(i))
           	
 !       Read collision tables from file: collision_tables.dat
 ! 				inquire(file=trim(adjustl(path_database))//'/Coll/collision_tables.dat',&
@@ -109,7 +109,7 @@ contains
           	
 ! Attach the directory name to the collision info file name
         		call attach2(trim(adjustl(path_database))//'/Coll/',fn_kij(i)(1:L),str)
-        		L = size(str)
+        		L = fsize(str)
         		fn_kij(i)(1:L) = str(1:L)
         		
         		inquire(file=fn_kij(i)(1:L),exist=stat)
@@ -127,7 +127,7 @@ contains
 				gxsec(i) = rdinp(iequal,15)
          	i_col_src(i) = 2
           	write(16,"(8x,'Collision rates from SiO ro-vibrational')")
-          	L = size(fn_kij(i))          	
+          	L = fsize(fn_kij(i))          	
             i_col_exsub(i) = 1	      	
 	      	fn_kij(i) = 'SiO_H2.kij'
             write(16,"(8x,'SiO-H2: theory of Bieniek & Green 1983, ApJ 265, L29',/,8x,&
@@ -139,7 +139,7 @@ contains
           	
 ! Attach the directory name to the collision info file name
         		call attach2(trim(adjustl(path_database))//'/Coll/',fn_kij(i)(1:L),str)
-        		L = size(str)
+        		L = fsize(str)
         		fn_kij(i)(1:L) = str(1:L)
         		
 			else if(Method(1:LMeth) .eq. 'HARD_SPHERE') then				
@@ -258,7 +258,7 @@ contains
 
       if(t .le. temp(1)) then
 	  		write(16,"(4x,'*** T =',f6.1,' K is below the values tabulated in ',a)")&
-	  			T,filename(1:size(filename))
+	  			T,filename(1:fsize(filename))
         	kk=1
         	f2=0.0
         	if(i_extrap .eq. 1) then
@@ -271,7 +271,7 @@ contains
 	  		end if
       else if(t .ge. temp(ntemp)) then
 	  		write(16,"(/,4x,'*** T =',f6.1,' K is above the values tabulated in ',a)")&
-	  			T,filename(1:size(filename))
+	  			T,filename(1:fsize(filename))
         	kk=ntemp-1
         	f1=0.0
         	if(i_extrap .eq. 1) then

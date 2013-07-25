@@ -1,7 +1,7 @@
 * Sample run for OH with Offer et al collision rates
 * These lines are echoed in the output because they start with a '*'
 * Instructions for data input are found at the end of the input file
-		Method (LVG, slab, CEP-NEWTON, CEP-NAG or CEP-ALI) = slab
+		Method (LVG, slab, LVGPP, CEP) = slab
       Molecule = OH
       Data directory = DataBase      
       Number of energy levels = 24
@@ -25,6 +25,7 @@
       dlogV/dlogr = 1 (in effect only for LVG)
       overlap = on              
       Include maser saturation = yes
+      Dust properties file = DataBase/dustISM.dat
       Dust absorption = 0
       
 

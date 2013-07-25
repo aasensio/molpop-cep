@@ -20,6 +20,7 @@
       dlogV/dlogr = 1.0 (in effect only for LVG)
       overlap = off      
       Include maser saturation = no      
+      Dust properties file = DataBase/dustISM.dat
       Dust absorption = 0
       
 

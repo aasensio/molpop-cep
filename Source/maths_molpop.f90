@@ -768,13 +768,13 @@ SUBROUTINE OPTDEP(X)
     1 return
       end function inmax
 
-      integer function size(string)
+      integer function fsize(string)
 !     returns the length of left-aligned string different from ' '
       implicit none
       character*(*) string
-	size = inmax(string)
+	fsize = inmax(string)
     1 return
-      end function size
+      end function fsize
 
       subroutine clear_string(nn,string)
 !     fills a character array with ' '
@@ -1476,6 +1476,66 @@ SUBROUTINE OPTDEP(X)
       return
       end function plexp
 		
+		! Read a file and return the tabulation of this file at the wavelength positions wl(i,j)
+		subroutine interpolateExternalFile(fileName, wl, out)
+		implicit none
+		character(len=168) :: fileName
+		character(len=512) :: buff
+		real(kind=8) :: wl(:,:), out(:,:), f1, f2
+		real(kind=8), allocatable :: w(:), F(:)
+		integer :: stat, i, Nin, nx, ny, j, k
+		
+			nx = size(wl,1)
+			ny = size(wl,2)
+			
+			inquire(file=trim(adjustl(fileName)),exist=stat)
+			if (.not.stat) then
+				print *, 'Error when opening file ', fileName
+				stop
+			endif
+			
+			open(10,file=trim(adjustl(fileName)), status='old')
+! 120 		write(16,"(4x,'*** File ',a,' is missing!')") trim(adjustl(fileName))	
+
+
+! First count the number of lines of the file
+			Nin = 0
+			do while(.true.)
+				read(10,*, end=2)
+				Nin = Nin + 1
+			enddo
+2     	continue
+
+			allocate(w(Nin))
+			allocate(F(Nin))
+			
+			rewind(10)
+
+			Nin = 1
+			do while(.true.)
+				read(10,*, end=1) w(Nin), F(Nin)
+				Nin = Nin + 1
+			end do
+1			Nin = Nin - 1
+			close(10)
+			
+			do i = 1, nx
+				do j = 1, ny
+!            interpolate between the tabulation elements
+             	k=1
+             	if (wl(i,j) /= 0) then
+						do while(.not.(wl(i,j) >= w(k) .and. wl(i,j) <= w(k+1)))
+							k = k+1
+						enddo
+						f2 = (wl(i,j)-w(k))/(w(k+1)-w(k))
+						f1 = 1.0-f2
+						out(i,j) = F(k)*f1+F(k+1)*f2
+					endif
+             enddo
+          enddo
+			
+			deallocate(w,F)
+		end subroutine interpolateExternalFile
 		
 	subroutine dust_rad(Td,tau_d,str,L)
 !     calculates radiation properties, occupation numbers
@@ -1490,14 +1550,18 @@ SUBROUTINE OPTDEP(X)
 !         Lockett et al, 1999, ApJ, 511, 235
 !         dtable is an interpolating subroutine for Draine-Lee X-sections
 !
-      call dtable(98,8,98) 
+!       call dtable(98,8,98) 
+      
+      call interpolateExternalFile(dustFile, wl, rad)      
             
       do i=2, n
          do j=1, i-1
 !            wavelen=wl(i,j)
 !           now interpolate the Draine-Lee X-sections
-            draine=fnewt(98,8,6,wl(i,j),98)   
-            taulamb=tau_d*draine
+!             draine=fnewt(98,8,6,wl(i,j),98)             
+!             taulamb=tau_d*draine
+            taulamb=tau_d*rad(i,j)
+            rad(i,j) = 0.d0
 	      	rad(i,j)=rad(i,j)+(1.0-dexp(-taulamb))*plexp(tij(i,j)/Td)
 								
 ! Coming from the left
@@ -1521,7 +1585,7 @@ SUBROUTINE OPTDEP(X)
 					rad_internal(i,j) = rad_internal(i,j) + (1.0-dexp(-taulamb))*plexp(tij(i,j)/Td)
 				endif
 	     enddo
-      end do
+      end do            
       
       return
       end subroutine dust_rad
@@ -1538,13 +1602,13 @@ SUBROUTINE OPTDEP(X)
 		character*168 fname
 		logical error, stat
 
-		inquire(file=fname(1:size(fname)),exist=stat)
+		inquire(file=fname(1:fsize(fname)),exist=stat)
       if (.not.stat) then
-      	print *, 'Error when opening file ', fname(1:size(fname))
+      	print *, 'Error when opening file ', fname(1:fsize(fname))
       	stop
       endif
       
-      open(10,err=120, file=fname(1:size(fname)), status='old')
+      open(10,err=120, file=fname(1:fsize(fname)), status='old')
       do i = 1,4
         read(10,'(a)') buff
       end do
@@ -1640,7 +1704,7 @@ SUBROUTINE OPTDEP(X)
 		deallocate(F)
 !	stop
 		return
-  120 write(16,"(4x,'*** File ',a,' is missing!')") fname(1:size(fname))
+  120 write(16,"(4x,'*** File ',a,' is missing!')") fname(1:fsize(fname))
       error = .true.
       if (allocated(w)) deallocate(w)
 		if (allocated(F)) deallocate(F)
@@ -1653,13 +1717,13 @@ SUBROUTINE OPTDEP(X)
       integer l,m,k,i,j,isub
       logical :: stat
       
-      inquire(file='dust.dat',exist=stat)
+      inquire(file=dustFile(1:LdustFile),exist=stat)
       if (.not.stat) then
-      	print *, 'Error when opening file dust.dat'
+      	print *, 'Error when opening file ', dustFile(1:LdustFile)
       	stop
       endif
       
-      open(9, err=830, file='dust.dat', status='old')
+      open(9, err=830, file=dustFile(1:LdustFile), status='old')
       do i=1,98
 	read(9,*) xa(i), ya(i)
       end do

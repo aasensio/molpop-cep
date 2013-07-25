@@ -87,8 +87,9 @@ implicit none
 	
 	real(kind=8) :: mu_output
 	
-	character(len=168) :: file_physical_conditions
+	character(len=168) :: file_physical_conditions, dustFile
 	character(len=20) :: auxiliary_functions
+	integer :: LdustFile
 	
 	
 end module global_molpop

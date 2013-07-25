@@ -501,7 +501,7 @@ contains
 				intensity = intensity + Sl(ip) * (e1-e2)
 			enddo
 			
-			write(16,FMT='(I4,2X,I4,5X,E13.5,5X,E13.5,5X,E13.5,5X,E13.5)') up, low, &
+			write(16,FMT='(I4,2X,I4,5X,1PE13.5,5X,1PE13.5,5X,1PE13.5,5X,1PE13.5)') up, low, &
 				tau(it,nz), flux_total(it+nr*(nz-1)) * 4.d0*PI, col_up / col_low,&
 				intensity
 				
@@ -518,7 +518,7 @@ contains
 			ipl = nl * (ip-1)
 			write(31,FMT='(A,I4)') 'Zone ', ip			
 			do ii = 1, nl
-				write(31,FMT='(I4, 3(2X,E12.5))') ii, pop(ii+ipl), pop(ii+ipl)/popl(ii+ipl),&
+				write(31,FMT='(I4, 3(2X,1PE12.5))') ii, pop(ii+ipl), pop(ii+ipl)/popl(ii+ipl),&
 					popl(ii+ipl)
 			enddo
 		enddo
@@ -541,7 +541,7 @@ contains
 			
 ! Output in velocity [km/s] and emergent flux
 			do j = 1, 100
-				write(32,FMT='(5(2X,E12.5))') freq_axis(j) / dtran(2,it) * PC / 1.d5, (flux_out(k,j),k=1,3)
+				write(32,FMT='(5(2X,1PE12.5))') freq_axis(j) / dtran(2,it) * PC / 1.d5, (flux_out(k,j),k=1,3)
 			enddo
 		enddo
 				

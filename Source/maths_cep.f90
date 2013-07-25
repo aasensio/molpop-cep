@@ -786,5 +786,57 @@ contains
 	enddo
 	
 	end subroutine gauleg
+	
+! ---------------------------------------------------------
+! This subroutine solves a linear system of equations using a BiCGStab iterative method
+! ---------------------------------------------------------		  
+	subroutine bicgstab(a,b)
+	real(kind=8), INTENT(INOUT) :: a(:,:), b(:)
+	real(kind=8) :: x(size(b)), r(size(b)), rhat(size(b)), p(size(b)), phat(size(b)), v(size(b))
+	real(kind=8) :: s(size(b)), shat(size(b)), t(size(b)), delta(size(b))
+	real(kind=8) :: rho, rho_ant, alpha, beta, omega, relative
+	integer :: i
+		
+		alpha = 0.d0
+		omega = 0.d0
+! Initial solution
+		x = 1.d0
+	
+		r = b - matmul(A,x)
+		rhat = r
+		rho = 1.d0
+		relative = 1.d10
+		i = 1
+		do while (relative > 1.d-10)
+			rho_ant = rho
+			rho = sum(rhat*r)
+			if (rho == 0) then 
+				stop
+			endif
+			if (i == 1) then
+				p = r
+			else
+				beta = (rho/rho_ant) * (alpha/omega)
+				p = r + beta * (p - omega * v)
+			endif
+			phat = p
+			v = matmul(A,phat)
+			alpha = rho / sum(rhat*v)
+			s = r - alpha * v
+
+			shat = s
+			t = matmul(A,shat)
+			omega = sum(t*s)/sum(t*t)
+			delta = alpha * p + omega * s
+			relative = maxval(abs(delta) / x)
+			x = x + delta		
+			r = s - omega * t
+			i = i + 1
+		enddo	
+		
+		b = x
+		  
+	end subroutine bicgstab	
+
 
 end module maths_cep

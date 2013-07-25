@@ -236,7 +236,8 @@ contains
 	subroutine atph(reset)
 	logical :: reset, stat
 	integer :: i, j, k, npoints_local, loop, which_largest
-	real(kind=8) :: factor, temp1, temp2, temp3, deltaz, vth
+	real(kind=8) :: temp1, temp2, temp3, deltaz, vth
+	integer :: factor
 	real(kind=8), allocatable :: temperature_temp(:)
 	real(kind=8), allocatable :: nh_temp(:), abund_temp(:), linewidth_temp(:)
 	real(kind=8), allocatable :: dz_temp(:)
@@ -901,8 +902,7 @@ contains
 		poptot = factor_abundance * abundance(ip) * nh(ip)
 		B(nl) = poptot
 		
-! Solve the linear system
-		
+! Solve the linear system				
 		allocate(indx(nl))
 		tol = 1.d-10
 		call ludcmp(A,indx,tol)
