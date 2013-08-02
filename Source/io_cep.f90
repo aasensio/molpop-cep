@@ -407,7 +407,7 @@ contains
 			low = itran(2,i)
 			write(16,FMT='(I3,2X,I3,2X,F12.6,2X,E13.6,3X,A)') itran(1,i), itran(2,i), &
 				dtran(2,i)/1.d9,&
-				dtran(1,i)*(pi8c2*dtran(2,i)**2)*(dlevel(2,up)/dlevel(2,low)), selected
+				dtran(1,i)*(pi8c2*dtran(2,i)**2)/(dlevel(2,up)/dlevel(2,low)), selected							
 		enddo
 				
 		write(16,*)		

@@ -8,10 +8,10 @@
 %
 %Samples/OH/Offer_rates
 %Samples/C+/C+
-Samples/SiO/SiO
+%Samples/SiO/SiO
 %Samples/H2O/para
 %Samples/H2O/ortho
 %Samples/OH/Hard_Sphere
-%Samples/CO/Flower_rates_const
+Samples/CO/Flower_rates_const
 %Samples/CO/Flower_rates
 % end of file
