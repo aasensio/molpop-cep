@@ -147,7 +147,9 @@ SUBROUTINE OPTDEP(X)
       INTEGER INIT,I,J
       DATA INIT/0/
 
-      X = TAUIN
+! The expressions for the LVG escape probability are in terms of tau_integrated and
+! we are working with line center optical depth
+      X = TAUIN * ROOTPI
 !     EPS=1
       IF (EPS.EQ.1.) THEN
            IF (DABS(X).LT.1.E-4) THEN
@@ -1483,7 +1485,8 @@ SUBROUTINE OPTDEP(X)
 		character(len=512) :: buff
 		real(kind=8) :: wl(:,:), out(:,:), f1, f2
 		real(kind=8), allocatable :: w(:), F(:)
-		integer :: stat, i, Nin, nx, ny, j, k
+		integer :: i, Nin, nx, ny, j, k
+		logical :: stat
 		
 			nx = size(wl,1)
 			ny = size(wl,2)
@@ -1524,12 +1527,19 @@ SUBROUTINE OPTDEP(X)
 !            interpolate between the tabulation elements
              	k=1
              	if (wl(i,j) /= 0) then
-						do while(.not.(wl(i,j) >= w(k) .and. wl(i,j) <= w(k+1)))
-							k = k+1
-						enddo
-						f2 = (wl(i,j)-w(k))/(w(k+1)-w(k))
-						f1 = 1.0-f2
-						out(i,j) = F(k)*f1+F(k+1)*f2
+						if (wl(i,j) < w(1)) then
+							out(i,j) = F(1)
+						else if (wl(i,j) > w(Nin)) then
+							out(i,j) = F(Nin)
+						else 
+						
+							do while(.not.(wl(i,j) >= w(k) .and. wl(i,j) <= w(k+1)))
+								k = k+1
+							enddo
+							f2 = (wl(i,j)-w(k))/(w(k+1)-w(k))
+							f1 = 1.0-f2
+							out(i,j) = F(k)*f1+F(k+1)*f2
+						endif
 					endif
              enddo
           enddo

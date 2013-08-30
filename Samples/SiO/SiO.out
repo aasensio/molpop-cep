@@ -9,8 +9,8 @@
       Molecule --- SiO_vib
       Number of levels = 80
       Tgas = 1200.0 K
-      n_H2 =  1.00E+09 cm-3
-      n_SiO_vib/n_H2 =  1.00E-04
+      n_tot =  1.00E+09 cm-3
+      n_SiO_vib/n_tot =  1.00E-04
       n_SiO_vib =  1.00E+05 cm-3
       NO LINE OVERLAP USED
       Thermal speed =   0.7 km/s
@@ -34,7 +34,7 @@
 
 ***  INITIAL GUESS ***
 
-  R =  0.00E+00cm     H2 column =  0.00E+00cm-2     mol column =  0.00E+00 cm-2
+  R =  0.00E+00cm     H2 column =  1.00E+23cm-2     mol column =  1.00E+17 cm-2
   Total emission =  1.24E-15 erg/s/mol 
   Populations:
       level    x(i)         n(i)       n(i)/n*     T_ex(i,1)     emission     %

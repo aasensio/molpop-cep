@@ -411,8 +411,9 @@ contains
       	allocate(collis_all(n,n,n_zones_slab))
       	do i = 1, n_zones_slab
 
+				print *, i
 ! Read the T and the relative abundance of each collider
-				read(45,*) temp1, temp2, T, temp3, temp4, (fr_col(j),j=1,n_col)
+				read(45,*) temp1, temp2, T, temp3, temp4, (fr_col(j),j=1,n_col)				
 
 ! In case hard sphere collision rates are used, change the thermal velocity				
 				vt = dsqrt(2.0*bk*T/(mol_mass*xmp))
@@ -756,14 +757,16 @@ contains
 !
 		AUX    = (NMOL/V)*CL**3/EITPI
 		
-!  Change slab optical depth to line center (11 March 05)
-
 ! Write intermediate file in case a CEP calculations is being done		
 		if (kbeta > 2) then
 			call generate_intermediate_data
 		endif
 	
-		if (kbeta .eq. 2 .or. kbeta .eq. 0 .or. kbeta .eq. -1) aux = aux/rootpi 
+!  Change slab optical depth to line center (11 March 05)
+		if (kbeta .eq. 2 .or. kbeta .eq. 0 .or. kbeta .eq. -1) then
+			aux = aux/rootpi 
+		endif
+		
       DO I = 2,N
         	DO J = 1,I-1
         		A(I,J)      =  A(I,J)*WE(I) 

@@ -50,6 +50,10 @@ contains
    
 ! KROLIK & McKEE APPROXIMATION   
    	coef = 1.d0/(6.d0*sqrt(3.d0))
+   	
+! CAREFUL!!!!!
+! Note that here we compute tau_linecenter from the input tau, which should then be the integrated optical
+! depth of the line. This is a quite strange way of proceeding.
    	tau = tau_in / dsqrt(PI)
    	if (tau < 1.d-4) then 
 			salida = 1.d0
@@ -341,7 +345,7 @@ contains
 			dchildn = 0.d0
 			up = itran(1,it)
 			low = itran(2,it)
-			sig = dtran(1,it) !sig=(h*nu*Blu)/(4*pi)		
+			sig = dtran(1,it) !sig=(h*nu*Blu)/(4*pi)		  
 			glu = dlevel(2,low) / dlevel(2,up)
 			acon = TWOHC2 * dtran(2,it)**3  !acon = (2*h*nu**3)/c**2
 			Jinternal = dtran(5,it)
@@ -362,6 +366,11 @@ contains
 				
 				B(ip) = acon * glu * popl(up+ipl) / (popl(low+ipl) - glu * popl(up+ipl))
 																	
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! The optical depths that enter into the Krolik & McKee tabulation should be at line center
+! Here we calculate the optical depths integrated on the line, and the 1/sqrt(PI) is inside the
+! beta2 function
+! I know this is not very elegant
          	if (ip == 1) then
 					tau(it,ip) = chil(ip) * dz(ip)
 					dtaudn(ip,:) = dchildn(ip,:) * dz(ip)

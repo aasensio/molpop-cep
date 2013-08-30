@@ -1,4 +1,4 @@
-          *** MOLPOP-CEP  May 16, 08 ***
+          *** MOLPOP-CEP  July 23, 2013 ***
 * Sample run for OH with hard sphere collision rates
 * These lines are echoed in the output because they start with a '*'
 * Instructions for data input are found at the end of the input file
@@ -7,8 +7,8 @@
       Molecule --- OH
       Number of levels = 20
       Tgas =  150.0 K
-      n_H2 =  1.00E+05 cm-3
-      n_OH/n_H2 =  1.00E-05
+      n_tot =  1.00E+05 cm-3
+      n_OH/n_tot =  1.00E-05
       n_OH =  1.00E+00 cm-3
       NO LINE OVERLAP USED
       Thermal speed =   0.4 km/s
@@ -29,17 +29,17 @@
 
                                   SUMMARY
 
-      R        H2 column   mol column     emission   xi
+      R        H2 column   mol column     emission
       cm          cm-2        cm-2     erg/s/mol
-   1.000E+13   1.000E+18   1.000E+13   2.076E-20   2.000E-09
-   1.778E+13   1.778E+18   1.778E+13   2.076E-20   3.557E-09
-   3.162E+13   3.162E+18   3.162E+13   2.076E-20   6.325E-09
-   5.623E+13   5.623E+18   5.623E+13   2.076E-20   1.125E-08
-   1.000E+14   1.000E+19   1.000E+14   2.076E-20   2.000E-08
-   1.778E+14   1.778E+19   1.778E+14   2.076E-20   3.557E-08
-   3.162E+14   3.162E+19   3.162E+14   2.076E-20   6.325E-08
-   5.623E+14   5.623E+19   5.623E+14   2.076E-20   1.125E-07
-   1.000E+15   1.000E+20   1.000E+15   2.076E-20   2.000E-07
+   1.000E+13   1.000E+18   1.000E+13   2.076E-20
+   1.778E+13   1.778E+18   1.778E+13   2.076E-20
+   3.162E+13   3.162E+18   3.162E+13   2.076E-20
+   5.623E+13   5.623E+18   5.623E+13   2.076E-20
+   1.000E+14   1.000E+19   1.000E+14   2.076E-20
+   1.778E+14   1.778E+19   1.778E+14   2.076E-20
+   3.162E+14   3.162E+19   3.162E+14   2.076E-20
+   5.623E+14   5.623E+19   5.623E+14   2.076E-20
+   1.000E+15   1.000E+20   1.000E+15   2.076E-20
 
                     Parameters for selected transitions
 

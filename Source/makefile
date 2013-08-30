@@ -1,6 +1,4 @@
 # Compiler 
-# ifort -> Intel Fortran
-# gfortran -> gfortran
 
 # The following lines are used to choose the compiler
 # We have tested gfortran and ifort
@@ -11,16 +9,19 @@
 #             that the object file is generated, without linking
 # It should be easy to find the equivalent flags in your compiler
 
-# gfortran (comment these lines if you want to use another compiler)
-#COMPILER = gfortran
-#FLAGS = -x f95-cpp-input
-#OPTIONS = -c
- 
-# ifort (comment these lines if you want to use another compiler)
 COMPILER = ifort
-FLAGS = -fpp
-OPTIONS = -c -O3 
-	
+#COMPILER = gfortran
+
+ifeq ($(COMPILER),ifort)
+	FLAGS = -fpp
+	OPTIONS = -c -O3
+endif
+
+ifeq ($(COMPILER),gfortran)
+        FLAGS = -x f95-cpp-input
+        OPTIONS = -c -O3
+endif
+ 
 
 # Use "YES" if NAG library is available
 # Otherwise, use "NO"

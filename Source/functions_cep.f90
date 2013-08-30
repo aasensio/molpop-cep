@@ -362,8 +362,8 @@ contains
 !-----------------------------------------------------------------		
 	subroutine grid(reset)
 	logical :: reset, stat
-	real(kind=8) :: deltaz, ztemp, tautemp, tau0, factor
-	integer :: i, j, npoints_local, loop, which_largest
+	real(kind=8) :: deltaz, ztemp, tautemp, tau0
+	integer :: i, j, npoints_local, loop, which_largest, factor
 	real(kind=8), allocatable :: dz_temp(:), dz_old(:)
 		
 ! Constant physical conditions
