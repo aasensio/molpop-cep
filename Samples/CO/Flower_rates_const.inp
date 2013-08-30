@@ -49,7 +49,7 @@
 
 	 Solution method (NEWTON/ALI, non-important for single-zone) = NEWTON
 	 Accuracy in solution of the equations               = 1.0e-3
-    Maximum number of iterations to solve               = 50
+    Maximum number of iterations to solve               = 150
     
     Solution strategy = increasing 
        start with all optical depths less than tau_m = 1

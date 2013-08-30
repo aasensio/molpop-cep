@@ -10,7 +10,7 @@
 # It should be easy to find the equivalent flags in your compiler
 
 COMPILER = ifort
-#COMPILER = gfortran
+COMPILER = gfortran
 
 ifeq ($(COMPILER),ifort)
 	FLAGS = -fpp
@@ -19,7 +19,7 @@ endif
 
 ifeq ($(COMPILER),gfortran)
         FLAGS = -x f95-cpp-input
-        OPTIONS = -c -O3
+        OPTIONS = -c 
 endif
  
 
