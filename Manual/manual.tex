@@ -722,7 +722,9 @@ and the line emission (erg/s/mol). If the transition is inverted, the last
 quantity is listed as zero. Instead, the output lists quantities relevant for
 the standard, phenomenological maser model \citep[see][]{elitzur92}: The
 inversion efficiency, pump rate for each level, loss rate for each level and
-their average.
+their average. Note that all optical depths in the outputs are at line
+center, so that if you want the total optical depth, you have to multiply
+it by $\sqrt{\pi}$.
 
 
 The input file \texttt{fname.inp} produces the output file \texttt{fname.out}in

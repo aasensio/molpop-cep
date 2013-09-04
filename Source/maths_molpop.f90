@@ -73,6 +73,8 @@ SUBROUTINE OPTDEP(X)
 !     SLAB ESCAPE ESCAPE PROBABILITY AND ITS DERIVATIVE
 !     WITH RESPECT TO TAU
 !     BASED ON KROLIK AND MCKEE, AP. J. SUPP. 37, P459 (1978)
+! Since Krolik & McKee expressions are written in terms of line center optical depth
+! we do not have to modify it
 !
       use global_molpop
       DOUBLE PRECISION X,TAUIN,BETA,DBDX
@@ -148,7 +150,7 @@ SUBROUTINE OPTDEP(X)
       DATA INIT/0/
 
 ! The expressions for the LVG escape probability are in terms of tau_integrated and
-! we are working with line center optical depth
+! we are working with line center optical depth. Make the change internally in this routine
       X = TAUIN * ROOTPI
 !     EPS=1
       IF (EPS.EQ.1.) THEN

@@ -449,7 +449,7 @@ contains
 			total_radius, '    -  nzones: ', nz
 		write(16,*) '*******************************************************************************'
 		
-		write(16,FMT='(1X,A,F6.3,A)') ' up    low     optical depth        cooling         N(up)/N(low)    I_center(mu=',&
+		write(16,FMT='(1X,A,F6.3,A)') ' up    low     tau (line center)     cooling         N(up)/N(low)    I_center(mu=',&
 			mu_output,')'
 
 		allocate(Slte(nz))
@@ -502,7 +502,7 @@ contains
 			enddo
 			
 			write(16,FMT='(I4,2X,I4,5X,1PE13.5,5X,1PE13.5,5X,1PE13.5,5X,1PE13.5)') up, low, &
-				tau(it,nz), flux_total(it+nr*(nz-1)) * 4.d0*PI, col_up / col_low,&
+				tau(it,nz)/sqrt(PI), flux_total(it+nr*(nz-1)) * 4.d0*PI, col_up / col_low,&
 				intensity
 				
 			write(35,FMT='(I4,2X,I4,1X,(1P8E13.5))') up, low, &

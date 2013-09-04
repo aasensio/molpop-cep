@@ -755,17 +755,21 @@ contains
 !    
 !     SCALE RATES WITH WEIGHT FACTORS AND DEFINE THE REST OF CONSTANTS
 !
-		AUX    = (NMOL/V)*CL**3/EITPI
+!  Change slab optical depth to line center (11 March 05)
+! The code is now written always in line center optical depth
+		AUX    = (NMOL/V)*CL**3/EITPI/ROOTPI
 		
-! Write intermediate file in case a CEP calculations is being done		
+! Write intermediate file in case a CEP calculations is being done
+! Doing it before the next loops, we avoid multiplying with quantities that we
+! do not use in the CEP part
 		if (kbeta > 2) then
 			call generate_intermediate_data
 		endif
 	
-!  Change slab optical depth to line center (11 March 05)
-		if (kbeta .eq. 2 .or. kbeta .eq. 0 .or. kbeta .eq. -1) then
-			aux = aux/rootpi 
-		endif
+
+! 		if (kbeta .eq. 2 .or. kbeta .eq. 0 .or. kbeta .eq. -1) then
+! 			aux = aux/rootpi 
+! 		endif
 		
       DO I = 2,N
         	DO J = 1,I-1
@@ -1144,7 +1148,7 @@ contains
             end if
             write(unit,"(5x,'Upper Level: ',a)")ledet(itr(j))
             write(unit,"(5x,'Lower Level: ',a)")ledet(jtr(j))
- 	       	write(unit,"(/5x,'R',7x,'Tex',6x,'tau',5x,'Flux',5x,'eta',7x,'p1',7x,'p2',5x,&
+ 	       	write(unit,"(/5x,'R',7x,'Tex',6x,'tau(lc)',5x,'Flux',5x,'eta',7x,'p1',7x,'p2',5x,&
  	       		&'Gamma1',3x,'Gamma2',4x,'Gamma'/,5x,'cm',7x,'K',16x,'Jy',13x,'cm-3s-1',&
  	       		&2x,'cm-3s-1',3(5x,'s-1 '))") 
             do i = n1, n2, dn
@@ -1167,7 +1171,7 @@ contains
              	end if
              	write(17,"('*',5x,'Upper Level',a33)")ledet(itr(j))
              	write(17,"('*',5x,'Lower Level',a33)")ledet(jtr(j))    
-        			write(17,"(7x,'R',8x,'nmol*R/V',8x,'Tex',8x,'Tau')")
+        			write(17,"(7x,'R',8x,'nmol*R/V',8x,'Tex',8x,'Tau(lc)')")
        			do i = n1, n2, dn
         				write(17,'(4(1pe12.2))')fin_tr(j,1,i),fin_tr(j,1,i)*nmol/V*1.e5,fin_tr(j,2,i),&
         					fin_tr(j,3,i)
@@ -1219,7 +1223,7 @@ contains
 !         find the main cooling lines and print:
          	call ordera(cool,n,index,jndex,nbig)
           	write(16,'(2x,''The top '',i2,'' emitting lines are:''/)') nbig
-          	write(16,"(8x,'i',4x,'j',2x,'wavelength',4x,'tau',4x,'beta',7x,'Tex',6x,&
+          	write(16,"(8x,'i',4x,'j',2x,'wavelength',4x,'tau(lc)',4x,'beta',7x,'Tex',6x,&
           		&'emission',3x,'%')")
           	write(16,'(18x,''micron'',25x,''K'',7x,''erg/s/mol'')')
           	do k = 1, nbig
@@ -1237,7 +1241,7 @@ contains
         	if (nmaser .gt. 0) then
 !         print basic maser output for inverted transitions:
          	write(16,'(/2x,''Inverted lines:''/)')
-          	write(16,'(8x,''i'',4x,''j'',2x,''wavelength'',4x,''tau'',5x,''Tex'',8x,''eta'')')
+          	write(16,'(8x,''i'',4x,''j'',2x,''wavelength'',4x,''tau(lc)'',5x,''Tex'',8x,''eta'')')
           	write(16,"(18x,'micron',15x,'K',/)")
           	do k = 1, nmaser
             	i = imaser(k)
