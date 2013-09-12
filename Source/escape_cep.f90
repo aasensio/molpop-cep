@@ -125,6 +125,11 @@ contains
    	if (escape_prob_algorithm == 0) then
 
    		coef = 1.d0/(6.d0*sqrt(3.d0))
+   		
+! CAREFUL!!!!!
+! Note that here we compute tau_linecenter from the input tau, which should then be the integrated optical
+! depth of the line. The Krolik & McKee expressions are obtained for line center optical depth and we are
+! working outside these routines with the total optical depth of the line
    		tau = tau_in / dsqrt(PI)
 			if (tau < 0.d0) then
 				if (tau < -60.d0) tau = -60.d0

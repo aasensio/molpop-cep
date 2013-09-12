@@ -217,12 +217,12 @@ contains
 			do ip = 1, nz				
 				line_profile = exp(-(freq_axis(i)/dopplerw(it,ip))**2) / sqrt(PI)
 
-! Total flux in the line
+! Flux in the line
 				flux_out(1,i) = flux_out(1,i) + 2.d0 * PI * Sl(ip) * &
 					(expint(3,abs(tau(it,nz)-tau(it,ip))*line_profile) - &
 					expint(3,abs(tau(it,ip)-tau(it,0))*line_profile) + &
 					expint(3,abs(tau(it,ip-1)-tau(it,0))*line_profile) - &
-					expint(3,abs(tau(it,nz)-tau(it,ip-1))*line_profile))
+					expint(3,abs(tau(it,nz)-tau(it,ip-1))*line_profile))									
 
 ! Intensity at mu=1
 				flux_out(2,i) = flux_out(2,i) + Sl(ip) * ( exp(-(tau(it,nz)-tau(it,ip))*line_profile / (1.d0)) - &
