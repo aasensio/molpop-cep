@@ -6,7 +6,7 @@ implicit none
 contains
 
 
-		SUBROUTINE Pass_Header(iunit)
+      SUBROUTINE Pass_Header(iunit)
 !     Get past Header lines of opened file on unit # iunit
 !     The end of headers is marked by a line that contains just ">"
       integer iunit
@@ -17,27 +17,27 @@ contains
       end do
       return
       end subroutine Pass_Header
-      
-      
+
+
       function error_message(opt,str)
-		character(len=128) :: opt, str		
-		integer :: iunit
-		logical :: error_message
-		
-			do iunit = 6,16,10
-        		WRITE (IUNIT,"(/,'*** Terminated because of INPUT error ***',/,&
-        			'    Wrong option for ',a,':  ',a)") trim(adjustl(opt)), trim(adjustl(str))
-        	enddo
-      	error_message = .true.
-      	return
-		end function error_message
-		
-		
-SUBROUTINE OPTDEP(X)
+      character(len=128) :: opt, str
+      integer :: iunit
+      logical :: error_message
+
+      do iunit = 6,16,10
+            WRITE (IUNIT,"(/,'*** Terminated because of INPUT error ***',/,&
+              '    Wrong option for ',a,':  ',a)") trim(adjustl(opt)), trim(adjustl(str))
+      end do
+      error_message = .true.
+      return
+      end function error_message
+
+
+      SUBROUTINE OPTDEP(X)
 !     CALCULATE THE OPTICAL DEPTHS AND ESCAPE PROBABILITIES
       use global_molpop
       INTEGER I,J
-      DOUBLE PRECISION X(N)
+      DOUBLE PRECISION X(N), TAUd
 
       IF (R.EQ.0.) THEN
          DO I = 2, N
@@ -45,7 +45,7 @@ SUBROUTINE OPTDEP(X)
               TAU(I,J) = 0.
               ESC(I,J) = 1.
            END DO
-         END DO 
+         END DO
          RETURN
       END IF
 !
@@ -53,18 +53,22 @@ SUBROUTINE OPTDEP(X)
         DO J = 1, I - 1
           IF (TAUX(I,J).NE.0.) THEN
             TAU(I,J) = R*TAUX(I,J)*(X(J)*GAP(I,J)-X(I))
-            IF(TAU(I,J).LT.0.AND.ASPECT.gt.1.) TAU(I,J)=TAU(I,J)*ASPECT
+            if (dustAbsorption) then
+               TAUd     = R*qdust(I,J)
+               TAU(I,J) = TAU(I,J) + TAUd
+               Xd(I,J)  = TAUd/TAU(I,J)
+            end if
             IF (KBETA.EQ.2) THEN
-					CALL BETA_SLAB(TAU(I,J),ESC(I,J),DBDTAU(I,J))
+               CALL BETA_SLAB(TAU(I,J),ESC(I,J),DBDTAU(I,J))
             ELSEIF (KBETA.EQ.0) THEN
-					CALL BETA_LVG(TAU(I,J),ESC(I,J),DBDTAU(I,J))
-		     ELSEIF (KBETA.EQ.-1) THEN
-					CALL BETA_LVG(3.0*TAU(I,J),ESC(I,J),DBDTAU(I,J))
-					DBDTAU(I,J) = 3.0 * DBDTAU(I,J)
+               CALL BETA_LVG(TAU(I,J),ESC(I,J),DBDTAU(I,J))
+            ELSEIF (KBETA.EQ.-1) THEN
+               CALL BETA_LVG(3.0*TAU(I,J),ESC(I,J),DBDTAU(I,J))
+               DBDTAU(I,J) = 3.0 * DBDTAU(I,J)
             END IF
           END IF
         END DO
-	END DO
+      END DO
 
       RETURN
       END SUBROUTINE OPTDEP
@@ -72,18 +76,19 @@ SUBROUTINE OPTDEP(X)
       SUBROUTINE BETA_SLAB(TAUIN,BETA,DBDX)
 !     SLAB ESCAPE ESCAPE PROBABILITY AND ITS DERIVATIVE
 !     WITH RESPECT TO TAU
-!     BASED ON KROLIK AND MCKEE, AP. J. SUPP. 37, P459 (1978)
-! Since Krolik & McKee expressions are written in terms of line center optical depth
-! we do not have to modify it
+!     BASED ON KROLIK & MCKEE 1978, ApJS 37, 459; eq 11
+!     small- and large-tau expressions are joined at tau = 3.41 instead of 5
+!     Since Krolik & McKee expressions are written in terms of line center optical depth
+!     we do not have to modify it
 !
       use global_molpop
       DOUBLE PRECISION X,TAUIN,BETA,DBDX
       DOUBLE PRECISION B,D,Q,AUX,AUX1,AUX2,COEF
       INTEGER INIT,K
-		save coef
+      save coef
 
       DATA INIT/0/
-    	
+
       IF (INIT.EQ.0) THEN
           COEF = 1./(6.*DSQRT(3.D0))
           INIT = 1
@@ -93,8 +98,8 @@ SUBROUTINE OPTDEP(X)
 !     TAU < 0 - FUDGE FOR INVERTED TRANSITIONS:
       IF (X.LT.0.) THEN
           IF (X.LT.-60.) X=-60.
-          BETA = OMEGA*(1.-DEXP(-X))/X
-          DBDX = OMEGA*(-1.+(1.+X)*DEXP(-X))/(X*X)
+          BETA = (1.-DEXP(-X))/X
+          DBDX = (-1.+(1.+X)*DEXP(-X))/(X*X)
           RETURN
       END IF
 
@@ -116,7 +121,7 @@ SUBROUTINE OPTDEP(X)
           K=1
           D=X*COEF
           B=2.*D
-	    Q=1.
+          Q=1.
           DO WHILE (Q.GT.1.D-3)
              BETA=BETA-D*X
              DBDX=DBDX-B
@@ -124,7 +129,7 @@ SUBROUTINE OPTDEP(X)
              D=-D*X*DSQRT((K+1.D0)/(K+2.D0))*(K-1.D0)/(K*(K+2.D0))
              B=(K+1.)*D
              Q=DABS(B/DBDX)
-	    END DO
+          END DO
           RETURN
 !
 !     TAU > 3.41
@@ -144,8 +149,8 @@ SUBROUTINE OPTDEP(X)
       DOUBLE PRECISION TAUIN,DBDX,BETA
       DOUBLE PRECISION X,Y,X1
       DOUBLE PRECISION B,Q,AUX,AUX1,AUX2,COEF
-	DOUBLE PRECISION E0,E4,E5,E6,F3,P1,P2,P3,P4,P7
-	save E0,E4,E5,E6,F3,P1,P2,P3,P4,P7
+      DOUBLE PRECISION E0,E4,E5,E6,F3,P1,P2,P3,P4,P7
+      save E0,E4,E5,E6,F3,P1,P2,P3,P4,P7
       INTEGER INIT,I,J
       DATA INIT/0/
 
@@ -233,14 +238,14 @@ SUBROUTINE OPTDEP(X)
       END IF
       RETURN
       END SUBROUTINE BETA_LVG
-      
-!***********************************************************
-!***********************************************************
 
 !***********************************************************
 !***********************************************************
 
-	      SUBROUTINE MATIN1 (A,DIM1,N1,DIM2,N2,INDEX,NERROR,DETERM)
+!***********************************************************
+!***********************************************************
+
+        SUBROUTINE MATIN1 (A,DIM1,N1,DIM2,N2,INDEX,NERROR,DETERM)
 !     MATRIX INVERSION SUBROUTINE; ORIGIN UNKNOWN; FIXED TYPE DEFINITIONS
 !
 !     MATRIX INVERSION WITH ACCOMPANYING SOLUTION OF LINEAR EQUATIONS.
@@ -293,9 +298,9 @@ SUBROUTINE OPTDEP(X)
       PIVCL2=PIVCOL +NMIN1
       DO 2 I=PIVCL1,PIVCL2
 !       IF(DABS(A(I))-DABS(PIVOT)) 2,2,1
-      IF((DABS(A(I))-DABS(PIVOT)) .gt. 0) then      
-    1 	PIVOT=A(I)
-      	LPIV=I
+      IF((DABS(A(I))-DABS(PIVOT)) .gt. 0) then
+    1   PIVOT=A(I)
+        LPIV=I
       endif
     2 CONTINUE
 !     IS PIVOT DIFFERENT FROM ZERO
@@ -307,17 +312,17 @@ SUBROUTINE OPTDEP(X)
 !       IF(ICOL-MAIN) 6,6,4
       IF((ICOL-MAIN) .gt. 0) then
 !     COMPLEMENT THE DETERMINANT
-    4 	DETER=-DETER
+    4   DETER=-DETER
 !     POINTER TO LINE PIVOT FOUND
-      	ICOL=ICOL-DIM
+        ICOL=ICOL-DIM
 !     POINTER TO EXACT PIVOT LINE
-      	I3=MAIN-DIM
-      	DO 5 I=1,EMAT
-      		ICOL=ICOL+DIM
-      		I3=I3+DIM
-      		SWAP=A(I3)
-      		A(I3)=A(ICOL)
-    5 		A(ICOL)=SWAP
+        I3=MAIN-DIM
+        DO 5 I=1,EMAT
+          ICOL=ICOL+DIM
+          I3=I3+DIM
+          SWAP=A(I3)
+          A(I3)=A(ICOL)
+    5     A(ICOL)=SWAP
       endif
 !     COMPUTE DETERMINANT
     6 DETER=DETER*PIVOT
@@ -341,13 +346,13 @@ SUBROUTINE OPTDEP(X)
 !       IF(I-MAIN) 8,10,8
       IF((I-MAIN) .ne. 0) then
 !     PIVOT COLUMN EXCLUDED
-    8 	JCOL=ICOL+NMIN1
-      	SWAP=A(I1)
-      	I3=PIVCOL-1
-      	DO 9 I2=ICOL,JCOL
-      	I3=I3+1
-    9 	A(I2)=A(I2)+SWAP*A(I3)
-      	A(I1)=SWAP*PIVOT
+    8   JCOL=ICOL+NMIN1
+        SWAP=A(I1)
+        I3=PIVCOL-1
+        DO 9 I2=ICOL,JCOL
+        I3=I3+1
+    9   A(I2)=A(I2)+SWAP*A(I3)
+        A(I1)=SWAP*PIVOT
       endif
    10 CONTINUE
    11 CONTINUE
@@ -357,14 +362,14 @@ SUBROUTINE OPTDEP(X)
       LPIV=INDEX(MAIN)
 !       IF(LPIV-MAIN) 12,14,12
       IF((LPIV-MAIN) .ne. 0) then
-   12 	ICOL=(LPIV-1)*DIM+1
-      	JCOL=ICOL+NMIN1
-      	PIVCOL=(MAIN-1)*DIM+1-ICOL
-      	DO 13 I2=ICOL,JCOL
-      	I3=I2+PIVCOL
-      	SWAP=A(I2)
-      	A(I2)=A(I3)
-   13 	A(I3)=SWAP
+   12   ICOL=(LPIV-1)*DIM+1
+        JCOL=ICOL+NMIN1
+        PIVCOL=(MAIN-1)*DIM+1-ICOL
+        DO 13 I2=ICOL,JCOL
+        I3=I2+PIVCOL
+        SWAP=A(I2)
+        A(I2)=A(I3)
+   13   A(I3)=SWAP
       endif
    14 CONTINUE
       DETERM=DETER
@@ -374,34 +379,31 @@ SUBROUTINE OPTDEP(X)
       DETERM=DETER
       RETURN
       END SUBROUTINE MATIN1
-		
-		
+
+
 !***********************************************************
 !***********************************************************
 
 !***********************************************************
 !***********************************************************
       subroutine ordera(array,n,index,jndex,nbig)
-!     finds the top nbig elements in matrix;  array(index(k),jndex(k))
-!     is the k-th biggest element of the array.
+!     finds the top nbig elements in matrix;
+!     array(index(k),jndex(k)) is the k-th biggest element of the array.
 
 !      use sizes_molpop
-		implicit none
-      
+    implicit none
+
       integer index(:),jndex(:),n,nbig,i,j,k,l
       double precision array(:,:),big
 
-!	Somehow, this dimensioning doesn't work:
+! Somehow, this dimensioning doesn't work:
 !
 !      integer n,nbig,i,j,k,l
 !      integer index(nbig),jndex(nbig)
 !      double precision array(n,n),big
 
-      if(nbig .gt. n*n) then
-        write(16,'(6x,a,i4,a,i2)') 'Cannot find',nbig,' big elements in an array with dimension ',n
-        write(16,'(a/)') 'Stop.'
-        stop
-      end if
+      if(nbig .gt. n*n) nbig = n*n
+
 !
 !       the procedure used here assumes that the diagonal elements are 0:
 !
@@ -479,7 +481,7 @@ SUBROUTINE OPTDEP(X)
       end do
       return
       end subroutine orderv
- 
+
 
       double precision function vsum(v,n)
 !     sum the elements of the vector v:
@@ -562,7 +564,7 @@ SUBROUTINE OPTDEP(X)
 
       return
       end subroutine spline
-            
+
 
 
       subroutine splint(n,xa,ya,y2a,x,y)
@@ -573,11 +575,11 @@ SUBROUTINE OPTDEP(X)
       logical i_first
       integer n,khi,klo,j,in
       double precision x,y,xa(N_R),ya(N_R),y2a(N_R),a,b,h
-		   save j,i_first
+       save j,i_first
 
       data i_first/.true./
 
-      
+
 
       if(i_first) then
         i_first=.false.
@@ -621,7 +623,7 @@ SUBROUTINE OPTDEP(X)
 
       y=a*ya(klo)+b*ya(khi)+((a**3-a)*y2a(klo)+(b**3-b)*y2a(khi))*(h**2)/6.0
 
-      return 
+      return
       end subroutine splint
 
 
@@ -634,7 +636,7 @@ SUBROUTINE OPTDEP(X)
 
       data p1,p2,p3,p4,p5,p6,p7/1.0d0,3.5156229d0,3.0899424d0,1.2067492d0,0.2659732d0,0.360768d-1,0.45813d-2/
       data q1,q2,q3,q4,q5,q6,q7,q8,q9/0.398942228d0,0.1328592d-1,0.225319d-2,-0.157565d-2,&
-		0.916281d-2,-0.2057706d-1,0.2635537d-1,-0.1647633d-1,0.392377d-2/
+    0.916281d-2,-0.2057706d-1,0.2635537d-1,-0.1647633d-1,0.392377d-2/
 
       if(dabs(x) .lt. 3.75) then
         y=(x/3.75)**2
@@ -731,8 +733,8 @@ SUBROUTINE OPTDEP(X)
       double precision x,bk,bkm,bkp,tox
 
       if(n .lt. 2) then
-      	print *, 'bad argument n in bessk'
-      	stop
+        print *, 'bad argument n in bessk'
+        stop
       endif
 
       tox = 2.0/x
@@ -776,7 +778,7 @@ SUBROUTINE OPTDEP(X)
 !     returns the length of left-aligned string different from ' '
       implicit none
       character*(*) string
-	fsize = inmax(string)
+  fsize = inmax(string)
     1 return
       end function fsize
 
@@ -830,74 +832,74 @@ SUBROUTINE OPTDEP(X)
 
       end subroutine file_name
 
-! =======================================================================
-! SEVERAL SIMPLE FUNCTIONS THAT RETURN SOME STRING PARAMETERS
-! =======================================================================
-		function chr(card, i)
-		character card*(232)
-		integer i
-		character chr
-			chr = card(i:i)
-			return
-		end function chr
-		
-		function bar(cr)
-		character cr
-		logical bar
-			bar = cr .eq. ' '
-			return
-		end function bar
-		
-		
-		function digit(cr)
-		character :: cr
-		logical :: digit
-			digit = cr .ge. '0' .and. cr .le. '9'                        
-			return
-		end function digit
-		
-		function minus(cr)
-		character :: cr
-		logical :: minus
-			minus = cr .eq. '-'
-			return
-		end function minus
-		
-		function sgn(cr)
-		character :: cr
-		logical :: sgn
-			sgn = cr .eq. '+' .or.  cr .eq. '-'
-			return
-		end function sgn
-		
-		function dot(cr)
-		character :: cr
-		logical :: dot
-			dot = cr .eq. '.'
-			return
-		end function dot
-		
-		function ee(cr)
-		character :: cr
-		logical :: ee
-			ee = cr .eq. 'e' .or.  cr .eq. 'E' .or. cr .eq. 'd' .or.  cr .eq. 'D'
-			return
-		end function ee
-		
-		function ival(cr)
-		character :: cr
-		integer :: ival
-			ival = ichar(cr) - ichar('0')
-			return
-		end function ival
-						
+! ======================================
+! SEVERAL SIMPLE TESTS OF STRING CONTENT
+! ======================================
+    function chr(card, i)
+    character card*(232)
+    integer i
+    character chr
+      chr = card(i:i)
+      return
+    end function chr
+
+    function bar(cr)
+    character cr
+    logical bar
+      bar = cr .eq. ' '
+      return
+    end function bar
+
+
+    function digit(cr)
+    character :: cr
+    logical :: digit
+      digit = cr .ge. '0' .and. cr .le. '9'
+      return
+    end function digit
+
+    function minus(cr)
+    character :: cr
+    logical :: minus
+      minus = cr .eq. '-'
+      return
+    end function minus
+
+    function sgn(cr)
+    character :: cr
+    logical :: sgn
+      sgn = cr .eq. '+' .or.  cr .eq. '-'
+      return
+    end function sgn
+
+    function dot(cr)
+    character :: cr
+    logical :: dot
+      dot = cr .eq. '.'
+      return
+    end function dot
+
+    function ee(cr)
+    character :: cr
+    logical :: ee
+      ee = cr .eq. 'e' .or.  cr .eq. 'E' .or. cr .eq. 'd' .or.  cr .eq. 'D'
+      return
+    end function ee
+
+    function ival(cr)
+    character :: cr
+    integer :: ival
+      ival = ichar(cr) - ichar('0')
+      return
+    end function ival
+
 ! =======================================================================
 ! SEVERAL SIMPLE FUNCTIONS THAT RETURN SOME STRING PARAMETERS
 ! =======================================================================
 
       subroutine rdinps(equal,iunit,str)
 !     reads strings of symbols
-      integer i,iunit,ind,first,last,next                      
+      integer i,iunit,ind,first,last,next
       character card*(232),cr
       character*(*) str
       logical equal !,bar
@@ -909,43 +911,43 @@ SUBROUTINE OPTDEP(X)
 !!!      chr(i)    = card(i:i)
 !!!      bar(cr)   = cr .eq. ' '
 !
-      if(iunit .lt. 0) then                                           
+      if(iunit .lt. 0) then
         first = last + 1
-        iunit = -iunit                                                 
+        iunit = -iunit
       end if
-!        start the search for the next string:                                     
+!        start the search for the next string:
   1   continue
-      if(first .gt. last) then                                        
+      if(first .gt. last) then
         read(iunit, '(a)', end = 99) card
-        first = 1                                                       
+        first = 1
         if(chr(card,first) .eq. '*') write(16,'(a)') trim(adjustl(card))
-        last = len(card)                                               
+        last = len(card)
         ind = index(card,'%')
-        if(ind .gt. 0) last = ind-1                                   
+        if(ind .gt. 0) last = ind-1
       end if
-      if(equal) then                                                   
+      if(equal) then
         do while (chr(card,first) .ne. '=')
-          first = first + 1                                           
+          first = first + 1
           if(first .gt. last) goto 1
-        end do                                                        
+        end do
       end if
       first = first + 1
 
-      do while (bar(chr(card,first)) .and. first .le. last)                
+      do while (bar(chr(card,first)) .and. first .le. last)
         first = first + 1
-      end do                                                        
+      end do
       if(first .gt. last) goto 1
 
       next=first+1
-      do while( .not. bar(chr(card,next)) )                     
+      do while( .not. bar(chr(card,next)) )
         next = next + 1
-      end do                                                         
+      end do
       str=card(first:next-1)
       return
 
-99    write(16,'(3(1x,a,/))') ' Terminated. EOF reached by rdinp while looking for input. ',' last line read:',card                                          
-      return 
-      end subroutine rdinps          
+99    write(16,'(3(1x,a,/))') ' Terminated. EOF reached by rdinp while looking for input. ',' last line read:',card
+      return
+      end subroutine rdinps
 
 
       subroutine rdinps2(equal,iunit,str,LENGTH,UCASE)
@@ -963,41 +965,41 @@ SUBROUTINE OPTDEP(X)
 !!!      chr(i)    = card(i:i)
 !!!      bar(cr)   = cr .eq. ' '
 !
-      if(iunit .lt. 0) then                                           
+      if(iunit .lt. 0) then
         first = last + 1
-        iunit = -iunit                                                 
+        iunit = -iunit
       end if
-!        start the search for the next string:                                     
+!        start the search for the next string:
   1   continue
-      if(first .gt. last) then                                        
+      if(first .gt. last) then
         read(iunit, '(a)', end = 99) card
-        first = 1                                                              
+        first = 1
         if(chr(card,first) .eq. '*') write(16,'(a)') trim(adjustl(card))
-        last = len(card)                                                       
+        last = len(card)
         ind = index(card,'%')
-        if(ind .gt. 0) last = ind-1                                           
+        if(ind .gt. 0) last = ind-1
       end if
-      if(equal) then                                                           
+      if(equal) then
         do while (chr(card,first) .ne. '=')
-          first = first + 1                                                     
+          first = first + 1
           if(first .gt. last) goto 1
-        end do                                                                  
+        end do
       end if
       first = first + 1
 
-      do while (bar(chr(card,first)) .and. first .le. last)                     
+      do while (bar(chr(card,first)) .and. first .le. last)
         first = first + 1
-      end do                                                                    
+      end do
       if(first .gt. last) goto 1
 
       next=first+1
-      do while( .not. bar(chr(card,next)) )                     
+      do while( .not. bar(chr(card,next)) )
         next = next + 1
-      end do                                                                    
+      end do
       str=card(first:next-1)
-	length = next - first
+  length = next - first
 
-	if (UCASE) then
+  if (UCASE) then
 !        convert string to UPPER CASE
          DO i = 1, length
             ch = str(i:i)
@@ -1006,191 +1008,192 @@ SUBROUTINE OPTDEP(X)
       end if
       return
 
-99    write(16,'(3(1x,a,/))') ' Terminated. EOF reached by rdinp while looking for input. ',' last line read:',card                                               
+99    write(16,'(3(1x,a,/))') ' Terminated. EOF reached by rdinp while looking for input. ',' last line read:',card
       return
       end subroutine rdinps2
 
 
 !ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
-!     This function is taken from Moshe Elitzur.           [Z.I., Nov. 1995]        
+!     This function is taken from Moshe Elitzur.           [Z.I., Nov. 1995]
 
-      double precision function rdinp(equal,iunit_in)                              
+      double precision function rdinp(equal,iunit_in, outUnit)
 ! =======================================================================
-!     Read lines, up to 232 long, from pre-opened unit IUNIT and extract        
+!     Read lines, up to 232 long, from pre-opened unit IUNIT and extract
 !     all input numbers from them. When EQUAL is set, numeric input data
-!     must be preceded by an equal sign.All non-numeric data and numbers        
+!     must be preceded by an equal sign.All non-numeric data and numbers
 !     not preceded by = when EQUAL is on are ignored.RDINP = next number
-!     encountered (after equal sign) and terminated by a nun-numeric            
+!     encountered (after equal sign) and terminated by a nun-numeric
 !     symbol (termination with blank is best). Commas and exponential
-!     notation are allowed.  All text after % is ignored, as in TeX.            
+!     notation are allowed.  All text after % is ignored, as in TeX.
 !     Lines with * in the first column are echoed to the output device.
-!     The number is comprised of an actual VALUE, decimal part FRAC and         
+!     The number is comprised of an actual VALUE, decimal part FRAC and
 !     (integer) exponent PWR.  It has a SIGN, and the exponential power
-!     has sign SIGNEX. Logical flag to the decimal part is set in               
+!     has sign SIGNEX. Logical flag to the decimal part is set in
 !     DECIMAL. The search is conducted between FIRST, which is
-!     continuously increased, and LAST.  A new line is read when FIRST          
+!     continuously increased, and LAST.  A new line is read when FIRST
 !     exceeds LAST, and can be forced by calling with -IUNIT.  Actual
-!     extraction of numerical value is done in separate FUNCTION VAL.           
+!     extraction of numerical value is done in separate FUNCTION VAL.
 ! =======================================================================
-      implicit none                                                             
-      integer iunit,iunit_in,ind,first, last
-      double precision value,frac,pwr,sign,signex             
+      implicit none
+      integer iunit,iunit_in,outUnit,ind,first, last
+      double precision value,frac,pwr,sign,signex
       character card*(232),cr,prev,term,next
       logical equal,decimal
       save card,first,last
       data first/1/, last/0/
 
-			iunit = iunit_in
+      iunit = iunit_in
 !    F90 doesn't like in-line functions. The following have been redefined
 !    as regular external functions:
-!!!      digit(cr) = cr .ge. '0' .and. cr .le. '9'                        
+!!!      digit(cr) = cr .ge. '0' .and. cr .le. '9'
 !!!      minus(cr) = cr .eq. '-'
-!!!      sgn(cr)   = cr .eq. '+' .or.  cr .eq. '-'                       
+!!!      sgn(cr)   = cr .eq. '+' .or.  cr .eq. '-'
 !!!      dot(cr)   = cr .eq. '.'
 !!!      e(cr)     = cr .eq. 'e' .or.  cr .eq. 'E' .or. cr .eq. 'd' .or.  cr .eq. 'D'
 
       if(iunit .lt. 0) then
-        first = last + 1                
-        iunit = -iunit        
-      end if              
-                                                         
-!       start the search for the next number:
+        first = last + 1
+        iunit = -iunit
+      end if
+
+!     start the search for the next number:
 1     rdinp  = 0.
       value  = 0.
-      frac   = 0.                                                               
+      frac   = 0.
       pwr    = 0.
       sign   = 1.
       signex = 1.
-      decimal = .false.                                                         
+      decimal = .false.
       if(first .gt. last) then
-!          time to get a new line          			
+!       time to get a new line
         read (iunit, '(a)' , end = 99) card
-        
+
         first = 1
         last = len(card)
-!          find start of trailing junk:                                           
+!       find start of trailing junk:
         do while(card(last:last) .le. ' ')
-         last = last - 1                                                       
-         if(last .lt. first) goto 1
-        end do	                                                                
-        if(card(first:first).eq.'*') write (12,'(a)') card(1:last)
-        ind = index(card,'%')                                                  
-        if(ind .gt. 0) last = ind - 1
-      end if                                                                    
-
-!       get past the next '=' when the equal flag is set                          
-      if(equal) then
-        do while (card(first:first).ne.'=')                                     
-          first = first + 1
-          if (first.gt.last) goto 1                                             
+           last = last - 1
+           if(last .lt. first) goto 1
         end do
-      end if                                                                    
-!       ok, start searching for the next digit:
-      do while (.not.digit(card(first:first)))                       		         
-	    first = first + 1
-		if (first.gt.last) goto 1                                                     
-		end do
-!     check if it is a negative or decimal number                               
-      if (first.gt.1) then
-         prev = card(first-1:first-1)                                           
-         if (minus(prev)) sign = -1.
-         if (dot(prev)) then                                                    
-           decimal = .true.
-           if (first.gt.2 .and. minus(card(first-2:first-2))) sign = -1.        
-         end if
-      end if                                                                    
-!     extract the numerical value
-      if (.not.decimal) then                                                    
-         value = val_dp(card,first,last,decimal,term)
-!        check for a possible decimal part.  termination with '.e' or           
-!        '.e' is equivalent to the same ending without '.'
-         if (first.lt.last.and.dot(term)) then                                  
-            first = first + 1
-            next = card(first:first)                                            
-            if (digit(next)) decimal = .true.
-            if (ee(next)) term = 'e'                                             
-         end if
-      end if                                                                    
-!     extract the decimal fraction, when it exists
-      if (decimal) frac = val_dp(card,first,last,decimal,term)          
-!     an exponential may exist if any part terminated with 'e' or 'e'
-      if(first .lt. last .and. ee(term)) then                            
-        first = first + 1
-        next = card(first:first)                                               
-        if(first .lt. last .and. sgn(next))then
-          first = first + 1                                                   
-          if(minus(next)) signex = -1.
-        end if                                                                 
-        decimal = .false.
-        pwr = val_dp(card,first,last,decimal,term)                     
+        if(card(first:first).eq.'*') write (outUnit,'(a)') card(1:last)
+        ind = index(card,'%')
+        if(ind .gt. 0) last = ind - 1
       end if
-!       finally, put the number together                                          
-      rdinp = sign*(value + frac)*10**(signex*pwr)      
-            
-      return                                                                    
 
-99    write (12,'(3(1x,a,/))') ' ****terminated. eof reached by rdinp while looking for input. ',' *** last line read:',card                                               
+!     get past the next '=' when the equal flag is set
+      if(equal) then
+         do while (card(first:first).ne.'=')
+            first = first + 1
+            if (first.gt.last) goto 1
+         end do
+      end if
+!     ok, start searching for the next digit:
+      do while (.not.digit(card(first:first)))
+         first = first + 1
+         if (first.gt.last) goto 1
+      end do
+!     check if it is a negative or decimal number
+      if (first.gt.1) then
+         prev = card(first-1:first-1)
+         if (minus(prev)) sign = -1.
+         if (dot(prev)) then
+            decimal = .true.
+            if (first.gt.2 .and. minus(card(first-2:first-2))) sign = -1.
+         end if
+      end if
+!     extract the numerical value
+      if (.not.decimal) then
+         value = val_dp(card,first,last,decimal,term)
+!        check for a possible decimal part.  termination with '.e' or
+!        '.d' is equivalent to the same ending without '.'
+         if (first.lt.last.and.dot(term)) then
+            first = first + 1
+            next = card(first:first)
+            if (digit(next)) decimal = .true.
+            if (ee(next)) term = 'e'
+         end if
+      end if
+!     extract the decimal fraction, when it exists
+      if (decimal) frac = val_dp(card,first,last,decimal,term)
+!     an exponential may exist if any part terminated with 'e' or 'd'
+      if(first .lt. last .and. ee(term)) then
+         first = first + 1
+         next = card(first:first)
+         if(first .lt. last .and. sgn(next))then
+            first = first + 1
+            if(minus(next)) signex = -1.
+         end if
+         decimal = .false.
+         pwr = val_dp(card,first,last,decimal,term)
+      end if
+!     finally, put the number together
+      rdinp = sign*(value + frac)*10**(signex*pwr)
 
-      return                                                                    
+      return
+
+99    write (outUnit,'(3(1x,a,/))') &
+      ' ****Terminated. EOF reached by rdinp while looking for input. ',' *** Last line read:',card
+
+      return
       end function rdinp
-		
-                                                                                
-!ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-                                                                                
 
-! ***********************************************************************       
+
+!ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+
+
+! ***********************************************************************
 ! This function is taken from Moshe Elitzur            [Z.I., Nov. 1995]
-! =======================================================================       
+! =======================================================================
       double precision function val_dp(card,first,last,decimal,term)
-!     extract numerical value from card, begining at position first up          
-!     to the first non-digit encountered.  the terminating character is
-!     returned in term, its position in first. commas are treated as            
+!     extract numerical value from card, begining at position first up
+!     to the first non-digit encountered.  The terminating character is
+!     returned in term, its position in first. Commas are treated as
 !     simple separators.
 
       implicit none
-      character card*(*), term, ch                                              
+      character card*(*), term, ch
       logical decimal !, digit
 !       integer ival
-      integer first, last, first0                                         
+      integer first, last, first0
       double precision pwr
 
 ! !       ival(ch)  = ichar(ch) - ichar('0')
-! !       digit(ch) = ch .ge. '0' .and. ch .le. '9'                        
+! !       digit(ch) = ch .ge. '0' .and. ch .le. '9'
 
-      val_dp = 0.0                                                     
+      val_dp = 0.0
       pwr = 1.0
-      first0 = first                                                            
+      first0 = first
       do first = first0, last
-        term = card(first:first)                                               
+        term = card(first:first)
         if(term .ne. ',') then
-          if(.not. digit(term)) return                                 
+          if(.not. digit(term)) return
           if(decimal) then
-            pwr = pwr*0.1                                                       
+            pwr = pwr*0.1
             val_dp = val_dp + pwr*ival(term)
-          else                                                        
+          else
             val_dp = 10.0*val_dp + ival(term)
           end if
         end if
-      end do                                                                  
+      end do
       term = ' '
 
       return
       end function val_dp
-		
-		
-     	double precision function hermite(it,dtau,delta,i2,j2,m,iter)
+
+
+      double precision function hermite(it,dtau,delta,i2,j2,m,iter)
 !     Hermite numerically integrates the absorption probabilities using 16 point Gaussian quadrature
       use global_molpop
-	double precision temp,d,dtau,delta,tautot,z,f
-	integer it,ip,iter,ll,i
-	integer m,i2(50),j2(50)
-  	double precision arg(50),tauf(50,50)	 
+  double precision temp,d,dtau,delta,tautot,z,f
+  integer it,ip,iter,ll,i
+  integer m,i2(50),j2(50)
+    double precision arg(50),tauf(50,50)
 !  x(i) and w(i) are the abscissas and weights from Abramowitz and Stegun
-	double precision x(8),w(8)
+  double precision x(8),w(8)
       data (x(i),i=1,8)/.27348104613815d0,.82295144914466d0,1.38025853919888,&
        1.95178799091625d0,2.54620215784748d0,3.17699916197996d0,&
-       3.86944790486012d0,4.68873893930582d0/   
+       3.86944790486012d0,4.68873893930582d0/
       data (w(i),i=1,8)/5.0792947901d-1,2.806474585285d-1,&
        8.381004139899D-2,1.288031153551D-2,9.322840086242D-4,&
        2.711860092538D-5,2.320980844865D-7,2.654807474011d-10/
@@ -1202,33 +1205,33 @@ SUBROUTINE OPTDEP(X)
                 f=x(i)*delta+freq(i2(1),j2(1))
               else
                 f=-x(i)*delta+freq(i2(1),j2(1))
-	       end if
-	       tautot=0.d0
-!          Add up taus of overlapping lines to get tautot 
+         end if
+         tautot=0.d0
+!          Add up taus of overlapping lines to get tautot
               do 80 ip=1,m
                  arg(ip)=((f-freq(i2(ip),j2(ip)))/delta)**2
-	           if (iter .eq. 1) z=tau(i2(ip),j2(ip))
+             if (iter .eq. 1) z=tau(i2(ip),j2(ip))
                  if (iter .eq. 2 ) then
-	               if (ip .eq. 1) then
+                 if (ip .eq. 1) then
                         z=tau(i2(ip),j2(ip))+dtau
-                      else 
+                      else
                         z=tau(i2(ip),j2(ip))
                      end if
                  end if
                  if (iter .eq. 3 ) then
-	              if (ip .eq. it) then
+                if (ip .eq. it) then
                         z=tau(i2(ip),j2(ip))+dtau
-                     else 
+                     else
                         z=tau(i2(ip),j2(ip))
                      end if
                  end if
 !                 tauf(i2(ip),j2(ip))=z*dexp(-arg(ip))/rootpi
 !  (11 March 05) removed division by rootpi to agree with line center tau
                   tauf(i2(ip),j2(ip))=z*dexp(-arg(ip))
-	           tautot=tautot+tauf(i2(ip),j2(ip))
-   80          continue   			
+             tautot=tautot+tauf(i2(ip),j2(ip))
+   80          continue
           temp =1.d0-(.5d0-expint(3,tautot))/tautot
-          d=temp*tauf(i2(it),j2(it))/tautot 
+          d=temp*tauf(i2(it),j2(it))/tautot
           hermite=hermite+w(i)*d
    90     continue
   100   continue
@@ -1240,11 +1243,11 @@ SUBROUTINE OPTDEP(X)
 !  This routine calculates the 3rd exponential integral function
 !  Press and Teukolsky, Computers in Physics, Vol 2, No.5, p88. 1988.
        implicit double precision (a-h,o-z)
-		 integer :: itmax, i, n, nm1, ii
-		 real(kind=8) :: del, d, c
+     integer :: itmax, i, n, nm1, ii
+     real(kind=8) :: del, d, c
        parameter (itmax=100,eps=1.d-7,tiny=1.d-30,gamma=.5772156649)
        nm1=n-1
-       if (x.gt.1.d2)then 
+       if (x.gt.1.d2)then
            expint=0.d0
            return
        end if
@@ -1303,42 +1306,42 @@ SUBROUTINE OPTDEP(X)
            end function expint
 
 
-	subroutine numlin
+  subroutine numlin
 !      This routine finds the number of lines (num) and labels them by upper and lower level
    use global_molpop
    integer i,j
-   	
-   	num=0
-       
-      do i=1,n
-	  		do j=1,i-1
-	     		if (a(i,j) >= 1.e-16) then
-	     			num = num+1
-	     		endif
-	     	enddo
-		enddo
-		
-		allocate(uplin(num))
-		allocate(lowlin(num))
-				
-		num=0
+
+    num=0
 
       do i=1,n
-	  		do j=1,i-1
-	     		if (a(i,j) >= 1.e-16) then
-	     			num = num+1
-	     			uplin(num) = i
-	        		lowlin(num) = j
-	     		endif
-	     	enddo
-		enddo
-		
-              
+        do j=1,i-1
+          if (a(i,j) >= 1.e-16) then
+            num = num+1
+          endif
+        enddo
+    enddo
+
+    allocate(uplin(num))
+    allocate(lowlin(num))
+
+    num=0
+
+      do i=1,n
+        do j=1,i-1
+          if (a(i,j) >= 1.e-16) then
+            num = num+1
+            uplin(num) = i
+              lowlin(num) = j
+          endif
+        enddo
+    enddo
+
+
 1000   continue
-	return
-	end subroutine numlin
-	
-	
+  return
+  end subroutine numlin
+
+
       double precision function part_func(tt,acon,jmax)
 !     calculates the partition function for rotational transitions
       implicit none
@@ -1352,8 +1355,8 @@ SUBROUTINE OPTDEP(X)
       part_func=part_func*a1
       return
       end function part_func
-		
-		
+
+
       double precision function threej(j1,j2,j)
 !     calculates the Wigner 3j-coefficients
       implicit none
@@ -1445,8 +1448,8 @@ SUBROUTINE OPTDEP(X)
 
       return
       end subroutine const
-		
-		
+
+
       double precision function prlog(x)
 !     calculates log10(x) with proper safeguards
       implicit none
@@ -1460,8 +1463,8 @@ SUBROUTINE OPTDEP(X)
       end if
       return
       end function prlog
-		
-		
+
+
       double precision function plexp(x)
 !     calculates the Planck function
       implicit none
@@ -1479,317 +1482,240 @@ SUBROUTINE OPTDEP(X)
       end if
       return
       end function plexp
-		
-		! Read a file and return the tabulation of this file at the wavelength positions wl(i,j)
-		subroutine interpolateExternalFile(fileName, wl, out)
-		implicit none
-		character(len=168) :: fileName
-		character(len=512) :: buff
-		real(kind=8) :: wl(:,:), out(:,:), f1, f2
-		real(kind=8), allocatable :: w(:), F(:)
-		integer :: i, Nin, nx, ny, j, k
-		logical :: stat
-		
-			nx = size(wl,1)
-			ny = size(wl,2)
-			
-			inquire(file=trim(adjustl(fileName)),exist=stat)
-			if (.not.stat) then
-				print *, 'Error when opening file ', fileName
-				stop
-			endif
-			
-			open(10,file=trim(adjustl(fileName)), status='old')
-! 120 		write(16,"(4x,'*** File ',a,' is missing!')") trim(adjustl(fileName))	
 
 
-! First count the number of lines of the file
-			Nin = 0
-			do while(.true.)
-				read(10,*, end=2)
-				Nin = Nin + 1
-			enddo
-2     	continue
+! ***********************************************************************
+      SUBROUTINE SIMPSON(N,N1,N2,x,y,integral)
+! =======================================================================
+! This subroutine calculates integral I(y(x)*dx). Both y and x are
+! 1D arrays, y(i), x(i) with i=1,N (declared with NN). Lower and upper
+! integration limits are x(N1) and x(N2), respectively. The method used
+! is Simpson (trapezoid) approximation. The resulting integral is sum of
+! y(i)*wgth, i=N1,N2.                                  [Z.I., Mar. 1996]
+! =======================================================================
+      IMPLICIT none
+      INTEGER i, N, N1, N2
+      DOUBLE PRECISION x(N), y(N), wgth, integral
+! -----------------------------------------------------------------------
+!     set integral to 0 and accumulate result in the loop
+      integral = 0.0
+!     calculate weight, wgth, and integrate in the same loop
+      IF (N2.GT.N1) THEN
+        DO i = N1, N2
+!         weigths
+          IF (i.NE.N1.AND.i.NE.N2) THEN
+            wgth = 0.5 * (x(i+1)-x(i-1))
+          ELSE
+            IF (i.eq.N1) wgth = 0.5 * (x(N1+1)-x(N1))
+            IF (i.eq.N2) wgth = 0.5 * (x(N2)-x(N2-1))
+          END IF
+!         add contribution to the integral
+          integral = integral + y(i) * wgth
+        END DO
+      ELSE
+        integral = 0.0
+      END IF
+! -----------------------------------------------------------------------
+      RETURN
+      END
+! ***********************************************************************
 
-			allocate(w(Nin))
-			allocate(F(Nin))
-			
-			rewind(10)
 
-			Nin = 1
-			do while(.true.)
-				read(10,*, end=1) w(Nin), F(Nin)
-				Nin = Nin + 1
-			end do
-1			Nin = Nin - 1
-			close(10)
-			
-			do i = 1, nx
-				do j = 1, ny
-!            interpolate between the tabulation elements
-             	k=1
-             	if (wl(i,j) /= 0) then
-						if (wl(i,j) < w(1)) then
-							out(i,j) = F(1)
-						else if (wl(i,j) > w(Nin)) then
-							out(i,j) = F(Nin)
-						else 
-						
-							do while(.not.(wl(i,j) >= w(k) .and. wl(i,j) <= w(k+1)))
-								k = k+1
-							enddo
-							f2 = (wl(i,j)-w(k))/(w(k+1)-w(k))
-							f1 = 1.0-f2
-							out(i,j) = F(k)*f1+F(k+1)*f2
-						endif
-					endif
-             enddo
-          enddo
-			
-			deallocate(w,F)
-		end subroutine interpolateExternalFile
-		
-	subroutine dust_rad(Td,tau_d,str,L)
-!     calculates radiation properties, occupation numbers
-      use global_molpop
-      integer i,j,k, L
-      character(len=128) :: str
-      double precision wavelen,draine,taulamb
-      double precision Td,tau_d
-
+!=======================================================================================!
 !
-!         calculate dust radiation according to eq.1 from
-!         Lockett et al, 1999, ApJ, 511, 235
-!         dtable is an interpolating subroutine for Draine-Lee X-sections
+! Read a tabulation from a file and return in array out(i,j) the tabulation
+! at the wavelength positions wl(i,j)
+! The file may contain many columns (the DUSTY output does) but
+! only the first two count: 1st is wavelength, 2nd the tabulated quantity
+! When norm is on, the tabulation is for the SED lambda*Flambda and the flux
+! Flambda that is read in is re-normalized to bolometric unity
 !
-!       call dtable(98,8,98) 
-      
-      call interpolateExternalFile(dustFile, wl, rad)      
-            
-      do i=2, n
-         do j=1, i-1
-!            wavelen=wl(i,j)
-!           now interpolate the Draine-Lee X-sections
-!             draine=fnewt(98,8,6,wl(i,j),98)             
-!             taulamb=tau_d*draine
-            taulamb=tau_d*rad(i,j)
-            rad(i,j) = 0.d0
-	      	rad(i,j)=rad(i,j)+(1.0-dexp(-taulamb))*plexp(tij(i,j)/Td)
-								
-! Coming from the left
-				if (str(1:L) == 'LEFT') then
-					rad_tau0(i,j) = rad_tau0(i,j) + (1.0-dexp(-taulamb))*plexp(tij(i,j)/Td)
-				endif
-						
-! Coming from the right
-				if (str(1:L) == 'RIGHT') then
-					rad_tauT(i,j) = rad_tauT(i,j) + (1.0-dexp(-taulamb))*plexp(tij(i,j)/Td)
-				endif
-						
-! Coming from both sides
-				if (str(1:L) == 'BOTH') then
-					rad_tau0(i,j) = rad_tau0(i,j) + (1.0-dexp(-taulamb))*plexp(tij(i,j)/Td)
-					rad_tauT(i,j) = rad_tauT(i,j) + (1.0-dexp(-taulamb))*plexp(tij(i,j)/Td)
-				endif
-						
-! Coming from both sides
-				if (str(1:L) == 'INTERNAL') then
-					rad_internal(i,j) = rad_internal(i,j) + (1.0-dexp(-taulamb))*plexp(tij(i,j)/Td)
-				endif
-	     enddo
-      end do            
-      
-      return
-      end subroutine dust_rad
+!=======================================================================================!
+    subroutine interpolateExternalFile(fileName, wl, out, norm, error)
+    implicit none
+    character*(*) fileName
+    real(kind=8) :: wl(:,:), out(:,:), f1, f2, scale
+    real(kind=8), allocatable :: w(:), F(:)
+    integer :: i, Nin, nx, ny, j, k
+    logical :: norm, stat, error
 
+      nx = size(wl,1)
+      ny = size(wl,2)
 
-	subroutine rad_file(fname,Lbol,dist,error,str,L)
-!     add radiation from file
-      use global_molpop
-      integer i,j,k,Nin, L
-      real(kind=8), allocatable :: w(:),F(:)
-      real(kind=8) :: lamda,f1,f2,FL,Lbol,dist, Fbol, factor
-      character*512 buff
-      character(len=128) :: str
-		character*168 fname
-		logical error, stat
-
-		inquire(file=fname(1:fsize(fname)),exist=stat)
+      inquire(file=trim(adjustl(fileName)),exist=stat)
       if (.not.stat) then
-      	print *, 'Error when opening file ', fname(1:fsize(fname))
-      	stop
-      endif
-      
-      open(10,err=120, file=fname(1:fsize(fname)), status='old')
-      do i = 1,4
-        read(10,'(a)') buff
-      end do
-
-!     Read from DUSTY output wavelength (in micron) and 
-!     spectral shape lambda*F_lambda/Fbol
-
-! First count the number of lines of the file
-		Nin = 0
-		do while(.true.)
-			read(10,*, end=2)
-			Nin = Nin + 1
-		enddo
-2     continue
-		allocate(w(Nin))
-		allocate(F(Nin))
-		
-		rewind(10)
-		do i = 1,4
-        read(10,'(a)') buff
-      end do
-
-		Nin = 1
-      do while(.true.)
-        	read(10,*, end=1) w(Nin), F(Nin)
-	  		Nin = Nin + 1
-! 	  		if (Nin .gt. 2000) then
-! 	     		write(16,"(4x,'*** Too many entry lines in file ',a,/4x,&
-! 	     		'Increase N_L in param.inc from its current value of ', &
-!             I4,' and recompile ')") fname(1:size(fname)), N_L
-! 	     		error = .true.
-! 		 		return
-! 	  		end if
-      end do
-  1	Nin = Nin - 1
-      close(10)
-
-!     convert lambda*F_lambda/Fbol to photon occupation number:
-!     multiply by Fbol and divide by nu to get F_nu; recall lambda*F_lambda = nu*F_nu
-!     divide by 4pi to get from F to J
-!     divide by 2h*nu^3/c^2 to get photon occupation number
-!     All in all get c^2/nu^4 = (lambda/nu)^2, which may be better for numerics
-
-		Fbol = Lbol*SolarL/(fourpi*dist**2)
-		factor = Fbol/(fourpi*2.*hpl)
-		
-		write(16,"(8x,'- Radiation corresponding to SED from file ',a,/10x,&
-	  		&'Normalized to flux ',1pe9.2,' for luminosity ',1pe9.2,' Lo and distance',&
-	  		&1pe9.2,' cm')") &
-	  		fname(1:L), Fbol, Lbol, dist
-	  			
-		do i = 2, N
-	  		do j = 1, i-1
-	    		lamda = wl(i,j)
-	    		if (lamda.ge.w(1) .and. lamda.le.w(Nin)) then
-!            interpolate between the tabulation elements
-             	k=1
-             	do while(.not.(lamda .ge. w(k) .and. lamda .le. w(k+1)))
-						k=k+1
-             	end do
-             	f2 = (lamda-w(k))/(w(k+1)-w(k))
-             	f1 = 1.0-f2
-             	FL = F(k)*f1+F(k+1)*f2             	
-             	FL = FL*factor*(1.e-4*lamda/freq(i,j))**2             	
-		   		rad(i,j) = rad(i,j) + FL
-		   		
-! Coming from the left
-					if (str(1:L) == 'LEFT') then
-						rad_tau0(i,j) = rad_tau0(i,j) + FL
-					endif
-						
-! Coming from the right
-					if (str(1:L) == 'RIGHT') then
-						rad_tauT(i,j) = rad_tauT(i,j) + FL
-					endif
-						
-! Coming from both sides
-					if (str(1:L) == 'BOTH') then
-						rad_tau0(i,j) = rad_tau0(i,j) + FL
-						rad_tauT(i,j) = rad_tauT(i,j) + FL
-					endif
-						
-! Coming from both sides
-					if (str(1:L) == 'INTERNAL') then
-						rad_internal(i,j) = rad_internal(i,j) + FL
-					endif
-											   		
-	    		end if
-	  		end do
-		end do
-		
-		deallocate(w)
-		deallocate(F)
-!	stop
-		return
-  120 write(16,"(4x,'*** File ',a,' is missing!')") fname(1:fsize(fname))
-      error = .true.
-      if (allocated(w)) deallocate(w)
-		if (allocated(F)) deallocate(F)
-      return
-      end subroutine rad_file
-
-      subroutine dtable(l,m,k)
-!     dtable creates interpolation table for Draine-Lee cross sections
-      use global_molpop
-      integer l,m,k,i,j,isub
-      logical :: stat
-      
-      inquire(file=dustFile(1:LdustFile),exist=stat)
-      if (.not.stat) then
-      	print *, 'Error when opening file ', dustFile(1:LdustFile)
-      	stop
-      endif
-      
-      open(9, err=830, file=dustFile(1:LdustFile), status='old')
-      do i=1,98
-	read(9,*) xa(i), ya(i)
-      end do
-      close(9)
-      do i=1,l-1
-        table(i,1)=(ya(i+1)-ya(i))/(xa(i+1)-xa(i))
-      end do
-      if (m .gt. 1) then
-        do j=2,m
-          do i=j,l-1
-            isub=i+1-j
-            table(i,j)=(table(i,j-1)-table(i-1,j-1))/(xa(i+1)-xa(isub))
-          end do
+        do k = 6,16,10
+           write(k,"(/'**** Error opening file ',a)") trim(adjustl(fileName))
         end do
-      end if
-      return
-  830 write(6,'(6x,''File dust.dat is missing! Stop.'')')
-      stop
-      end subroutine dtable
-
-!ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-      double precision function fnewt(l,m,ideg,x,k)
-!     fnewt interpolates Draine-Lee data
-      use global_molpop
-!      implicit none
-
-      integer l,m,ideg,k,i,max,idegm1,isub1,isub2
-      double precision x,yest
-
-!      include 'common__fnewt.inc'
-
-      if(x .gt. 3.6d4) then
-        fnewt=0.0
+        error = .true.
         return
-      end if
-      do i=1,l
-        if(i .eq. l .or. x .le. xa(i)) go to 5
+      endif
+
+      open(10,file=trim(adjustl(fileName)), status='old')
+
+! First count the number of data lines in the file
+      call Pass_Header(10)
+      Nin = 0
+      do while(.true.)
+        read(10,*, end=2)
+        Nin = Nin + 1
+      enddo
+2     continue
+
+      allocate(w(Nin))
+      allocate(F(Nin))
+
+! Now read the data:
+      rewind(10)
+      call Pass_Header(10)
+
+      do i = 1, Nin
+        read(10,*, end=1) w(i), F(i)
+        if (w(i) <= 0. .or. F(i) <0.) then
+           write(16,"(5x,'Bad entry in file ',a,/,5x, &
+             'wavelength = ',ES8.2,' mic; tabulation = ',ES8.2,/,5x, &
+             'wavelength must be positive and the entry non-negative')") &
+              trim(adjustl(fileName)), w(i), F(i)
+           error = .true.
+           return
+        end if
       end do
-  5   max=i+ideg/2
-      if(max .le. ideg) max=ideg+1
-      if(max .gt. l) max=l
-      yest=table(max-1,ideg)
-      if(ideg .gt. 1) then
-        idegm1=ideg-1
-        do i=1,idegm1
-          isub1=max-i
-          isub2=ideg-i
-          yest=yest*(x-xa(isub1))+table(isub1-1,isub2)
-        end do
-      end if
-      isub1=max-ideg
-      fnewt=yest*(x-xa(isub1))+ya(isub1)  
-      if(fnewt .lt. 0.0) fnewt=0.0
-      return
-      end function fnewt
-		
+1     close(10)
+
+      IF (norm) then
+!        we need to re-normalize the tabulated F (which is lambda*Flambda) to
+!        unity bolometric flux; namely, scale by the integral of F/w:
+
+         call Simpson(Nin,1,Nin,w,F/w,scale)
+         F = F/scale
+      End If
+
+      do i = 1, nx
+        do j = 1, ny
+!           interpolate between the tabulation elements
+            k=1
+            if (wl(i,j) /= 0) then
+              if (wl(i,j) < w(1)) then
+                out(i,j) = F(1)
+              else if (wl(i,j) > w(Nin)) then
+                out(i,j) = F(Nin)
+              else
+                do while(.not.(wl(i,j) >= w(k) .and. wl(i,j) <= w(k+1)))
+                  k = k+1
+                enddo
+                f2 = (wl(i,j)-w(k))/(w(k+1)-w(k))
+                f1 = 1.0-f2
+                out(i,j) = F(k)*f1+F(k+1)*f2
+              endif
+            endif
+        enddo
+      enddo
+      deallocate(w,F)
+
+    return
+    end subroutine interpolateExternalFile
+
+
+    subroutine rad_file(fname,Jbol,str,L,error)
+!   add radiation from file
+    use global_molpop
+    integer i,j, L
+    real(kind=8) :: F(N,N)
+    real(kind=8) :: Jbol, factor
+    character*(*) :: fname, str
+    logical norm/.true./
+    logical error
+
+!   Read SED of external radiation from file such as, e.g., DUSTY output
+!   1st column is wavelength (in micron)
+!   2nd column is spectral shape lambda*F_lambda
+!   Normalize the spectral shape to unit bolometric flux and scale it by Jbol
+
+    call interpolateExternalFile(trim(adjustl(fname)), wl, F, norm, error)
+    if (error) return
+
+!   convert the normalized lambda*F_lambda to photon occupation number:
+!   multiply by Jbol and divide by nu to get J_nu; recall lambda*F_lambda = nu*F_nu
+!   divide by 2h*nu^3/c^2 to get photon occupation number
+!   All in all get c^2/nu^4 = (lambda/nu)^2, which may be better for numerics
+
+    factor = Jbol/(2.*hpl)
+
+    do i = 2, N
+      do j = 1, i-1
+         F(i,j) = F(i,j)*factor*(1.e-4*wl(i,j)/freq(i,j))**2
+         rad(i,j) = rad(i,j) + F(i,j)
+
+!   Coming from the left
+         if (str(1:L) == 'LEFT') then
+           rad_tau0(i,j) = rad_tau0(i,j) + F(i,j)
+         endif
+
+!   Coming from the right
+         if (str(1:L) == 'RIGHT') then
+            rad_tauT(i,j) = rad_tauT(i,j) + F(i,j)
+         endif
+
+!   Coming from both sides
+         if (str(1:L) == 'BOTH') then
+            rad_tau0(i,j) = rad_tau0(i,j) + F(i,j)
+            rad_tauT(i,j) = rad_tauT(i,j) + F(i,j)
+         endif
+
+!   Internal radiation
+         if (str(1:L) == 'INTERNAL') then
+            rad_internal(i,j) = rad_internal(i,j) + F(i,j)
+         endif
+
+      end do
+    end do
+
+    return
+    end subroutine rad_file
+
+
+
+  subroutine dust_rad(Td,tau_d,str,L)
+! calculates dust radiation properties, occupation numbers
+! according to eq.1 from Lockett et al, 1999, ApJ, 511, 235
+! tau_d is the dust optical depth at V
+!
+    use global_molpop
+    integer i,j,k, L
+    character*(*) :: str
+    double precision Td, tau_d, taulamb
+
+    do i=2, n
+      do j=1, i-1
+        taulamb  = tau_d*qdust(i,j)
+        rad(i,j) = rad(i,j)+(1.0-dexp(-taulamb))*plexp(tij(i,j)/Td)
+
+!   Coming from the left
+        if (str(1:L) == 'LEFT') then
+          rad_tau0(i,j) = rad_tau0(i,j) + (1.0-dexp(-taulamb))*plexp(tij(i,j)/Td)
+        endif
+
+!   Coming from the right
+        if (str(1:L) == 'RIGHT') then
+          rad_tauT(i,j) = rad_tauT(i,j) + (1.0-dexp(-taulamb))*plexp(tij(i,j)/Td)
+        endif
+
+!   Coming from both sides
+        if (str(1:L) == 'BOTH') then
+          rad_tau0(i,j) = rad_tau0(i,j) + (1.0-dexp(-taulamb))*plexp(tij(i,j)/Td)
+          rad_tauT(i,j) = rad_tauT(i,j) + (1.0-dexp(-taulamb))*plexp(tij(i,j)/Td)
+        endif
+
+!   Internal radiation
+        if (str(1:L) == 'INTERNAL') then
+          rad_internal(i,j) = rad_internal(i,j) + (1.0-dexp(-taulamb))*plexp(tij(i,j)/Td)
+        endif
+      enddo
+    end do
+
+    return
+    end subroutine dust_rad
+
+
+
 end module maths_molpop

@@ -1,19 +1,19 @@
 module global_molpop
 implicit none
-	
-	real(kind=8) pi,twopi,fourpi,eitpi,rootpi
+  
+   real(kind=8) pi,twopi,fourpi,eitpi,rootpi
    real(kind=8) cl,hpl,bk,xme,xmp
    real(kind=8) solarl,solarm,solarr,pc
 
-	character*128 apath, path_database
-	
+   character*128 apath, path_database
+  
    integer n
 
    real(kind=8) T,v,vt,r,tcool,xi, cep_precision
 
    real(kind=8) nh2,xmol,nmol
 
-   real(kind=8) aspect,omega,sat, taum, eps
+   real(kind=8) sat, taum, eps
 
    real(kind=8), allocatable :: tau(:,:)
    
@@ -46,7 +46,6 @@ implicit none
    logical l_mol_part,l_mol_ROT 
    character*32  mol_name,s_mol
    integer i_mol, N_max
-   integer dustAbsorption
    real(kind=8) mol_mass,mol_d
 
 
@@ -56,11 +55,11 @@ implicit none
 
 
    real(kind=8), allocatable :: a(:,:),tij(:,:),taux(:,:),&
-		c(:,:),rad(:,:),we(:),gap(:,:),ems(:,:),boltz(:),&
-		rad_internal(:,:), rad_tau0(:,:), rad_tauT(:,:)
-		
-	integer :: n_zones_slab
-	real(kind=8), allocatable :: collis_all(:,:,:)
+    c(:,:),rad(:,:),we(:),gap(:,:),ems(:,:),boltz(:),&
+    rad_internal(:,:), rad_tau0(:,:), rad_tauT(:,:)
+    
+   integer :: n_zones_slab
+   real(kind=8), allocatable :: collis_all(:,:,:)
 
    real(kind=8), allocatable :: freq(:,:),fr(:),wl(:,:),ti(:)
 
@@ -77,19 +76,19 @@ implicit none
    integer, allocatable :: imaser(:),jmaser(:)
    integer :: n_mtr,nmaser
 
-! dtable
-   real(kind=8) xa(98),ya(98),table(98,98)
-
 ! Overlap common; added 7 Aug 04
-	integer num,nulev
-	integer, allocatable :: uplin(:),lowlin(:)
-	logical overlaptest
-	
-	real(kind=8) :: mu_output
-	
-	character(len=168) :: file_physical_conditions, dustFile
-	character(len=20) :: auxiliary_functions
-	integer :: LdustFile
-	
-	
+   integer num,nulev
+   integer, allocatable :: uplin(:),lowlin(:)
+   logical overlaptest
+  
+   real(kind=8) :: mu_output
+  
+   character(len=168) :: file_physical_conditions
+   character(len=20) :: auxiliary_functions
+
+! Dust absorption effects
+   real(kind=8), allocatable :: qdust(:,:), Xd(:,:)
+   logical dustAbsorption/.FALSE./
+  
+  
 end module global_molpop

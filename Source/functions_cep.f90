@@ -270,7 +270,7 @@ contains
 			open(unit=45,file=trim(adjustl(file_physical_conditions)),&
 				action='read',status='old')
 			call Pass_Header(45)
-			npoints_local = rdinp(.TRUE.,45)
+			npoints_local = rdinp(.TRUE.,45,16)
 			read(45,*)
 			read(45,*)			
 			read(45,*)
@@ -399,7 +399,7 @@ contains
 			open(unit=45,file=trim(adjustl(file_physical_conditions)),&
 				action='read',status='old')
 			call Pass_Header(45)
-			npoints_local = rdinp(.TRUE.,45)
+			npoints_local = rdinp(.TRUE.,45,16)
 			read(45,*)
 			read(45,*)			
 			read(45,*)

@@ -18,7 +18,7 @@ contains
    double precision aux, cross_section
 	
 !     Collision Info:     
-		n_col = rdinp(iequal,15)
+		n_col = rdinp(iequal,15,16)
 		
 		if (n_col.lt.1 .or. n_col.gt.10) then
 	   	write (str,'(I4)') n_col
@@ -33,7 +33,7 @@ contains
 !       collision rate coefficients, data file name, tag for relevant 
 !       subroutine and cross-section renormalization for surprisal and hard sphere 
         
-			fr_col(i) = rdinp(iequal,15)
+			fr_col(i) = rdinp(iequal,15,16)
 			if (kbeta > 3 .and. trim(adjustl(file_physical_conditions)) /= 'none') then
 				write(16,"(4x,I1,'.  Relative weight of collision partner from column = ',I2)") i, int(fr_col(i))
 			else
@@ -48,7 +48,7 @@ contains
         	if (Method(1:LMeth) .eq. 'TABLE') then
         		call rdinps(iequal,15,fn_kij(i))
         		call rdinps2(iequal,15,Option,LOpt,UCASE) 
-        		gxsec(i) = rdinp(iequal,15)
+        		gxsec(i) = rdinp(iequal,15,16)
         	
           	i_col_src(i) = 1
           	L = fsize(fn_kij(i))
@@ -124,7 +124,7 @@ contains
           	endif
         		
 			else if(Method(1:LMeth) .eq. 'SIO_ROVIB') then
-				gxsec(i) = rdinp(iequal,15)
+				gxsec(i) = rdinp(iequal,15,16)
          	i_col_src(i) = 2
           	write(16,"(8x,'Collision rates from SiO ro-vibrational')")
           	L = fsize(fn_kij(i))          	
@@ -145,8 +145,8 @@ contains
 			else if(Method(1:LMeth) .eq. 'HARD_SPHERE') then				
          	i_col_src(i) = 3          	
             i_col_exsub(i) = 3            
-            cross_section = rdinp(iequal,15)            
-            gxsec(i) = rdinp(iequal,15)
+            cross_section = rdinp(iequal,15,16)            
+            gxsec(i) = rdinp(iequal,15,16)
             
 	      	gxsec(i) = gxsec(i)*cross_section
             write(16,"(8x,'Hard-sphere collisions; geometric cross section = ',1pe9.2,&
@@ -248,7 +248,7 @@ contains
       open(4, err=100, file=filename, status='unknown')
       call Pass_Header(4)
       unit = -4
-      ntemp=rdinp(.true.,unit)
+      ntemp=rdinp(.true.,unit,16)
 !  The following reading is the only place where the input is rigid
       do i=1,3
         	read(4,'(a)') line

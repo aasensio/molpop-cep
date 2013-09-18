@@ -1,0 +1,41 @@
+          *** MOLPOP-CEP  September 18, 2013 ***
+
+* CO with collision rates from Yang et al 2010
+*
+      Molecule --- CO
+
+        Collision information:
+    1.  Relative weight of collision partner =  3.00
+        Collision rates from data file DataBase/Coll/co.dat_oH2_lamda.kij
+
+    2.  Relative weight of collision partner =  1.00
+        Collision rates from data file DataBase/Coll/co.dat_pH2_lamda.kij
+
+      Number of levels = 12
+      Tgas =   50.0 K
+      n_tot =  1.00E+02 cm-3
+      n_CO/n_tot =  1.00E-04
+      n_CO =  1.00E-02 cm-3
+      NO LINE OVERLAP USED
+      Thermal speed =   0.2 km/s
+      Slab escape probability 
+      Using Entered Doppler Width =    1.0 km/s
+      FWHM =   1.7 km/s
+      No maser saturation effects
+
+      External Radiation field includes:
+        - 3K Cosmic Background
+        - Dust with Td =  100.0 K and Tau(v) =  3.00E+00
+        - Radiation corresponding to SED from file Samples/ISRF.dat
+          Normalized to bolometric energy density 3.00E-06 W/m^2
+ Using INCREASING strategy
+------------------------------------------------------------------------------
+
+      *** All optical depths are listed at line center ***
+
+
+ *** TERMINATED. FAILED ON INITIAL SOLUTION
+  POPULATIONS:
+  7.114988E-01    1.044070E-01    2.246960E-03    7.096935E-06    1.667742E-08
+  3.868775E-09    3.173649E-12    3.170641E-12    3.513226E-12    1.603582E-12
+  1.979083E-14    2.787579E-14
