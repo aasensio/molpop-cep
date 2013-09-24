@@ -898,7 +898,7 @@ contains
   subroutine data(error)
 !     Get molecular data: level properties and Einstein A-coefficients
   character*80 line
-  character*64 fn_lev,fn_aij
+  character*128 fn_lev,fn_aij
   integer i,j,in,k,l,ii,i1,j1,i2,j2
   double precision aux, temp
   logical error, stat
