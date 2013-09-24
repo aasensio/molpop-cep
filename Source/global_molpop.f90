@@ -88,7 +88,7 @@ implicit none
 
 ! Dust absorption effects
    real(kind=8), allocatable :: qdust(:,:), Xd(:,:)
-   logical dustAbsorption/.FALSE./
+   logical dustAbsorption
   
   
 end module global_molpop

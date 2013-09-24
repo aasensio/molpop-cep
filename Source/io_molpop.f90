@@ -281,7 +281,7 @@ contains
 ! Test whether we want dust absorption
 !     First, get the file tabulating the absorption coefficient normalized to  
 !     unity at visual:
-		dustAbsorption = .false.
+      dustAbsorption = .false.
       call rdinps2(iequal,15,dustFile,L,Nocase)
       Xdust = rdinp(iequal,15,16)
       if (Xdust > 0.) then
