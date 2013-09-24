@@ -18,7 +18,7 @@
       dlogV/dlogr = 1. (in effect only for LVG)
       overlap = off                        
       Include maser saturation = yes      
-      Dust properties file = DataBase/dustISM.dat
+      Dust properties file = Samples/Standard_ISM.dat
       Dust absorption = 0
       
       
@@ -36,6 +36,7 @@
                 Dust tau at visual = 0.
 
      Radiation from file = none
+%             Type of entry for the bolometric scale (ENERGY_DEN/L&R) = L&R
 %             Luminosity = 1.E4 Lo  
 %             Distance from source = 3.E15 cm
 %             Illumination from (left/right/both/internal) = internal
@@ -80,7 +81,7 @@ PRINT CONTROL PARAMATERS
 
       information on each step (off or on)= on
       print detailed populations (off or on) = off
-      Number of cooling lines to print = 0
+%      Number of cooling lines to print = 0
     
       the number of transitions = 2
          

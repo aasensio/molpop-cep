@@ -6,6 +6,27 @@
 %   same directory. It can be checked against the output file with
 %   the same name in subdireectory OutpuTest
 %
+
+% In these input files, those with extension 'dust' are slab escape
+% probability with dust absorption. The input file 
+% SLED_nE2_T50no_dust is the same as SLED_nE2_T50slab.
+Samples/ME_tests/SLED_nE2_T50Slab
+Samples/ME_tests/SLED_nE2_T50LVG
+Samples/ME_tests/SLED_nE2_T50LVG-PP
+
+% Two cases of external radiation from file with
+% different normalization options:
+
+Samples/ME_tests/SLED_nE2_T50slabRad1
+Samples/ME_tests/SLED_nE2_T50slabRad2
+
+% Dust absorption messes up no-dust, 
+% but not another dust case:
+
+Samples/ME_tests/SLED_nE2_T50dust
+Samples/ME_tests/SLED_nE2_T50no_dust
+Samples/ME_tests/SLED_nE6_T50dust
+
 Samples/OH/Offer_rates
 Samples/C+/C+
 Samples/SiO/SiO

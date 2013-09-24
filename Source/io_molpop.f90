@@ -281,6 +281,7 @@ contains
 ! Test whether we want dust absorption
 !     First, get the file tabulating the absorption coefficient normalized to  
 !     unity at visual:
+		dustAbsorption = .false.
       call rdinps2(iequal,15,dustFile,L,Nocase)
       Xdust = rdinp(iequal,15,16)
       if (Xdust > 0.) then
@@ -291,7 +292,7 @@ contains
             Xdust = Xdust*1.D-21
             write(16,"(6x,'Dust absorption effects included:')")
             write(16,"(8x,'Dust properties from file ',a)") trim(adjustl(dustFile))
-            write(16,"(8x,'Dust optical depth at V is ', 1PE8.2,' times column (in cm^-2) of H nuclei')") Xdust
+            write(16,"(8x,'Dust optical depth at V is ', 1PE9.2,' times column (in cm^-2) of H nuclei')") Xdust
             call interpolateExternalFile(dustFile, wl, qdust, norm, error)
          end if
       end if
@@ -318,7 +319,6 @@ contains
          if (allocated(collis_all)) deallocate(collis_all)
          allocate(collis_all(n,n,n_zones_slab))
          do i = 1, n_zones_slab
-             print *, i
 !            Read the T and the relative abundance of each collider
              read(45,*) temp1, temp2, T, temp3, temp4, (fr_col(j),j=1,n_col)
 !            In case hard sphere collision rates are used, change the thermal velocity

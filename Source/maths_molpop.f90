@@ -1517,7 +1517,7 @@ contains
       END IF
 ! -----------------------------------------------------------------------
       RETURN
-      END
+      END subroutine simpson
 ! ***********************************************************************
 
 
@@ -1573,7 +1573,7 @@ contains
         read(10,*, end=1) w(i), F(i)
         if (w(i) <= 0. .or. F(i) <0.) then
            write(16,"(5x,'Bad entry in file ',a,/,5x, &
-             'wavelength = ',ES8.2,' mic; tabulation = ',ES8.2,/,5x, &
+             'wavelength = ',ES9.2,' mic; tabulation = ',ES9.2,/,5x, &
              'wavelength must be positive and the entry non-negative')") &
               trim(adjustl(fileName)), w(i), F(i)
            error = .true.

@@ -1,10 +1,13 @@
-          *** MOLPOP-CEP  July 23, 2013 ***
+          *** MOLPOP-CEP  September 18, 2013 ***
+
 * Sample run for OH with hard sphere collision rates
 * These lines are echoed in the output because they start with a '*'
 * Instructions for data input are found at the end of the input file
+      Molecule --- OH
+
+        Collision information:
     1.  Relative weight of collision partner =  1.00
         Hard-sphere collisions; geometric cross section =  1.00E-15 cm^-2
-      Molecule --- OH
       Number of levels = 20
       Tgas =  150.0 K
       n_tot =  1.00E+05 cm-3
@@ -15,13 +18,14 @@
       Slab escape probability 
       Using Entered Doppler Width =    1.0 km/s
       FWHM =   1.7 km/s
-      NO SATURATION EFFECTS
-      Aspect Ratio = 1
+      No maser saturation effects
 
       External Radiation field includes:
         - 3K Cosmic Background
  Using INCREASING strategy
 ------------------------------------------------------------------------------
+
+      *** All optical depths are listed at line center ***
 
 
       Normal completion. Dimension is   1.00E+15 cm
@@ -29,7 +33,7 @@
 
                                   SUMMARY
 
-      R        H2 column   mol column     emission
+      R        H2 column   mol column  emission
       cm          cm-2        cm-2     erg/s/mol
    1.000E+13   1.000E+18   1.000E+13   2.076E-20
    1.778E+13   1.778E+18   1.778E+13   2.076E-20

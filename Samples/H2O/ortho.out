@@ -1,11 +1,14 @@
-          *** MOLPOP-CEP  July 23, 2013 ***
+          *** MOLPOP-CEP  September 18, 2013 ***
+
 * Sample run for ortho H2O.
 * These lines are echoed in the output because they start with a '*'
 * Instructions for data input are found at the end of the input file
+      Molecule --- H2O_ortho
+
+        Collision information:
     1.  Relative weight of collision partner =  1.00
         Collision rates from data file DataBase/Coll/H2Oo_H2.kij
 
-      Molecule --- H2O_ortho
       Number of levels = 45
       Tgas =  500.0 K
       n_tot =  5.00E+08 cm-3
@@ -16,20 +19,21 @@
       Slab escape probability 
       Using Entered Doppler Width =    1.0 km/s
       FWHM =   1.7 km/s
-      NO SATURATION EFFECTS
-      Aspect Ratio = 1
+      No maser saturation effects
 
       External Radiation field includes:
         - 3K Cosmic Background
  Using INCREASING strategy
 ------------------------------------------------------------------------------
 
+      *** All optical depths are listed at line center ***
+
 
       Normal completion. H2 column is  1.58E+23 cm-2
 
                                   SUMMARY
 
-      R        H2 column   mol column     emission
+      R        H2 column   mol column  emission
       cm          cm-2        cm-2     erg/s/mol
    1.000E+08   5.000E+16   1.000E+13   1.641E-15
    1.778E+08   8.891E+16   1.778E+13   1.625E-15
@@ -61,7 +65,7 @@
 
                     Parameters for selected transitions
 
-       788.52 mic (380.197 GHz) transition between levels  8 and  7
+       788.52 mic ( 380.197 GHz) transition between levels  8 and  7
      Upper Level: J =  4,  K- =  1,  K+ =  4                                                      
      Lower Level: J =  3,  K- =  2,  K+ =  1                                                      
 
