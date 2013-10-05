@@ -1017,7 +1017,7 @@ contains
 
 !     This function is taken from Moshe Elitzur.           [Z.I., Nov. 1995]
 
-      double precision function rdinp(equal,iunit_in, outUnit)
+      double precision function rdinp(equal, iunit, outUnit)
 ! =======================================================================
 !     Read lines, up to 232 long, from pre-opened unit IUNIT and extract
 !     all input numbers from them. When EQUAL is set, numeric input data
@@ -1036,14 +1036,14 @@ contains
 !     extraction of numerical value is done in separate FUNCTION VAL.
 ! =======================================================================
       implicit none
-      integer iunit,iunit_in,outUnit,ind,first, last
+      integer iunit, outunit, ind, first, last
       double precision value,frac,pwr,sign,signex
       character card*(232),cr,prev,term,next
-      logical equal,decimal
+      logical, intent(in) :: equal
+      logical decimal
       save card,first,last
       data first/1/, last/0/
 
-      iunit = iunit_in
 !    F90 doesn't like in-line functions. The following have been redefined
 !    as regular external functions:
 !!!      digit(cr) = cr .ge. '0' .and. cr .le. '9'
@@ -1465,23 +1465,117 @@ contains
       end function prlog
 
 
-      double precision function plexp(x)
-!     calculates the Planck function
-      implicit none
-      double precision x
 
-      if(x .eq. 0.0) then
-        write(16,'(6x,a)') 'ERROR! Function plexp called with argument zero.'
-        stop
-      else if(x .gt. 50.0) then
-        plexp = 0.0
-      else if(dabs(x) .lt. 0.01) then
-        plexp = 1.0/x
-      else
-        plexp = 1.0/(dexp(x) - 1.0)
-      end if
-      return
+! =================  Stuff related to Planck function  ====================
+
+
+      double precision function plexp(x)
+!-------------------------------------------------------
+!     calculates the Planck function, modulo 2h*nu^3/c^2
+!     That is:   plexp = 1/[exp(x) - 1]
+!-------------------------------------------------------
+         implicit none
+         double precision x
+         
+         if(x .eq. 0.0) then
+           write(16,'(6x,a)') 'ERROR! Function plexp called with argument zero.'
+           plexp = 1.d100
+         else if(x .gt. 50.0) then
+           plexp = 0.0
+         else if(dabs(x) .lt. 0.001) then
+           plexp = 1.0/x
+         else
+           plexp = 1.0/(dexp(x) - 1.0)
+         end if
+         return
       end function plexp
+
+
+      double precision function Inv_plexp(P)
+!----------------------------------------------------------------
+!     Finds the argument of the Planck function given its value P
+!     That is, solves the equation P = 1/[exp(x) - 1]
+!----------------------------------------------------------------
+         implicit none
+         double precision, intent(in) :: P
+         
+         if (P > 1.e3) then  ! might as well use small x (RJ) limit
+             inv_plexp = 1/P 
+         else
+             inv_plexp = DLOG(1. + 1./P) 
+         end if        
+         return
+      END function Inv_plexp
+
+
+      double precision function Tbr_Tx(Tl,Tx,taul)
+!----------------------------------------------------------------
+!     For a line with temperature-equivalent frequency Tl
+!     enter with excitation temperature Tx and optical depth taul
+!     calculate brightness temperature from
+!
+!        B(Tbr) = [B(Tx) - B(Tcmb)}*[1 - exp(-taul)]
+!
+!     All intensitie are in photon occupation number because
+!     we use plexp for B(T) 
+!----------------------------------------------------------------
+         implicit none
+         double precision, intent(in) :: Tl, Tx, taul
+         double precision B
+         integer sgn
+         
+         if (Tx == Tcmb) then
+            Tbr_Tx = 0.
+            return
+         end if
+         
+         B = (plexp(Tl/Tx) - plexp(Tl/Tcmb)) * (1. - dexp(-taul))
+
+!        negative B means Tx < Tcmb so we get absorption line; negative Tbr
+         sgn = 1
+         if (B < 0.d0) sgn = -1 
+
+         Tbr_Tx = sgn*Tl/Inv_plexp(dabs(B))
+         return
+      END function Tbr_Tx
+
+
+      double precision function Tbr_I(nu,I,taul)
+!------------------------------------------------------------
+!     For a line with frequency nu
+!     enter with intensity I and optical depth taul
+!     calculate brightness temperature from
+!
+!        B(Tbr) = I - B(Tcmb)*[1 - exp(-taul)]
+!
+!     All intensities are converted to photon occupation number
+!     For B(T) we use plexp, I is converted with 2h*nu^3/c^2
+!-------------------------------------------------------------
+         implicit none
+         double precision, intent(in) :: nu, I, taul
+         double precision B, Tl, Intensity
+         integer sgn
+         
+         Tl = hPl*nu/Bk
+         Intensity = I/(2*hPl*nu**3/cl**2)
+
+         B = Intensity - plexp(Tl/Tcmb) * (1. - dexp(-taul))
+
+         if (B == 0.d0) then
+            Tbr_I = 0.
+            return
+         end if
+
+!        negative B means we get absorption line; negative Tbr
+         sgn = 1
+         if (B < 0.d0) sgn = -1 
+
+         Tbr_I = sgn*Tl/Inv_plexp(dabs(B))
+         return
+      END function Tbr_I
+
+!========================================================================
+
 
 
 ! ***********************************************************************

@@ -4,6 +4,7 @@ implicit none
    real(kind=8) pi,twopi,fourpi,eitpi,rootpi
    real(kind=8) cl,hpl,bk,xme,xmp
    real(kind=8) solarl,solarm,solarr,pc
+   real(kind=8), parameter ::  Tcmb = 2.725d0
 
    character*128 apath, path_database
   
@@ -89,6 +90,6 @@ implicit none
 ! Dust absorption effects
    real(kind=8), allocatable :: qdust(:,:), Xd(:,:)
    logical dustAbsorption
-  
+   integer :: Idust, n_prt_cols  
   
 end module global_molpop
