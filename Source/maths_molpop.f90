@@ -1500,7 +1500,7 @@ contains
          double precision, intent(in) :: P
          
          if (P > 1.e3) then  ! might as well use small x (RJ) limit
-             inv_plexp = 1/P 
+             inv_plexp = 1./P 
          else
              inv_plexp = DLOG(1. + 1./P) 
          end if        
@@ -1514,7 +1514,7 @@ contains
 !     enter with excitation temperature Tx and optical depth taul
 !     calculate brightness temperature from
 !
-!        B(Tbr) = [B(Tx) - B(Tcmb)}*[1 - exp(-taul)]
+!        B(Tbr) = [B(Tx) - B(Tcmb)]*[1 - exp(-taul)]
 !
 !     All intensitie are in photon occupation number because
 !     we use plexp for B(T) 
