@@ -969,78 +969,78 @@ contains
 !-------------------------------------------------------------------
 ! Evaluates the function to solve for the NAG Newton 
 !-------------------------------------------------------------------
-	subroutine fcn_nag(n, x, fvec, fjac, ldfjac, iflag)
-	integer :: n, ldfjac, iflag
-	real(kind=8) :: x(n), fvec(n), fjac(ldfjac,n)
-	real(kind=8) :: fvec2(n), fjac2(ldfjac,n)
-	
-		call usrfun(x,n,fvec2,fjac2,.TRUE.)
-		
-		if (iflag == 1) then
-			fvec = fvec2
-		endif
-		
-		if (iflag == 2) then
-			fjac = fjac2
-		endif
-	
-	end subroutine fcn_nag	
+! 	subroutine fcn_nag(n, x, fvec, fjac, ldfjac, iflag)
+! 	integer :: n, ldfjac, iflag
+! 	real(kind=8) :: x(n), fvec(n), fjac(ldfjac,n)
+! 	real(kind=8) :: fvec2(n), fjac2(ldfjac,n)
+! 	
+! 		call usrfun(x,n,fvec2,fjac2,.TRUE.)
+! 		
+! 		if (iflag == 1) then
+! 			fvec = fvec2
+! 		endif
+! 		
+! 		if (iflag == 2) then
+! 			fjac = fjac2
+! 		endif
+! 	
+! 	end subroutine fcn_nag	
 	
 !-------------------------------------------------------------------
 ! Solves a system of nonlinear equations using the Newton method of the NAG library
 !-------------------------------------------------------------------
-	subroutine mnewt_nag(ntrial,x,n,tolx,tolf,derivatives,error)
-	integer :: n,ntrial, ldfjac, ifail, maxfev, mode, nprint, nfev, njev, lr, error
-	real(kind=8) :: tolf,tolx,x(n)
-	integer :: i,k
-	logical :: derivatives
-	logical :: calculate_jacobian
-	real(kind=8) :: d,errf,errx,fvec(n),p(n), x2(n), tol, amax, factor_mult	
-	real(kind=8) :: xtol, factor
-	real(kind=8), allocatable :: fjac(:,:), diag(:), r(:), qtf(:), w(:,:)
-	integer, allocatable :: indx(:)			
-	real(kind=8) :: f06ejf, x02ajf
-	external f06ejf, x02ajf
-	
-		ldfjac = n
-		xtol = tolx
-		ifail = 0
-		maxfev = 100*(n+1)
-		mode = 1
-		lr = n*(n+1)/2
-		error = 0
-		
-		allocate(fjac(ldfjac,n))
-		allocate(diag(n))
-		allocate(r(lr))
-		allocate(qtf(n))
-		allocate(w(n,4))
-		
-		x = 1.d0
-		diag = 1.d0
-		factor = 100.d0
-		nprint = 0
-
-#if defined(YES)
-		call c05pcf(fcn_nag,n,x,fvec,fjac,ldfjac,xtol,maxfev,diag,&
-			mode,factor,nprint,nfev,njev,r,lr,qtf,w,ifail)
-		print *, 'Final 2-norm of the residuals : ', f06ejf(n,fvec,1)
-		print *, 'Function evaluations : ', nfev
-		print *, 'Jacobian evaluations : ', njev
-#else
-		print *, 'CEP-NAG not supported in this version'
-		stop
-#endif
-		
-		deallocate(fjac)
-		deallocate(diag)
-		deallocate(r)
-		deallocate(qtf)
-		deallocate(w)
-		
-		if (ifail /= 0) error = 1
-						
-	end subroutine mnewt_nag	
+! 	subroutine mnewt_nag(ntrial,x,n,tolx,tolf,derivatives,error)
+! 	integer :: n,ntrial, ldfjac, ifail, maxfev, mode, nprint, nfev, njev, lr, error
+! 	real(kind=8) :: tolf,tolx,x(n)
+! 	integer :: i,k
+! 	logical :: derivatives
+! 	logical :: calculate_jacobian
+! 	real(kind=8) :: d,errf,errx,fvec(n),p(n), x2(n), tol, amax, factor_mult	
+! 	real(kind=8) :: xtol, factor
+! 	real(kind=8), allocatable :: fjac(:,:), diag(:), r(:), qtf(:), w(:,:)
+! 	integer, allocatable :: indx(:)			
+! 	real(kind=8) :: f06ejf, x02ajf
+! 	external f06ejf, x02ajf
+! 	
+! 		ldfjac = n
+! 		xtol = tolx
+! 		ifail = 0
+! 		maxfev = 100*(n+1)
+! 		mode = 1
+! 		lr = n*(n+1)/2
+! 		error = 0
+! 		
+! 		allocate(fjac(ldfjac,n))
+! 		allocate(diag(n))
+! 		allocate(r(lr))
+! 		allocate(qtf(n))
+! 		allocate(w(n,4))
+! 		
+! 		x = 1.d0
+! 		diag = 1.d0
+! 		factor = 100.d0
+! 		nprint = 0
+! 
+! #if defined(YES)
+! 		call c05pcf(fcn_nag,n,x,fvec,fjac,ldfjac,xtol,maxfev,diag,&
+! 			mode,factor,nprint,nfev,njev,r,lr,qtf,w,ifail)
+! 		print *, 'Final 2-norm of the residuals : ', f06ejf(n,fvec,1)
+! 		print *, 'Function evaluations : ', nfev
+! 		print *, 'Jacobian evaluations : ', njev
+! #else
+! 		print *, 'CEP-NAG not supported in this version'
+! 		stop
+! #endif
+! 		
+! 		deallocate(fjac)
+! 		deallocate(diag)
+! 		deallocate(r)
+! 		deallocate(qtf)
+! 		deallocate(w)
+! 		
+! 		if (ifail /= 0) error = 1
+! 						
+! 	end subroutine mnewt_nag	
 	
 !-------------------------------------------------------------------
 ! Solves a NLTE problem
@@ -1074,12 +1074,12 @@ contains
 
 ! Use the NAG-Newton method with analytical derivatives
 			if (which_scheme == 4) then
-#if defined(YES)
-				call mnewt_nag(newton_maximum_iter,pop,nz*nl,precision,0.d0,.TRUE.,error)
-#else
+! #if defined(YES)
+! 				call mnewt_nag(newton_maximum_iter,pop,nz*nl,precision,0.d0,.TRUE.,error)
+! #else
 				print *, 'CEP-NAG not supported in this version'
 				stop
-#endif
+! #endif
 			endif	
 
 ! Use the Newton method with numerical derivatives

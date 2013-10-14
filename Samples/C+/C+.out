@@ -1,4 +1,4 @@
-          *** MOLPOP-CEP  September 18, 2013 ***
+          *** MOLPOP-CEP; version of October 4, 2013 ***
 
 * C+
 * These lines are echoed in the output because they start with a '*'
@@ -643,7 +643,7 @@
     *** Rate coefficients extrapolated from T = 250.0 K using sqrt(T)
 
       External Radiation field includes:
-        - 3K Cosmic Background
+        - 2.725K Cosmic Background
         - Dust with Td =  100.0 K and Tau(v) =  3.00E+00
 --------------------------------- Transitions --------------------------------
 
@@ -682,5 +682,5 @@
  *******************************************************************************
  N(mol) [cm^-2]:  0.16187E+18   -  R [cm]:  0.23143E+19    -  nzones:  234
  *******************************************************************************
-  up    low     tau (line center)     cooling         N(up)/N(low)    I_center(mu= 1.000)
-   2     1       2.02097E-01       1.72537E-03       8.56319E-01       1.35679E-11
+  up    low     tau (line center)     cooling         N(up)/N(low)    I_center(mu= 1.000)   delta(Tb) [K]
+   2     1       2.02097E-01       1.72537E-03       8.56319E-01       1.35679E-11       4.27140E+01

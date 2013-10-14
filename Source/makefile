@@ -12,30 +12,9 @@
 COMPILER = ifort
 #COMPILER = gfortran
 
-ifeq ($(COMPILER),ifort)
-	FLAGS = -fpp
-	OPTIONS = -c -O3
-endif
+OPTIONS = -c -O3
 
-ifeq ($(COMPILER),gfortran)
-        FLAGS = -x f95-cpp-input
-        OPTIONS = -c 
-endif
- 
-
-# Use "YES" if NAG library is available
-# Otherwise, use "NO"
-NAG_AVAILABLE=NO
-
-ifeq ($(NAG_AVAILABLE),YES)
-	# Path to the NAG library
-	NAG_LIBRARY = NAG/libnag.a
-	FINAL_EXECUTABLE = molpop_nag
-else
-	# Path to the NAG library
-	NAG_LIBRARY = 
-	FINAL_EXECUTABLE = molpop
-endif
+FINAL_EXECUTABLE = molpop
 
 molpop: coll_molpop.o global_molpop.o io_molpop.o maths_molpop.o molpop.o \
 	sol_molpop.o cep_molpop_interface.o sol_cep.o constants_cep.o global_cep.o \
@@ -79,9 +58,9 @@ global_cep.o : global_cep.f90 constants_cep.o
 maths_cep.o : maths_cep.f90
 	$(COMPILER) $(OPTIONS) maths_cep.f90	
 escape_cep.o : escape_cep.f90 functions_cep.o maths_cep.o constants_cep.o
-	$(COMPILER) $(OPTIONS) -D$(NAG_AVAILABLE) $(FLAGS) escape_cep.f90
+	$(COMPILER) $(OPTIONS) escape_cep.f90
 functions_cep.o : functions_cep.f90 maths_molpop.o io_cep.o maths_cep.o global_cep.o\
 	constants_cep.o
 	$(COMPILER) $(OPTIONS) functions_cep.f90
-io_cep.o : io_cep.f90 maths_cep.o global_cep.o
+io_cep.o : io_cep.f90 maths_cep.o global_cep.o maths_molpop.o
 	$(COMPILER) $(OPTIONS) io_cep.f90

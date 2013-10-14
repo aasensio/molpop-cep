@@ -111,7 +111,7 @@ class molpop():
 
 # Parse the directory with all the molecules
 parser = AnchorParser()
-data = urllib.urlopen('http://home.strw.leidenuniv.nl/~moldata/datafiles/').read()
+data = urllib.urlopen('http://home.strw.leidenuniv.nl/~moldata/').read()
 print "List of available molecules"
 parser.feed(data)
 
