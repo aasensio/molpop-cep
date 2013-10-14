@@ -137,4 +137,6 @@ use constants_cep
 	integer :: n_columns_colliders
 	integer, allocatable :: collider_column(:)
 	
+	integer :: nInitialZones
+	
 end module global_cep

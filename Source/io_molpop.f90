@@ -502,6 +502,8 @@ contains
       end if
 
       cep_precision = rdinp(iequal,15,16)
+      
+      nInitialZones = rdinp(iequal,15,16)
 
 ! Output value of mu
       mu_output = rdinp(iequal,15,16)

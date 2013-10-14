@@ -61,6 +61,7 @@
        stop when dimension exceeds R_m   = 1.E23 cm
        or H2 column exceeds        N_col = 1.E24 cm^-2
     Precision in grid CEP convergence (0 to ignore convergence) = 0
+    Number of initial zones (only relevant if no file with phys. conditions) = 5
     
     Output mu for intensity = 0.5
     

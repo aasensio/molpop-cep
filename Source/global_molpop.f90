@@ -86,6 +86,8 @@ implicit none
   
    character(len=168) :: file_physical_conditions
    character(len=20) :: auxiliary_functions
+   
+   integer :: nInitialZones
 
 ! Dust absorption effects
    real(kind=8), allocatable :: qdust(:,:), Xd(:,:)

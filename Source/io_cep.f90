@@ -69,10 +69,11 @@ contains
 		endif
 		
 ! Number of zones
-		read(28,*) cep_precision, printings_per_decade, newton_maximum_iter
+		read(28,*) cep_precision, printings_per_decade, newton_maximum_iter, nInitialZones
 		
 ! Initial number of zones
-		npoints = 5
+		npoints = nInitialZones
+		print *, 'HEY', nInitialZones
 
 ! Initial number of points for all calculations
 		npoints_initial = npoints

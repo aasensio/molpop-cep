@@ -31,7 +31,7 @@ contains
 		
 ! Save precision in CEP, number of printings per decade and maximum number of
 ! iterations in the Newton method
-		write(28,FMT='(E13.5,2X,I4,2X,I4)') cep_precision, nr, itmax
+		write(28,FMT='(E13.5,2X,I4,2X,I4,2X,I4)') cep_precision, nr, itmax, nInitialZones
 		
 		ntrans = 0
 		nradiat = 0
