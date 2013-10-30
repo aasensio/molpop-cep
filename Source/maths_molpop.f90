@@ -1508,6 +1508,82 @@ contains
       END function Inv_plexp
 
 
+      Subroutine Tbr4Tx(Tl,Tx,taul,Tbr,TRJ)
+!----------------------------------------------------------------
+!     For a line with temperature-equivalent frequency Tl
+!     enter with excitation temperature Tx and optical depth taul
+!     calculate brightness temperature from
+!
+!        B(Tbr) = [B(Tx) - B(Tcmb)]*[1 - exp(-taul)]
+!
+!     All intensitie are in photon occupation number because
+!     we use plexp for B(T); so B(Tbr) is simply TRJ/Tl
+!     where TRJ is the Rayleigh Jeans equivalent T 
+!----------------------------------------------------------------
+         implicit none
+         double precision, intent(in)  :: Tl, Tx, taul
+         double precision, intent(out) :: Tbr, TRJ
+         double precision B
+         integer sgn
+
+         if (Tx == Tcmb) then
+            TRJ = 0.
+            Tbr = 0.
+            return
+         end if
+
+         B = (plexp(Tl/Tx) - plexp(Tl/Tcmb)) * (1. - dexp(-taul))
+
+!        negative B means Tx < Tcmb so we get absorption line; negative Tbr
+         sgn = 1
+         if (B < 0.d0) sgn = -1 
+
+         TRJ = Tl*B
+         Tbr = sgn*Tl/Inv_plexp(dabs(B))
+         return
+      END Subroutine Tbr4Tx
+
+
+      Subroutine Tbr4I(nu,I,taul,Tbr,TRJ)
+!------------------------------------------------------------
+!     For a line with frequency nu
+!     enter with intensity I and optical depth taul
+!     calculate brightness temperature from
+!
+!        B(Tbr) = I - B(Tcmb)*[1 - exp(-taul)]
+!
+!     All intensities are converted to photon occupation number
+!     For B(T) we use plexp, I is converted with 2h*nu^3/c^2
+!     Then the RJ tempearture is simply TRJ = Tl*B(Tbr)
+!-------------------------------------------------------------
+         implicit none
+         double precision, intent(in)  :: nu, I, taul
+         double precision, intent(out) :: Tbr, TRJ
+         double precision B, Tl, Intensity
+         integer sgn
+
+         Tl = hPl*nu/Bk
+         Intensity = I/(2*hPl*nu**3/cl**2)
+
+         B = Intensity - plexp(Tl/Tcmb) * (1. - dexp(-taul))
+
+         if (B == 0.d0) then
+            TRJ = 0.
+            Tbr = 0.
+            return
+         end if
+
+!        negative B means we get absorption line; negative Tbr
+         sgn = 1
+         if (B < 0.d0) sgn = -1
+
+         TRJ = Tl*B
+         Tbr = sgn*Tl/Inv_plexp(dabs(B))
+         return
+      END Subroutine Tbr4I
+
+
+
       double precision function Tbr_Tx(Tl,Tx,taul)
 !----------------------------------------------------------------
 !     For a line with temperature-equivalent frequency Tl
