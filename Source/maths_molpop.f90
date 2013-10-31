@@ -1476,7 +1476,7 @@ contains
 !-------------------------------------------------------
          implicit none
          double precision x
-         
+
          if(x .eq. 0.0) then
            write(16,'(6x,a)') 'ERROR! Function plexp called with argument zero.'
            plexp = 1.d100
@@ -1498,12 +1498,12 @@ contains
 !----------------------------------------------------------------
          implicit none
          double precision, intent(in) :: P
-         
+
          if (P > 1.e3) then  ! might as well use small x (RJ) limit
-             inv_plexp = 1./P 
+             inv_plexp = 1./P
          else
-             inv_plexp = DLOG(1. + 1./P) 
-         end if        
+             inv_plexp = DLOG(1. + 1./P)
+         end if
          return
       END function Inv_plexp
 
@@ -1518,7 +1518,7 @@ contains
 !
 !     All intensitie are in photon occupation number because
 !     we use plexp for B(T); so B(Tbr) is simply TRJ/Tl
-!     where TRJ is the Rayleigh Jeans equivalent T 
+!     where TRJ is the Rayleigh Jeans equivalent T
 !----------------------------------------------------------------
          implicit none
          double precision, intent(in)  :: Tl, Tx, taul
@@ -1536,7 +1536,7 @@ contains
 
 !        negative B means Tx < Tcmb so we get absorption line; negative Tbr
          sgn = 1
-         if (B < 0.d0) sgn = -1 
+         if (B < 0.d0) sgn = -1
 
          TRJ = Tl*B
          Tbr = sgn*Tl/Inv_plexp(dabs(B))
@@ -1581,74 +1581,6 @@ contains
          Tbr = sgn*Tl/Inv_plexp(dabs(B))
          return
       END Subroutine Tbr4I
-
-
-
-      double precision function Tbr_Tx(Tl,Tx,taul)
-!----------------------------------------------------------------
-!     For a line with temperature-equivalent frequency Tl
-!     enter with excitation temperature Tx and optical depth taul
-!     calculate brightness temperature from
-!
-!        B(Tbr) = [B(Tx) - B(Tcmb)]*[1 - exp(-taul)]
-!
-!     All intensitie are in photon occupation number because
-!     we use plexp for B(T) 
-!----------------------------------------------------------------
-         implicit none
-         double precision, intent(in) :: Tl, Tx, taul
-         double precision B
-         integer sgn
-         
-         if (Tx == Tcmb) then
-            Tbr_Tx = 0.
-            return
-         end if
-         
-         B = (plexp(Tl/Tx) - plexp(Tl/Tcmb)) * (1. - dexp(-taul))
-
-!        negative B means Tx < Tcmb so we get absorption line; negative Tbr
-         sgn = 1
-         if (B < 0.d0) sgn = -1 
-
-         Tbr_Tx = sgn*Tl/Inv_plexp(dabs(B))
-         return
-      END function Tbr_Tx
-
-
-      double precision function Tbr_I(nu,I,taul)
-!------------------------------------------------------------
-!     For a line with frequency nu
-!     enter with intensity I and optical depth taul
-!     calculate brightness temperature from
-!
-!        B(Tbr) = I - B(Tcmb)*[1 - exp(-taul)]
-!
-!     All intensities are converted to photon occupation number
-!     For B(T) we use plexp, I is converted with 2h*nu^3/c^2
-!-------------------------------------------------------------
-         implicit none
-         double precision, intent(in) :: nu, I, taul
-         double precision B, Tl, Intensity
-         integer sgn
-         
-         Tl = hPl*nu/Bk
-         Intensity = I/(2*hPl*nu**3/cl**2)
-
-         B = Intensity - plexp(Tl/Tcmb) * (1. - dexp(-taul))
-
-         if (B == 0.d0) then
-            Tbr_I = 0.
-            return
-         end if
-
-!        negative B means we get absorption line; negative Tbr
-         sgn = 1
-         if (B < 0.d0) sgn = -1 
-
-         Tbr_I = sgn*Tl/Inv_plexp(dabs(B))
-         return
-      END function Tbr_I
 
 !========================================================================
 

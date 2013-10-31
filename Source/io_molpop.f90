@@ -1,7 +1,7 @@
 module io_molpop
 use global_molpop
 use maths_molpop, only: Pass_Header, error_message, inmin, inmax, attach2, ordera, &
-                        optdep, Tbr_Tx, Tbr4Tx
+                        optdep, Tbr4Tx
 use cep_molpop_interface
 implicit none
 contains
@@ -291,7 +291,6 @@ contains
          else 
             dustAbsorption = .true.
             Idust = 1
-!            n_prt_cols  = 12
             Xdust = Xdust*1.D-21
             write(16,"(6x,'Dust absorption effects included:')")
             write(16,"(8x,'Dust properties from file ',a)") trim(adjustl(dustFile))
@@ -300,7 +299,6 @@ contains
          end if
       else                   ! no dust effects, so final printing has fewer columns
          Idust = 0
-!         n_prt_cols = 11
       end if
       n_prt_cols = 12 + Idust
 
