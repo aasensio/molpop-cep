@@ -1,7 +1,7 @@
 module io_cep
 use global_cep
 use maths_cep
-use maths_molpop, only : Tbr_I
+use maths_molpop, only : Tbr4I
 implicit none
 contains
 
@@ -439,7 +439,7 @@ contains
 	real(kind=8) :: x(:), xlte(:), column_density, total_radius
 	integer :: ii, ip, ipl, i, j, up, low, it, k
 	real(kind=8) :: sig, glu, acon, chim, chip, tau0, deltaz, chilp, col_up, col_low
-	real(kind=8) :: sum, intensity, e1, e2, freq_max, deltaTBR
+	real(kind=8) :: sum, intensity, e1, e2, freq_max, deltaTBR, deltaTBRJ
 	real(kind=8), allocatable :: flux_out(:,:), freq_axis(:), Slte(:)
 	
 		column_density = sum(dz * factor_abundance * abundance * nh)
@@ -452,7 +452,7 @@ contains
 		write(16,*) '*******************************************************************************'
 		
 		write(16,FMT='(1X,A,F6.3,A)') ' up    low     tau (line center)     cooling         N(up)/N(low)    I_lc(mu=',&
-			mu_output,')   delta(Tb) [K]'
+			mu_output,')   delta(Tb) [K]   del(TRJ) [K]'
 
 		allocate(Slte(nz))
 		
@@ -503,10 +503,12 @@ contains
 				intensity = intensity + Sl(ip) * (e1-e2)
 			enddo
 			
-			deltaTBR = Tbr_I(dtran(2,it),intensity,tau(it,nz)/sqrt(PI))
-			write(16,FMT='(I4,2X,I4,5X,1PE13.5,5X,1PE13.5,5X,1PE13.5,5X,1PE13.5,5X,1PE13.5)') up, low, &
+! 			deltaTBR = Tbr_I(dtran(2,it),intensity,tau(it,nz)/sqrt(PI))
+			call Tbr4I(dtran(2,it),intensity,tau(it,nz)/sqrt(PI),deltaTBR,deltaTBRJ)
+			
+			write(16,FMT='(I4,2X,I4,5X,1PE13.5,5X,1PE13.5,5X,1PE13.5,5X,1PE13.5,5X,1PE13.5,5X,1PE13.5)') up, low, &
 				tau(it,nz)/sqrt(PI), flux_total(it+nr*(nz-1)) * 4.d0*PI, col_up / col_low,&
-				intensity, deltaTBR
+				intensity, deltaTBR, deltaTBRJ
 				
 			write(35,FMT='(I4,2X,I4,1X,(1P8E13.5))') up, low, &
 				(PHK*dtran(2,i)/log(1.d0+acon/Sl(ii)), ii = 1, nz)
