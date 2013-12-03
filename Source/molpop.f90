@@ -2,7 +2,7 @@ program molpop
 use io_molpop
 use sol_molpop
 use global_molpop
-use maths_molpop      
+use maths_molpop
 use solution_cep, only: solve_with_cep
 implicit none
 !
@@ -37,6 +37,7 @@ implicit none
 !        T - kinetic temperature
 !     nh2  - h2 density (cm**-3)
 !     nmol - molecule density (cm**-3)
+!     mcol - molecular column density (cm-2/kms)
 !    tcool - total cooling rate
 ! mol_mass - the molecular mass
 !     kprt - printing index for output
@@ -59,17 +60,17 @@ implicit none
 !
 !        D - the jacobian matrix of the equations.
 !
-      
+
       logical quit, stat
       character*168 fn_inp, fn_out
       integer io1,I, Tcount, iunit, NHcount
       real(kind=8), allocatable :: x(:),f(:),d(:,:),cool(:,:)
       real(kind=8) :: NHarray
       character*60 T_tag
-      character*80 ver  
-      ver = '*** MOLPOP-CEP; version of October 31, 2013 ***'
+      character*80 ver
+      ver = '*** MOLPOP-CEP; version of December 3, 2013 ***'
 !
-!        code uses the input method of DUSTY 
+!        code uses the input method of DUSTY
 !        the file mol.inp contains a list of molecule specific input files
 !        each of the filenames (eg. oh) is read and then the data from oh.inp
 !        is read, the calculated results are written to oh.out
@@ -86,34 +87,34 @@ implicit none
 !      open(6, file='execution.log', status='unknown')
    write(6,'('' Started execution '')')
    call const
-  
+
    inquire(file='molpop.inp',exist=stat)
    if (.not.stat) then
       print *, 'Error when opening file molpop.inp'
       stop
    endif
-   
+
    open(13, err=998, file='molpop.inp', status='old')
 
-  
+
    DO     ! Work on input files one by one
 
 !   Get next input file name from the master input file
-    call clear_string(128,apath) 
+    call clear_string(128,apath)
     read(13, '(128a)', iostat=io1) apath
     if(io1 .lt. 0) exit        ! We're done
     IF(.not. empty(apath)) THEN
-       Tcount = 1    
-       call attach2(apath, '.inp', fn_inp)       
+       Tcount = 1
+       call attach2(apath, '.inp', fn_inp)
        inquire(file=fn_inp,exist=stat)
        if (.not.stat) then
            print *, 'Error when opening file ', fn_inp
            stop
        endif
-         
-       open(15, err=1000, file=fn_inp, status='old')     
-       iunit = -15           
-           
+
+       open(15, err=1000, file=fn_inp, status='old')
+       iunit = -15
+
 !      Setup output file name and go to work:
        call attach2(apath, '.out', fn_out)
        call attach2(apath, '.plot', fn_sum)
@@ -122,71 +123,65 @@ implicit none
        write(16,'(10x,a,/)') ver(1:fsize(ver))
        quit = .false.
        call input(quit)
-       
+
        allocate(x(n))
        allocate(f(n))
        allocate(d(n,n+1))
        allocate(cool(n,n))
-       
+
        if (quit) goto 222
        if (overlaptest) call numlin
        nprint = 0
-       
-!      When we use the original options of molpop, i.e., slab and LVG:      
-       if (kbeta /= 3 .and. kbeta /= 4) then     
+
+!      When we use the original options of molpop, i.e., slab and LVG:
+       if (kbeta /= 3 .and. kbeta /= 4) then
             CALL FIRST(X,F,D,COOL,QUIT)
             IF (QUIT) THEN
                WRITE(16,"(/,' *** TERMINATED. FAILED ON INITIAL SOLUTION',/,&
                '  POPULATIONS:'/,5(1PE14.6,2X))")  (X(I), I=1,N)
                GOTO 2
-            END IF         
+            END IF
             IF (NMAX.EQ.0) GOTO 2
 !           MAIN LOOP:
-            DO I = 1,NMAX          
-               CALL SOLVE(X,D,F,QUIT)          
+            DO I = 1,NMAX
+               CALL SOLVE(X,D,F,QUIT)
                IF (QUIT) THEN
                  CALL FINISH(-1)
                  GOTO 2
-               END IF            
-               CALL OUTPUT(X,COOL,KPRT)            
+               END IF
+               CALL OUTPUT(X,COOL,KPRT)
 !              Check if we're done:
                IF (KTHICK.EQ.0) THEN
-                 if (R.GE.RM) then 
-                    CALL FINISH(1)
+                 if (mcol.GT.COLM)  then
+                    CALL FINISH(3)
                     GOTO 2
-                 else if(HCOL.GT.COLM) then 
-                    CALL FINISH(2)
-                    GOTO 2
-                 end if   
-               ELSE !   KTHICK = 1:         
-                 if (R.LT.RM) then 
-                    CALL FINISH(1)
-                    GOTO 2
-                 else if(HCOL.LT.COLM) then 
-                    CALL FINISH(2)
+                 end if
+               ELSE !   KTHICK = 1:
+                 if (mcol.LT.COLM)  then
+                    CALL FINISH(3)
                     GOTO 2
                  end if
                END IF
             END DO
-!           Did not solve in max # of steps allowed:  
+!           Did not solve in max # of steps allowed:
             CALL FINISH(0)
-     
-2           continue              
+
+2           continue
        endif
-         
-!      CEP-ALI, CEP-NEWTON or CEP-NAG      
+
+!      CEP-ALI, CEP-NEWTON or CEP-NAG
        if (kbeta == 3 .or. kbeta == 4 .or. kbeta == 5) then
-         print *, 'Doing CEP...'       
-         call solve_with_cep(kbeta)            
+         print *, 'Doing CEP...'
+         call solve_with_cep(kbeta)
        endif
-       
+
        close(15)
        close(16)
        if(i_sum .eq. 1) close(17)
-               
+
 222    continue
-!        Deallocate all allocated memory   
-         if (allocated(tau)) deallocate(tau)   
+!        Deallocate all allocated memory
+         if (allocated(tau)) deallocate(tau)
          if (allocated(esc)) deallocate(esc)
          if (allocated(dbdtau)) deallocate(dbdtau)
          if (allocated(a)) deallocate(a)
@@ -221,12 +216,12 @@ implicit none
          if (allocated(jtr)) deallocate(jtr)
          if (allocated(in_tr)) deallocate(in_tr)
          if (allocated(f_tr)) deallocate(f_tr)
-         if (allocated(fin_tr)) deallocate(fin_tr)      
+         if (allocated(fin_tr)) deallocate(fin_tr)
          if (allocated(uplin)) deallocate(uplin)
          if (allocated(lowlin)) deallocate(lowlin)
          if (allocated(qdust)) deallocate(qdust)
          if (allocated(Xd)) deallocate(Xd)
-             
+
        END IF
     END DO
 

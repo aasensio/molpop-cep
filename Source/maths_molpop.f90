@@ -1013,6 +1013,26 @@ contains
       end subroutine rdinps2
 
 
+      function to_upper(strIn) result(strOut)
+!     Adapted from http://www.star.le.ac.uk/~cgp/fortran.html (25 May 2012)
+      implicit none
+      character(len=*), intent(in) :: strIn
+      character(len=len(strIn))    :: strOut
+      integer :: i,j
+  
+      do i = 1, len(strIn)
+           j = iachar(strIn(i:i))
+           if (j>= iachar("a") .and. j<=iachar("z") ) then
+                strOut(i:i) = achar(iachar(strIn(i:i))-32)
+           else
+                strOut(i:i) = strIn(i:i)
+           end if
+      end do
+      
+      end function to_upper
+
+
+
 !ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
 !     This function is taken from Moshe Elitzur.           [Z.I., Nov. 1995]

@@ -4,6 +4,8 @@ use maths_molpop, only: Pass_Header, error_message, inmin, inmax, attach2, order
                         optdep, Tbr4Tx
 use cep_molpop_interface
 implicit none
+double precision Xdust
+
 contains
 
   SUBROUTINE INPUT(error)
@@ -16,10 +18,11 @@ contains
   integer k, npoints_local
   integer :: j_max, vib_max
   integer unit,unit2,mol_maxlev
-  double precision aux,xm4, w,Tbb,tau_d, T_d, Lbol,dist, temp, Xdust
+!  double precision aux, w,Tbb,tau_d, T_d, Lbol,dist, temp, Xdust
+  double precision aux, w,Tbb,tau_d, T_d, Lbol,dist, temp
   double precision mol_const, temp1, temp2, temp3, temp4, Jbol
-  character*128 str, Method, Option, OPT, header
-  character*168 dustFile, fn_dusty 
+  character*168 str, Method, Option, OPT, header
+  character*168 dustFile, fn_dusty
   logical iequal, error, UCASE,NoCase, stat, norm
   integer LMeth, LOpt, nradiat, ComingFrom, n_modified
   character*72 TableName, TableInfo
@@ -31,26 +34,9 @@ contains
       iequal = .true.
       iunit = -15
 
-!     read type of escape probability approach
-      call rdinps2(iequal,15,str,L,UCASE)
-
-      IF(str(1:L) .eq. 'LVG') THEN
-          kbeta = 0
-      ELSE IF(str(1:L) .eq. 'LVGPP') THEN
-          kbeta = -1
-      ELSE IF(str(1:L) .eq. 'SLAB') THEN
-          kbeta = 2
-      ELSE IF(str(1:L) .eq. 'CEP') THEN
-          kbeta = 3
-      ELSE
-          OPT = 'escape probability'
-          error = error_message(opt,str)
-          return
-      END IF
-
 !   Keep this option for possible future uses:
 !     Decide whether to output PLOTTING file
-!       call rdinps2(iequal,15,str,L,UCASE)
+!       call rdinps2(iequal,iunit,str,L,UCASE)
 !       if(str(1:L) .eq. 'NO') then
 !         i_sum = 0
 !       else if(str(1:L) .eq. 'YES') then
@@ -63,19 +49,41 @@ contains
 !       end if
 
       i_sum = 0
+      unit2 = 16 + i_sum
 
+
+!     read solution method for radiative transfer
+      call rdinps2(iequal,iunit,str,L,UCASE)
+      eps  = rdinp(iequal,iunit,16)
+      do unit = 16, unit2
+         IF(str(1:L) .eq. 'LVG') THEN
+             kbeta = 0
+             WRITE(unit,"(6x,'Solution method is LVG escape probability; dlogV/dlogr = ', F5.2)") eps
+         ELSE IF(str(1:L) .eq. 'LVGPP') THEN
+             kbeta = -1
+             WRITE(unit,"(6x,'Solution method is LVG-pp escape probability; dlogV/dlogr = ', F5.2)") eps
+         ELSE IF(str(1:L) .eq. 'SLAB') THEN
+             kbeta = 2
+             WRITE (unit,"(6x,'Solution method is Slab (Capriotti) escape probability ')")
+         ELSE IF(str(1:L) .eq. 'CEP') THEN
+             kbeta = 3
+             WRITE (unit,"(6x,'CEP Exact Radiative Transfer Calculation')")
+         ELSE
+             OPT = 'solution method'
+             error = error_message(opt,str)
+             return
+         END IF
+      end do
+
+
+!     Input the root directory for the database
+      call rdinps2(iequal,iunit,path_database,L2,Nocase)
 !     read what molecule is used
       call rdinps2(iequal,iunit,STR,L,Nocase)
       mol_name = STR(1:L)
-!     Input the root directory for the database
-      call rdinps2(iequal,15,path_database,L2,Nocase)
-
       call clear_string(len(s_mol),s_mol)
       s_mol(1:L) = str(1:L)
-
-!
-! Now it's safe to attach the directory to the molecule name
-!
+!     Now it's safe to attach the directory to the molecule name
       call attach2(trim(adjustl(path_database))//'/',mol_name,str)
       mol_name = str(1: fsize(str))
 
@@ -95,7 +103,7 @@ contains
       allocate(gap(n,n))          ; gap          = 0.
       allocate(ems(n,n))          ; ems          = 0.
       allocate(boltz(n))          ; boltz        = 0.
-      allocate(rad_internal(n,n)) ; rad_internal = 0. 
+      allocate(rad_internal(n,n)) ; rad_internal = 0.
       allocate(rad_tau0(n,n))     ; rad_tau0     = 0.
       allocate(rad_tauT(n,n))     ; rad_tauT     = 0.
       allocate(freq(n,n))         ; freq         = 0.
@@ -106,22 +114,22 @@ contains
       allocate(pop(n))            ; pop          = 0.
       allocate(coolev(n))         ; coolev       = 0.
       allocate(xp(n))             ; xp           = 0.
-      allocate(imaser(n))         ; imaser       = 0 
+      allocate(imaser(n))         ; imaser       = 0
       allocate(jmaser(n))         ; jmaser       = 0
       allocate(ledet(n))          ; ledet        = ' '
       allocate(qdust(n,n))        ; qdust        = 0.
       allocate(Xd(n,n))           ; Xd           = 0.
-                                  
-!     Is there a correction for finite number of rotation levels in ground vib stat?
+
+!     Is there a correction for finite number of rotation levels in ground vib state?
       vib_max = rdinp(iequal,15,16)
       if (vib_max .gt. 0) then
          j_max     = rdinp(iequal,15,16)
          mol_const = rdinp(iequal,15,16)
       endif
 
-      unit2 = 16 + i_sum
       do unit = 16, unit2
          write(unit,"(6x,'Molecule --- ',a)")s_mol(1:L)
+         write(unit,"(6x,'Number of levels = ',I2)")n
          write(unit,"(/,8x,'Collision information:')")
       end do
 !     Read collisional partners
@@ -129,37 +137,39 @@ contains
 
 
 ! Read the filename with the spatial variation of the physical conditions
-      call rdinps2(iequal,15,file_physical_conditions,L2,Nocase)
-
 ! If "none", then use the standard inputs given by nH2 and T
-      if (trim(adjustl(file_physical_conditions)) /= 'none') then
-        write(16,"(6x,'Using file with physical conditions : ', a)")&
+      auxiliary_functions = 'KROLIK-MCKEE'
+      call rdinps2(iequal,15,file_physical_conditions,L2,Nocase)
+      if (trim(adjustl(to_upper(file_physical_conditions))) /= 'NONE') then
+         if (kbeta < 3) then
+            WRITE (16,*)' *** Cannot use varying physical conditions with escape probability'
+            OPT   = 'varying physical conditions without CEP'
+            error = error_message(opt,trim(adjustl(file_physical_conditions)))
+            return
+         else
+            write(16,"(6x,'Using file with physical conditions: ', a)")&
                      trim(adjustl(file_physical_conditions))
+         endif
       else
-        T    = rdinp(iequal,15,16)
-        nh2  = rdinp(iequal,15,16)
-        xmol = rdinp(iequal,15,16)
-        v    = rdinp(iequal,15,16)
-        eps  = rdinp(iequal,15,16)
+!
+! ME 2013/11/27: We now use only molecular column density per bandwidth in I/O
+!                Behind the scenes, leave the old structure of R with the values 
+!                for xmol and v entered with the dust absorption input
+!                
+         T    = rdinp(iequal,15,16)
+         nh2  = rdinp(iequal,15,16)
+         do unit = 16,unit2
+            write(unit,'(6x,a,f6.1,a)')     'Tgas = ',T, ' K'
+            write(unit,'(6x,a,1pe9.2,a,/)') 'n_tot = ',nh2, ' cm-3'
+            if(int(T)>10000) write(unit,"(' *** T = ',F10.2,' is a bit much!')") T
+         end do
       endif
-
-      if (trim(adjustl(file_physical_conditions)) /= 'none' .and. kbeta < 3) then
-        WRITE (16,*)' *** Cannot use varying physical conditions without CEP'
-        OPT   = 'varying physical conditions without CEP'
-        error = error_message(opt,trim(adjustl(file_physical_conditions)))
-        return
-      endif
-
-      if (int(T) > 10000) then
-        write(6, "(' *** T = ',F10.2,' is a bit much!')") T
-      end if
 
 !_______________________________________________________________
 
- !    Load molecular data:
+!     Load molecular data:
       call data(error)
       if (error) return
-!_______________________________________________________________
 
 !     Test whether the desired number of levels is larger than the number of tabulated levels
       if (n .gt. N_max) then
@@ -170,141 +180,99 @@ contains
         error = error_message(opt,str)
         return
       endif
+!_______________________________________________________________
 
-      nmol = xmol*nh2
-      xm4  = 1.0e4*(xmol/2.0)
-      DO unit = 16,unit2
-!         write(unit,"(6x,'Molecule --- ',a)")s_mol(1:L)
-         write(unit,"(6x,'Number of levels = ',I2)")n
-         if (trim(adjustl(file_physical_conditions)) == 'none') then
-            write(unit,'(6x,a,f6.1,a)') 'Tgas = ',T, ' K'
-            write(unit,'(6x,a,1pe9.2,a)') 'n_tot = ',nh2, ' cm-3'
-            write(unit,'(6x,3a,1pe9.2)') 'n_', s_mol(1:fsize(s_mol)),'/n_tot = ',xmol
-            write(unit,'(6x,3a,1pe9.2,a)') 'n_',s_mol(1:fsize(s_mol)),' = ', nmol, ' cm-3'
-         endif
-      end do
 
-!   read overlap flag (overlaptest)
-      call rdinps2(iequal,15,str,L,UCASE)
-      if(str(1:L) .eq. 'ON') then
-         overlaptest =.true.
-         write(16,*)'     LINE OVERLAP USED'
-         if(i_sum .eq. 1) write(17,*)'     LINE OVERLAP USED'
+! A number of radiative transfer enhancements, applicable only
+! for escape probability calculations
+
+! Test whether we want dust absorption
+!     First, get the file tabulating the absorption coefficient normalized to
+!     unity at visual:
+      call rdinps2(iequal,15,dustFile,L,Nocase)
+      Xdust = rdinp(iequal,15,16)
+      xmol  = rdinp(iequal,15,16)
+      V     = rdinp(iequal,15,16)
+      vt    = 1.0d-5*dsqrt(2.0*bk*T/(mol_mass*xmp))
+      if (v.gt.vt) then
+         header = 'using entered linewidth of '
       else
-         overlaptest =.false.
-         write(16,*)'     NO LINE OVERLAP USED'
-         if(i_sum .eq. 1) write(17,*)'     NO LINE OVERLAP USED'
+         v = vt
+         header = 'using thermal doppler width = '
+      end if    
+      dustAbsorption = .false.
+      if (Xdust > 0.) then
+         if (kbeta == 3) then
+            write(16,"(6x,'No dust absorption effects when using CEP')")
+         else
+            dustAbsorption = .true.
+            Idust = 1
+            Xdust = Xdust*1.D-21
+            write (16,"(6x,'Dust absorption effects included:')")
+            write (16,"(8x,'Dust properties from file ',a)") trim(adjustl(dustFile))
+            write (16,"(8x,'Dust optical depth at V is ', 1PE9.2,' times column (in cm^-2) of H nuclei')") Xdust
+            write (16,'(8x,3a,1pe9.2)') 'n_', s_mol(1:fsize(s_mol)),'/n_tot = ',xmol
+            write (16,"(8x,a,F5.1,' km/s')") trim(adjustl(header)), v 
+            call interpolateExternalFile(dustFile, wl, qdust, norm, error)
+         end if
+      else                   
+         Idust = 0   ! no dust effects, so final printing has fewer columns
+         write(16,"(6x,'No considerations of dust absorption')")
       end if
+      n_prt_cols = 12 + Idust
+      nmol  = xmol*nh2
 
-! Test that line overlap is not used with CEP
-      if (overlaptest .and. kbeta >= 3) then
-          OPT = 'overlap and CEP'
-          error = error_message(opt,str)
-          return
-      endif
-
-      vt = 1.0d-5*dsqrt(2.0*bk*T/(mol_mass*xmp))
-      if (trim(adjustl(file_physical_conditions)) == 'none') then
-        write(16,"(6x,'Thermal speed = ',f5.1,' km/s')") vt
-      endif
-
-      IF(kbeta == 0 .or. kbeta == -1) THEN
-         IF (VT.GT.V) THEN
-            WRITE (16,"(/,' *** Cannot use LVG approximation with V =',F5.1,&
-                  &' km/s and thermal speed of',F5.1,' km/s')") v, vt
-            OPT = 'escape probability input for'
+! Test whether we want line overlap
+      overlaptest = .false.
+      call rdinps2(iequal,15,str,L,UCASE)
+      IF (str(1:L) .eq. 'ON') THEN
+         if (kbeta /= 2) then
+            WRITE (16,*)'*** Line Overlap applicable only in Slab escape probability calculations'
+            OPT = 'Line Overlap'
             error = error_message(opt,str)
             return
-         END IF
-         IF (overlaptest) THEN
-            WRITE (16,*)' *** Cannot use LVG with Line Overlap'
-            OPT = 'LVG with Line Overlap'
+         elseif (dustAbsorption) then
+            WRITE (16,*)'*** Cannot use line overlap together with dust absorption'
+            OPT = 'Line Overlap'
             error = error_message(opt,str)
             return
-         END IF
-         str = "(6x,'LVG escape probability:  V = ',F5.1,' km/s,  dlogV/dlogr= ', F5.2)"
-         if(kbeta== -1) str = &
-               "(6x,'LVG-PP escape probability:  V = ',F5.1,' km/s,  dlogV/dlogr= ', F5.2)"
-         WRITE(16,FMT=str) V, eps
-         if (i_sum .eq. 1) WRITE(17,FMT=str) V, eps
-      ELSE IF(kbeta == 2) THEN
-         WRITE (16,"(6x,'Slab escape probability ')")
-         if (i_sum .eq. 1) WRITE (17,"(6x,'Slab escape probability ')")
-         IF (V.GT.VT) THEN
-            WRITE (16,"(6X,'Using Entered Doppler Width = ',F6.1,' km/s')") V
-            if (i_sum .eq. 1)WRITE (17,"(6X,'Using Entered Doppler Width = ',F6.1,' km/s')") V
-         ELSE
-            V = VT
-            WRITE (16,"(6X,'Using Thermal Doppler Width = ',F6.1,' km/s')") V
-            if (i_sum .eq. 1)WRITE (17,"(6X,'Using Thermal Doppler Width = ',F5.1,' km/s')") V
-         END IF
-         write(16,"(6x,'FWHM = ',f5.1,' km/s')")V*1.665
-         if (i_sum .eq. 1)write(17,"(6x,'Full Width half-max = ',f5.1,' km/s')")V*1.665
-      ELSE IF(kbeta == 3) THEN
-         kbeta = 3
-         WRITE (16,"(6x,'Coupled Escape Probability')")
-         if (i_sum .eq. 1) WRITE (17,"(6x,'Coupled Escape Probability')")
+         else
+            overlaptest = .true.
+            WRITE (16,"(6x,'Line Overlap effects included')") 
+            write (16,"(8x,a,F5.1,' km/s')") trim(adjustl(header)), v 
+            write (16,"(8x,'FWHM = ',f5.1,' km/s')") V*1.665
+         end if
       ELSE
-         OPT   = 'escape probability'
-         error = error_message(opt,str)
-         return
+         write(16,"(6x,'No considerations of Line Overlap')")
       END IF
-
-
-! Read the filename with the spatial variation of the physical conditions
-      auxiliary_functions = 'KROLIK-MCKEE'
 
 !     convert velocities to cm/sec for the internal working
       V  = V*1.D5
-      VT = dsqrt(2.0*bk*T/(mol_mass*xmp))
-!     Decide whether to include maser effects on populations
+      VT = VT*1.D5
+
+! Test whether to include maser effects on populations
+      sat = 0
       call rdinps2(iequal,15,str,L,UCASE)
-      if(str(1:L) .eq. 'NO') then
-          sat = 0
+      if(str(1:L) .eq. 'OFF') then
           write(16,"(6x,'No maser saturation effects')")
           if(i_sum .eq. 1)write(17,"(6x,'No maser saturation effects')")
-      else if(str(1:L) .eq. 'YES') then
-          sat = 1
-          write(16,"(6x,'Includes maser saturation effects')")
-          if(i_sum .eq. 1)write(17,"(6x,'Includes maser saturation effects')")
+      else if(str(1:L) .eq. 'ON') then
+          if (kbeta >= 3) then
+             write(16,"(6x,'No maser saturation effects in CEP')")
+          else
+             sat = 1
+             write(16,"(6x,'Maser saturation effects included')")
+             if(i_sum .eq. 1)write(17,"(6x,'Maser saturation effects included')")
+          end if   
       else
           OPT = 'saturation parameter'
           error = error_message(opt,str)
           return
       end if
-
-      if (kbeta >= 3 .and. sat == 1) then
-        sat = 0
-        write(16,"(6x,'Maser saturation has been turned off in CEP')")
-      endif
-
-
-! Test whether we want dust absorption
-!     First, get the file tabulating the absorption coefficient normalized to  
-!     unity at visual:
-      dustAbsorption = .false.
-      call rdinps2(iequal,15,dustFile,L,Nocase)
-      Xdust = rdinp(iequal,15,16)
-      if (Xdust > 0.) then
-         if (kbeta == 3) then
-            write(16,"(6x,'No dust absorption effects when using CEP')")        
-         else 
-            dustAbsorption = .true.
-            Idust = 1
-            Xdust = Xdust*1.D-21
-            write(16,"(6x,'Dust absorption effects included:')")
-            write(16,"(8x,'Dust properties from file ',a)") trim(adjustl(dustFile))
-            write(16,"(8x,'Dust optical depth at V is ', 1PE9.2,' times column (in cm^-2) of H nuclei')") Xdust
-            call interpolateExternalFile(dustFile, wl, qdust, norm, error)
-         end if
-      else                   ! no dust effects, so final printing has fewer columns
-         Idust = 0
-      end if
-      n_prt_cols = 12 + Idust
-
+!__________________________________________________________
 
 ! Load collision rates
-      if (trim(adjustl(file_physical_conditions)) == 'none') then
+      if (trim(adjustl(to_upper(file_physical_conditions))) == 'NONE') then
 !        everything is constant
          call loadcij
       else
@@ -316,7 +284,7 @@ contains
              stop
          endif
          open(unit=45,file=trim(adjustl(file_physical_conditions)),&
-         action='read',status='old')
+              action='read',status='old')
          call Pass_Header(45)
          n_zones_slab = rdinp(iequal,45,16)
          read(45,*)
@@ -334,6 +302,7 @@ contains
          enddo
          close(45)
       endif
+!__________________________________________________________
 
 !     Radiation Field;
       rad_tau0 = 0.d0
@@ -409,8 +378,11 @@ contains
             endif
 
 !           Load the dust absorption coefficient qdust normalized to unity at V
-!           When dust absorption effects are included, the file has already been loaded    
-            if (.not.dustAbsorption) call interpolateExternalFile(dustFile, wl, qdust, norm, error)
+!           When dust absorption effects are included, the file has already been loaded
+            if (.not.dustAbsorption) then
+               call interpolateExternalFile(dustFile, wl, qdust, norm, error)
+               write (16,"(10x,'Dust properties from file ',a)") trim(adjustl(dustFile))
+            end if
 
             call dust_rad(T_d,tau_d,str,L)
          end if
@@ -418,68 +390,47 @@ contains
 
 !     Radiation from DUSTY or any other similar SED file
       call rdinps2(iequal,15,fn_DUSTY,L,Nocase)
-      if (fn_DUSTY(1:L) /= 'none') then       
+      if (to_upper(fn_DUSTY(1:L)) /= 'NONE') then
          write(16,"(8x,'- Radiation corresponding to SED from file ',a)") trim(adjustl(fn_DUSTY))
-         call rdinps2(iequal,15,str,L2,UCASE)   ! get the scale of the radiation density 
+         call rdinps2(iequal,15,str,L2,UCASE)   ! get the scale of the radiation density
          if (str(1:L2) == 'ENERGY_DEN') then    ! get Jbol in W/m^2
             Jbol = rdinp(iequal,15,16)
             write(16,"(10x,'Normalized to bolometric energy density',ES9.2,' W/m^2')") Jbol
-            Jbol = Jbol*1.E3                    ! convert to erg/cm^2/sec            
+            Jbol = Jbol*1.E3                    ! convert to erg/cm^2/sec
          else if (str(1:L2) == 'L&R') then
-            Lbol = rdinp(iequal,iunit,16)          ! luminosity in Lo  
+            Lbol = rdinp(iequal,iunit,16)          ! luminosity in Lo
             dist = rdinp(iequal,iunit,16)          ! at distance in cm
             Jbol = Lbol*SolarL/(fourpi*dist**2) ! in erg/cm^2/sec
             write(16,"(10x,'Normalized to bolometric energy density',ES9.2,' W/m^2',/&
-             &10x,'for luminosity',ES9.2,' Lo at distance',ES9.2,' cm')")& 
-             & Jbol*1.E-3, Lbol, dist            
+             &10x,'for luminosity',ES9.2,' Lo at distance',ES9.2,' cm')")&
+             & Jbol*1.E-3, Lbol, dist
          else
             OPT   = 'entry type for radiative energy density'
             error = error_message(opt,str)
             return
-         end if        
+         end if
          Jbol = Jbol/fourpi                     ! convert to proper J units, per ster
          call rdinps2(iequal,15,str,L2,UCASE)   ! type of illumination
          call rad_file(fn_DUSTY(1:L),Jbol,str,L2,error)
          if (error) return
       end if
+!__________________________________________________________
 
-
-! Method of solution. If single-zone, we don't care because we always use Newton
-! If CEP, we can use NEWTON or ALI
-      call rdinps2(iequal,15,str,L,UCASE)
-      if (kbeta == 3) then
-         IF(str(1:L) .eq. 'NEWTON') THEN
-            kbeta = 3
-         ELSE IF(str(1:L) .eq. 'ALI') THEN
-            kbeta = 4
-         endif
-      endif
-
-! ACC    - ACCURACY REQUIRED IN THE SOLUTION
-      ACC     = rdinp(iequal,iunit,16)
-      itmax   = rdinp(iequal,iunit,16)
 
 !   Solution strategy:
 !   "increasing" -- start from optically thin solution for R = 0
 !   by solving the linear rate equations. Then find R such that all
 !   optical depths are smaller than the input TAUM. Solve for that based
-!   on the linear solution. Increase R until it exceeds the input RM or the
-!   column exceeds the input COLM, whichever comes first
+!   on the linear solution. Increase R until the molecular
+!   column exceeds the input COLM
 !   "decreasing" -- start from thermal equilibrium level populations.
 !   Then find R such that all
 !   optical depths are larger than the input TAUM. Solve for that based
-!   on the thermal populations. Decrease R until it is smaller then the
-!   input RM or the column is less then the input COLM, whichever comes first.
+!   on the thermal populations. Decrease R until the molecular
+!   column is less then the input COLM
 !   "fixed" -- solve the fixed given problem and stop
 
-! Precision in the CEP grid convergence
       call rdinps2(iequal,15,str,L,UCASE)
-      TAUM  = rdinp(iequal,iunit,16)
-      NPR   = rdinp(iequal,iunit,16)
-      NRMAX = rdinp(iequal,iunit,16)
-      NMAX  = rdinp(iequal,iunit,16)
-      RM    = rdinp(iequal,iunit,16)
-      COLM  = rdinp(iequal,iunit,16)
       if(str(1:L) .eq. 'INCREASING') then
          KTHICK = 0
          write(16,*) 'Using INCREASING strategy'
@@ -490,7 +441,7 @@ contains
          KTHICK = 2
 ! Since no physical dimensions are given in the case of constant physical conditions
 ! in needs to be done in the increasing/decreasing mode
-         if (trim(adjustl(file_physical_conditions)) == 'none') then
+         if (trim(adjustl(to_upper(file_physical_conditions))) == 'NONE') then
             OPT = 'FIXED mode. It needs a file with physical conditions'
             error = error_message(opt,str)
             return
@@ -500,31 +451,52 @@ contains
          error = error_message(opt,str)
          return
       end if
+      TAUM  = rdinp(iequal,iunit,16)
+      COLM  = rdinp(iequal,iunit,16)
 
-      cep_precision = rdinp(iequal,15,16)
-      
-      nInitialZones = rdinp(iequal,15,16)
-
-! Output value of mu
-      mu_output = rdinp(iequal,15,16)
-
-!
 ! NPR    - # OF STEPS PER DECADE FOR PRINTING
 ! NR     - # OF STEPS PER DECADE FOR INCREASING R; DEFINES THE STEP SIZE AND
 !          STARTS EQUAL TO NPR
-! NMAX   - MAXIMUM # OF STEPS TO REACH RM
 ! NRMAX  - MAXIMUM # OF STEPS PER DECADE; EQUIVALENT TO MINIMUM STEP
+! NMAX   - MAXIMUM # OF STEPS ALLOWED TO REACH RM
 ! ACC    - ACCURACY REQUIRED IN THE SOLUTION
+! itmax  - MAX # allowed for Newton iterations to reach ACC 
 !
-!
+      NPR   = rdinp(iequal,iunit,16)
+      NRMAX = rdinp(iequal,iunit,16)
+      NMAX  = rdinp(iequal,iunit,16)
+      ACC   = rdinp(iequal,iunit,16)
+      itmax = rdinp(iequal,iunit,16)
+
       NR      = NPR
       NR0     = NPR
       STEP    = 10.**(1./NR)
       PRSTEP  = INT(STEP)
       IF (KTHICK.EQ.1) STEP = 1./STEP
 
-!
-!       PRINT CONTROL
+! CEP Stuff:
+
+! Method of solution. In single-zone we don't care because we always use Newton
+! In CEP, we can use either NEWTON or ALI
+      call rdinps2(iequal,15,str,L,UCASE)
+      if (kbeta == 3) then
+         IF(str(1:L) .eq. 'NEWTON') THEN
+            kbeta = 3
+         ELSE IF(str(1:L) .eq. 'ALI') THEN
+            kbeta = 4
+         endif
+      endif
+
+      cep_precision = rdinp(iequal,15,16)
+
+      nInitialZones = rdinp(iequal,15,16)
+
+! Output value of mu
+      mu_output = rdinp(iequal,15,16)
+!__________________________________________________________
+
+
+!     PRINT CONTROL
 !
 !     Printing molecular data
 !
@@ -619,9 +591,9 @@ contains
 !     Number of cooling lines to print
 !      nbig    = rdinp(iequal,15,16)
 ! M.E. Sep 18, 2013:
-! No need for this to be an option because lines that contribute 
-! less than 1% to total emission are not printed irrespective of nbig     
-      nbig = 50
+! No need for this to be an option because lines that contribute
+! less than 1% to total emission are not printed irrespective of nbig
+      nbig = 100
 
       allocate(final(n_prt_cols,nmax))
 
@@ -671,6 +643,7 @@ contains
       endif
 
       write(16,'(78(''-'')/,/,6x,"*** All optical depths are listed at line center ***",/)')
+!__________________________________________________________
 
 !     Finish up: renormalize density with the partition function when needed
 !
@@ -706,6 +679,7 @@ contains
 
 !     Dust absorption coefficients when needed:
       If (dustAbsorption) qdust = Xdust*nH2*qdust
+!      stop
       return
 
   end SUBROUTINE INPUT
@@ -1032,6 +1006,7 @@ contains
       if(ier .eq. 0) write(16,"(/6x,'Terminated. Number of steps reached',I5/)") Nmax
       if(ier .eq. 1) write(16,"(/6x,'Normal completion. Dimension is ',1pe10.2,' cm'/)") r
       if(ier .eq. 2) write(16,"(/6x,'Normal completion. H2 column is',1pe10.2,' cm-2')") Hcol
+      if(ier .eq. 3) write(16,"(/6x,'Normal completion. Molecular column is',1pe10.2,' cm-2/kms')") mcol
 
       IF (KTHICK.EQ.0) THEN
          n1 = 1
@@ -1046,12 +1021,22 @@ contains
 
 !     Attach original Summary to Output file
       unit = 16
-      write(unit,"(/T35,'SUMMARY')")
-      write(unit,FMT='(/6x,A,8x,A,3x,A,2x,A,/6x,A,10x,A,8x,A,5x,A)') &
-           &'R','H2 column','mol column','emission',&
-           &'cm','cm-2','cm-2','erg/s/mol'
+!      write(unit,"(/T35,'SUMMARY')")
+!      write(unit,FMT='(/6x,A,8x,A,3x,A,2x,A,/6x,A,10x,A,8x,A,5x,A)') &
+!           &'R','H2 column','mol column','emission',&
+!           &'cm','cm-2','cm-2','erg/s/mol'
+      if (dustAbsorption) then
+         write(unit,"(/T21,'*** SUMMARY ***')")
+         write(unit,"(/8x,'mol column',5x,'emission',9x,'dust'&
+                   /9x,'cm-2/kms',6x,'erg/s/mol',8x,'tau_V')")
+      else
+         write(unit,"(/T14,'*** SUMMARY ***')")
+         write(unit,"(/8x,'mol column',5x,'emission',&
+                   /9x,'cm-2/kms',6x,'erg/s/mol')")
+      end if
       do i = n1, n2, dn
-         write(unit,'(6(1pe12.3))') (final(k,i), k = 1,4)
+!         write(unit,'(6(1pe12.3))') (final(k,i), k = 1,4)
+         write(unit,'(5x,6(1pe12.3,3x))') (final(k,i), k = 3,4 + idust)
       end do
       if(n_tr .eq. 0) return
 
@@ -1067,7 +1052,7 @@ contains
          header  = "(/,T5,'Nmol',T15,'Tex',T25,'tau',T35,'Flux',T42,'delta(Tb)',T52,'del(TRJ)',&
            T64,'Xdust',T75,'eta',T86,'p1',T96,'p2',T104,'Gamma1',T114,'Gamma2',T124,'Gamma')"
          header2 = "(T3,'cm-2/kms',T16,'K',T36,'Jy',T45,'K',T55,'K',T83,'cm-3s-1',T93,'cm-3s-1',3(6x,'s-1 '))"
-      end if     
+      end if
 
       do j = 1, n_tr
          if (1.0e-4*wl(itr(j),jtr(j)) .ge. 1) then
@@ -1145,14 +1130,21 @@ contains
       if(kpr .eq. 0) return
 
 !     kpr > 0;  more detailed printing
-      write(16,FMT='(/2X,A,1pe9.2,A,5X,A,1pe9.2,A,5X,A,1pe9.2,A,/2X,A,1pe9.2,A)') &
-        &'R = ',R,'cm', 'H2 column = ',HCOL,'cm-2','mol column = ',MCOL,&
-        &' cm-2','Total emission = ',TCOOL,' erg/s/mol '
+!      write(16,FMT='(/2X,A,1pe9.2,A,5X,A,1pe9.2,A,5X,A,1pe9.2,A,/2X,A,1pe9.2,A)') &
+!        &'R = ',R,'cm', 'H2 column = ',HCOL,'cm-2','mol column = ',MCOL,&
+!        &' cm-2/kms','Total emission = ',TCOOL,' erg/s/mol '
 
+      write(16,"(/2X,'Molecular column =',1pe9.2,' cm-2/kms', T45,&
+                       'Total emission =',1pe9.2,' erg/s/mol')") MCOL, TCOOL
+      if (dustAbsorption)  &
+         write(16,"(2X,'H-nuclei column  =',1pe9.2,' cm-2', T45,'tau(dust) at V =',1pe9.2)") &
+                 Hcol, Xdust*Hcol
+      write(16,*)
+      
 !     print populations, if required:
       if (kpr .ge. 2) call printx(x)
       if (kpr .eq. 1 .or. kpr .eq. 3) then
-!     if(nbig .gt. 0) then :  No longer needed; 
+!     if(nbig .gt. 0) then :  No longer needed;
 !                             print all lines contributiong more the 1% to total
 !     find the main cooling lines and print:
       call ordera(cool,n,index,jndex,nbig)
@@ -1276,13 +1268,16 @@ contains
 !     for final summary printing
       nprint = nprint + 1
       hcol = nh2*r
-      mcol = nmol*r
-      AUX = 1.D23*MCOL*CL/V
+!      mcol = nmol*r
+!      AUX = 1.D23*MCOL*CL/V
+!     Molecular column is now intrinsically per bandwith in kms:
+      mcol = nmol*r*1.d5/V
+      aux = 1.D18*mcol*CL
       final( 1,nprint) = r
       final( 2,nprint) = hcol
       final( 3,nprint) = mcol
       final( 4,nprint) = tcool
-      final( 5,nprint) = xi
+      final( 5,nprint) = Xdust*hcol
       if(n_tr .eq. 0) return
 
 !  Printing elements for every selected transition:
@@ -1292,7 +1287,7 @@ contains
 !     4 - flux density in Jy, obtained from COOL(i,j) which is in erg/s/mol
 !     5 - line brightness temperature against CMB, Tbr
 !     6 - RJ equivalent of Tbr
-!  When dust absorption is on, next element is  
+!  When dust absorption is on, next element is
 !     7 - fractional contribution of dust to tau when there's dust absorption
 !  For masers only; all elements are pushed by 1 when dust absorption is on:
 !     7 - inversion efficiency
@@ -1309,8 +1304,8 @@ contains
          Tex   = Tl/DLOG(POP(m(1))/POP(m(2)))
          depth = tau(m(2),m(1))
          call Tbr4Tx(Tl,Tex,depth,Tbr,TRJ)
- 
-         fin_tr(k, 1,nprint) = mcol*(1.d5/v)
+
+         fin_tr(k, 1,nprint) = mcol
          fin_tr(k, 2,nprint) = Tex
          fin_tr(k, 3,nprint) = depth
          fin_tr(k, 4,nprint) = aux*cool(m(2),m(1))/freq(m(2),m(1))

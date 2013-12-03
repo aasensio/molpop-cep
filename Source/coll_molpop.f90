@@ -42,13 +42,20 @@ contains
 					write(17,"(4x,I1,'.  Relative weight of collision partner = ',f5.2)") i, fr_col(i)
 				endif
 			endif
-        	
-        	call rdinps2(iequal,15,Method,LMeth,UCASE)
+
+!************************************************************************        	
+!ME 2013-11-28:
+!   Do away with all the cross-section options. Use only Table entry
+!************************************************************************        	
+
+!        	call rdinps2(iequal,15,Method,LMeth,UCASE)
 			
-        	if (Method(1:LMeth) .eq. 'TABLE') then
+!        	if (Method(1:LMeth) .eq. 'TABLE') then
+        	if (.true.) then
         		call rdinps(iequal,15,fn_kij(i))
         		call rdinps2(iequal,15,Option,LOpt,UCASE) 
-        		gxsec(i) = rdinp(iequal,15,16)
+!        		gxsec(i) = rdinp(iequal,15,16)
+        		gxsec(i) = 1.0
         	
           	i_col_src(i) = 1
           	L = fsize(fn_kij(i))
