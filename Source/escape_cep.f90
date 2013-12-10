@@ -202,6 +202,7 @@ contains
 
    		coef = 1.d0/(6.d0*sqrt(3.d0))
    		tau = tau_in / dsqrt(PI)
+   		dbdx = 0.d0
 			
 			if (tau < 0.d0) then
 				if (tau < -60.d0) tau = -60.d0
@@ -301,6 +302,8 @@ contains
 						
 ! Adapt the column density so that the optical depth of the lines fulfills the
 ! values depending on the chosen strategy
+
+		factor = 1.d0
 
 ! Start from optically thin		
 		if (kthick_strategy == 0) then
@@ -1171,6 +1174,7 @@ contains
 	integer, save :: ntry
 	data ntry /0/
 	
+	ng = .FALSE.
 	if (n < 1 .or. n > 5) return
 	ntry = ntry + 1
 	yy(:,ntry) = y

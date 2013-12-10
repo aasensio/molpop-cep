@@ -14,18 +14,21 @@ Samples/CO/Rad1
 Samples/CO/Rad2
 Samples/CO/Rad3
 
-%Following didn't run at all:
-%Samples/CO/CEP_variable
+% CO with variable conditions. No grid refinement
+Samples/CO/CEP_variable
 
-%Problems in the following when re-gridding from 10 to 15:
-%Samples/CO/CEP_const
+% CO with variable conditions. Grid refinement. Takes long time
+% Samples/CO/CEP_variable_convergence
+
+% CO with constant physical conditions, increasing strategy and grid convergence. Takes long time
+Samples/CO/CEP_const
 
 
 Samples/C+/C+_CEP
-
+ 
 Samples/H2O/para
 Samples/H2O/ortho
-
+ 
 Samples/OH/OH_overlap
 Samples/OH/OH_old_dust
 

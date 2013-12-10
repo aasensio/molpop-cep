@@ -12,7 +12,8 @@
 COMPILER = ifort
 #COMPILER = gfortran
 
-OPTIONS = -c -O3
+OPTIONS = -c -O3 
+#-Waliasing -Wampersand -Wconversion -Wsurprising -Wc-binding-type -Wintrinsics-std -Wintrinsic-shadow -Wline-truncation -Wtarget-lifetime -Wreal-q-constant -Wunused
 
 FINAL_EXECUTABLE = molpop
 
