@@ -15,7 +15,7 @@ Samples/CO/Rad2
 Samples/CO/Rad3
 
 % CO with variable conditions. No grid refinement
-% Samples/CO/CEP_variable
+Samples/CO/CEP_variable
 
 % CO with variable conditions. Grid refinement. Takes long time
 % Samples/CO/CEP_variable_convergence

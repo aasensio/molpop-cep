@@ -467,8 +467,8 @@ contains
 ! Carry out the regridding. It doubles the number of grid points and
 ! generates all the structures again
 !-----------------------------------------------------------------		
-	subroutine regrid(reset)
-	logical :: reset	
+	subroutine regrid(reset, messagesOn)
+	logical :: reset, messagesOn
 	real(kind=8) :: deltaz, ztemp, tautemp, tau0
 	real(kind=8), allocatable :: pop_previous_step(:), dz_before(:), pop_spline(:)
 	real(kind=8), allocatable :: pop_before(:), pop_after(:), dz_after(:), dz_previous_step(:)
@@ -515,10 +515,12 @@ contains
 ! Change the number of zones. If reset is set, then put the initial number of grid points
 		if (reset) then
 			npoints = npoints_initial
-			if (verbose == 1) then
-				write(*,*) '*************************'
-				write(*,*) ' --- RESET REGRIDDING ---'
-				write(*,*) '*************************'
+			if (messagesOn) then
+				if (verbose == 1) then
+					write(*,*) '*************************'
+					write(*,*) ' --- RESET REGRIDDING ---'
+					write(*,*) '*************************'
+				endif
 			endif
 		else
 		

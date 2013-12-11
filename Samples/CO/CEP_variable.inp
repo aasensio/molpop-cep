@@ -82,7 +82,7 @@ __________________________________________________________________
     Max # of iterations allowed to reach solution        = 50
    
   NUMERICS CONTROLS RELEVANT ONLY FOR CEP:
-    CEP solution method (NEWTON/ALI) = NEWTON
+    CEP solution method (NEWTON/ALI) = NEWTON 
     Precision in grid CEP convergence (0 to ignore convergence) = 0
     Initial # of zones (relevant only if no file with phys. conditions) = 5   
     Angle of output intensity mu = 0.5

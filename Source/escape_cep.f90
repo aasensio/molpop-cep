@@ -949,14 +949,14 @@ contains
 			
 			if(errx <= tolx) then				
 				if (verbose == 1) then
-					write(*,*) 'Iteration ',k, '   rel_error: ',errx
+					write(*,FMT='(A,I4,A,E)') 'Iteration ',k, ' -  Relat. error: ',errx
 				endif
 				deallocate(fjac)
 				return
 			endif
 			
 			if (verbose == 1) then
-				write(*,*) 'Iteration ',k, '   rel_error: ',errx
+				write(*,FMT='(A,I4,A,E)') 'Iteration ',k, ' -  Relat. error: ',errx
 			endif
 		enddo
 		
@@ -1118,7 +1118,7 @@ contains
 					itracc = itracc + 1
 
 					if (verbose == 1) then
-						write(*,*) 'Iter: ',iter-1, '   rel_error: ',relat_error, ' - lev: ', relat_error_level
+						write(*,FMT='(A,I4,A,E,A,I3)') 'Iteration: ',iter-1, ' -  Relat. error: ',relat_error, ' - Level with largest change: ', relat_error_level
 					endif
 
 				enddo
@@ -1134,13 +1134,13 @@ contains
 			
 ! Do the regridding
 			maximum_relative_change_pop = maxval(abs(pop-pop_previous_regrid) / pop)
-			if (verbose == 1) then
+			if (verbose == 1 .and. cep_convergence_maximum_iter /= 1) then
 				write(*,*) 'Grid relat. change : ', maximum_relative_change_pop
 			endif
 			if (maximum_relative_change_pop > cep_precision &
 				.and. loop <= cep_convergence_maximum_iter) then
 				
-				call regrid(.FALSE.)
+				call regrid(.FALSE.,.TRUE.)
 			endif
 									
 		enddo

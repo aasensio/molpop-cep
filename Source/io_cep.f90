@@ -72,8 +72,7 @@ contains
 		read(28,*) cep_precision, printings_per_decade, newton_maximum_iter, nInitialZones
 		
 ! Initial number of zones
-		npoints = nInitialZones
-		print *, 'HEY', nInitialZones
+		npoints = nInitialZones		
 
 ! Initial number of points for all calculations
 		npoints_initial = npoints

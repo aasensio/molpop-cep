@@ -77,11 +77,13 @@ contains
 			
 			call adapt_col_density_strategy(pop)
 			col_density_now = sum(dz * factor_abundance * abundance * nh)
+			write(*,*) 'Abundance factor : ', factor_abundance
+			write(*,*) 'Using column density : ', col_density_now
+			write(*,*) 'deltaz : ', dz(1)
+			
 		endif
 		
-		write(*,*) 'Abundance factor : ', factor_abundance
-		write(*,*) 'Using column density : ', col_density_now
-		write(*,*) 'deltaz : ', dz(1)
+		
 						
 ! Perform a first non-linear solution
 		if (verbose == 2) then
@@ -110,7 +112,7 @@ contains
 		call write_intermediate_results(pop,popl)
 				
 ! Do the regridding to the original
-		call regrid(.TRUE.)
+		call regrid(.TRUE.,.FALSE.)
 		
 ! If "increasing" or "decreasing" column density, do the calculations
 ! 		if ((kthick_strategy == 0 .or. kthick_strategy == 1) .and. &
@@ -137,13 +139,16 @@ contains
 						finished = .TRUE.
 					endif
 				endif
-				write(*,*) 'Abundance factor : ', factor_abundance
-				write(*,*) 'Using column density : ', col_density_now
-				write(*,*) 'deltaz : ', dz(1)
-					
-				if (verbose == 1) then
+				
+				if (kthick_strategy <= 1) then
 					write(*,*) 'Abundance factor : ', factor_abundance
 					write(*,*) 'Using column density : ', col_density_now
+					write(*,*) 'deltaz : ', dz(1)
+						
+					if (verbose == 1) then
+						write(*,*) 'Abundance factor : ', factor_abundance
+						write(*,*) 'Using column density : ', col_density_now
+					endif
 				endif
 				
 				popold = pop
@@ -185,7 +190,7 @@ contains
 				global_iter = global_iter + 1
 				
 ! We have finished this problem. Regrid to the original grid
-				call regrid(.TRUE.)
+				call regrid(.TRUE.,.TRUE.)
 				
 			enddo
 		

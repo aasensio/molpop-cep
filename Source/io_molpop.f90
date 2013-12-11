@@ -437,20 +437,27 @@ contains
       else if(str(1:L) .eq. 'DECREASING') then
          KTHICK = 1
          write(16,*) 'Using DECREASING strategy'
-      else if(str(1:L) .eq. 'FIXED') then
-         KTHICK = 2
-! Since no physical dimensions are given in the case of constant physical conditions
-! in needs to be done in the increasing/decreasing mode
-         if (trim(adjustl(to_upper(file_physical_conditions))) == 'NONE') then
-            OPT = 'FIXED mode. It needs a file with physical conditions'
-            error = error_message(opt,str)
-            return
-         endif
-      else
-         OPT = 'solution strategy'
+      else if (trim(adjustl(to_upper(file_physical_conditions))) == 'NONE') then
+			OPT = 'solution strategy'
          error = error_message(opt,str)
          return
-      end if
+      endif
+      
+      if (trim(adjustl(to_upper(file_physical_conditions))) /= 'NONE') then
+			KTHICK = 2
+			write(16,*) 'Working with fixed physical conditions'
+		endif
+		
+!       else if(str(1:L) .eq. 'FIXED') then
+!          KTHICK = 2
+! ! Since no physical dimensions are given in the case of constant physical conditions
+! ! in needs to be done in the increasing/decreasing mode
+!          if (trim(adjustl(to_upper(file_physical_conditions))) == 'NONE') then
+!             OPT = 'FIXED mode. It needs a file with physical conditions'
+!             error = error_message(opt,str)
+!             return
+!          endif
+      
       TAUM  = rdinp(iequal,iunit,16)
       COLM  = rdinp(iequal,iunit,16)
 
