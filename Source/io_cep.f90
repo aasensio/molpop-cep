@@ -13,10 +13,8 @@ contains
 
 		verbose = 1
 		
-		
 		open(unit=28,file='interface.dat',action='read',status='old')
 		
-
 ! Read if there is a file with the physical conditions
 		read(28,FMT='(A)') file_physical_conditions
 		
@@ -171,8 +169,8 @@ contains
 		close(28)
 		
 ! Delete the intermediate file
- 		open(unit=28,file='interface.dat',action='read',status='old')
- 		close(28,STATUS='delete')
+!  		open(unit=28,file='interface.dat',action='read',status='old')
+!  		close(28,STATUS='delete')
 		
 	end subroutine read_intermediate_data
 	

@@ -259,7 +259,7 @@ contains
    		alphap2 = salida
 			
 		endif
-   	   	   	
+		   	   	   	
    end function alphap2	              	
 		
 !---------------------------------------------------------
@@ -410,7 +410,7 @@ contains
 			enddo
 			
 		enddo
-  
+		  
    end subroutine calcJbar_Lstar_cep
    
 !---------------------------------------------------------
@@ -949,14 +949,14 @@ contains
 			
 			if(errx <= tolx) then				
 				if (verbose == 1) then
-					write(*,FMT='(A,I4,A,E)') 'Iteration ',k, ' -  Relat. error: ',errx
+					write(*,FMT='(A,I4,A,E13.6)') 'Iteration ',k, ' -  Relat. error: ',errx
 				endif
 				deallocate(fjac)
 				return
 			endif
 			
 			if (verbose == 1) then
-				write(*,FMT='(A,I4,A,E)') 'Iteration ',k, ' -  Relat. error: ',errx
+				write(*,FMT='(A,I4,A,E13.6)') 'Iteration ',k, ' -  Relat. error: ',errx
 			endif
 		enddo
 		
@@ -1118,7 +1118,8 @@ contains
 					itracc = itracc + 1
 
 					if (verbose == 1) then
-						write(*,FMT='(A,I4,A,E,A,I3)') 'Iteration: ',iter-1, ' -  Relat. error: ',relat_error, ' - Level with largest change: ', relat_error_level
+						write(*,FMT='(A,I4,A,E13.6,A,I3)') 'Iteration: ',iter-1, ' -  Relat. error: ',&
+							relat_error, ' - Level with largest change: ', relat_error_level
 					endif
 
 				enddo

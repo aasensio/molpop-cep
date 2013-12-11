@@ -1,0 +1,975 @@
+make: `molpop' is up to date.
+gfortran -c -O3 -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Wunused global_molpop.f90
+gfortran -c -O3 -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Wunused maths_molpop.f90 
+maths_molpop.f90:29.12:
+
+            '    Wrong option for ',a,':  ',a)") trim(adjustl(opt)), trim(adjus
+            1
+Warning: Missing '&' in continued character constant at (1)
+maths_molpop.f90:1699.13:
+
+             'wavelength must be positive and the entry non-negative')") trim(a
+             1
+Warning: Missing '&' in continued character constant at (1)
+maths_molpop.f90:1360.4:
+
+1000   continue
+    1
+Warning: Label 1000 at (1) defined but not used
+maths_molpop.f90:782.5:
+
+    1 return
+     1
+Warning: Label 1 at (1) defined but not used
+maths_molpop.f90:365.5:
+
+   12   ICOL=(LPIV-1)*DIM+1
+     1
+Warning: Label 12 at (1) defined but not used
+maths_molpop.f90:349.5:
+
+    8   JCOL=ICOL+NMIN1
+     1
+Warning: Label 8 at (1) defined but not used
+maths_molpop.f90:328.5:
+
+    6 DETER=DETER*PIVOT
+     1
+Warning: Label 6 at (1) defined but not used
+maths_molpop.f90:315.5:
+
+    4   DETER=-DETER
+     1
+Warning: Label 4 at (1) defined but not used
+maths_molpop.f90:310.5:
+
+    3 ICOL=LPIV-PIVCOL+1
+     1
+Warning: Label 3 at (1) defined but not used
+maths_molpop.f90:302.5:
+
+    1   PIVOT=A(I)
+     1
+Warning: Label 1 at (1) defined but not used
+maths_molpop.f90:1805.17:
+
+    integer i,j,k, L
+                 1
+Warning: Unused variable 'k' declared at (1)
+maths_molpop.f90:1175.34:
+
+      character card*(*), term, ch
+                                  1
+Warning: Unused variable 'ch' declared at (1)
+maths_molpop.f90:1061.29:
+
+      character card*(232),cr,prev,term,next
+                             1
+Warning: Unused variable 'cr' declared at (1)
+maths_molpop.f90:957.29:
+
+      character card*(232),cr
+                             1
+Warning: Unused variable 'cr' declared at (1)
+maths_molpop.f90:903.29:
+
+      character card*(232),cr
+                             1
+Warning: Unused variable 'cr' declared at (1)
+maths_molpop.f90:902.15:
+
+      integer i,iunit,ind,first,last,next
+               1
+Warning: Unused variable 'i' declared at (1)
+maths_molpop.f90:151.30:
+
+      DOUBLE PRECISION B,Q,AUX,AUX1,AUX2,COEF
+                              1
+Warning: Unused variable 'aux' declared at (1)
+maths_molpop.f90:151.35:
+
+      DOUBLE PRECISION B,Q,AUX,AUX1,AUX2,COEF
+                                   1
+Warning: Unused variable 'aux1' declared at (1)
+maths_molpop.f90:151.40:
+
+      DOUBLE PRECISION B,Q,AUX,AUX1,AUX2,COEF
+                                        1
+Warning: Unused variable 'aux2' declared at (1)
+maths_molpop.f90:151.24:
+
+      DOUBLE PRECISION B,Q,AUX,AUX1,AUX2,COEF
+                        1
+Warning: Unused variable 'b' declared at (1)
+maths_molpop.f90:151.45:
+
+      DOUBLE PRECISION B,Q,AUX,AUX1,AUX2,COEF
+                                             1
+Warning: Unused variable 'coef' declared at (1)
+maths_molpop.f90:154.20:
+
+      INTEGER INIT,I,J
+                    1
+Warning: Unused variable 'i' declared at (1)
+maths_molpop.f90:154.22:
+
+      INTEGER INIT,I,J
+                      1
+Warning: Unused variable 'j' declared at (1)
+maths_molpop.f90:151.26:
+
+      DOUBLE PRECISION B,Q,AUX,AUX1,AUX2,COEF
+                          1
+Warning: Unused variable 'q' declared at (1)
+gfortran -c -O3 -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Wunused coll_molpop.f90
+coll_molpop.f90:128.1:
+
+2          write(16,"(8x,'Collision rates from data file ',a,/8x,a,/8x,a)") fn_
+ 1
+Warning: Label 2 at (1) defined but not used
+coll_molpop.f90:258.12:
+
+      ntemp=rdinp(.true.,unit,16)
+            1
+Warning: Possible change of value in conversion from REAL(8) to INTEGER(4) at (1)
+coll_molpop.f90:21.10:
+
+  n_col = rdinp(iequal,15,16)
+          1
+Warning: Possible change of value in conversion from REAL(8) to INTEGER(4) at (1)
+coll_molpop.f90:323.19:
+
+ character*120 line
+                   1
+Warning: Unused variable 'line' declared at (1)
+coll_molpop.f90:325.34:
+
+ integer mm,mk,jmaxsio, n_comments
+                                  1
+Warning: Unused variable 'n_comments' declared at (1)
+coll_molpop.f90:245.50:
+
+   integer i,j,k,kk,i_extrap,ntemp,unit,n_comments
+                                                  1
+Warning: Unused variable 'n_comments' declared at (1)
+coll_molpop.f90:12.26:
+
+ integer :: i, l, k, iunit
+                          1
+Warning: Unused variable 'iunit' declared at (1)
+coll_molpop.f90:12.19:
+
+ integer :: i, l, k, iunit
+                   1
+Warning: Unused variable 'k' declared at (1)
+coll_molpop.f90:16.35:
+
+ character*72 TableName, TableInfo1, TableInfo2
+                                   1
+Warning: Unused variable 'tableinfo1' declared at (1)
+coll_molpop.f90:16.47:
+
+ character*72 TableName, TableInfo1, TableInfo2
+                                               1
+Warning: Unused variable 'tableinfo2' declared at (1)
+coll_molpop.f90:16.23:
+
+ character*72 TableName, TableInfo1, TableInfo2
+                       1
+Warning: Unused variable 'tablename' declared at (1)
+gfortran -c -O3 -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Wunused cep_molpop_interface.f90
+gfortran -c -O3 -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Wunused io_molpop.f90
+io_molpop.f90:1038.19:
+
+                   /9x,'cm-2/kms',6x,'erg/s/mol',8x,'tau_V')")
+                   1
+Warning: Missing '&' in continued character constant at (1)
+io_molpop.f90:1042.19:
+
+                   /9x,'cm-2/kms',6x,'erg/s/mol')")
+                   1
+Warning: Missing '&' in continued character constant at (1)
+io_molpop.f90:1056.8:
+
+        T65,'eta',T75,'p1',T85,'p2',T94,'Gamma1',T104,'Gamma2',T114,'Gamma')"
+        1
+Warning: Missing '&' in continued character constant at (1)
+io_molpop.f90:1060.11:
+
+           T64,'Xdust',T75,'eta',T86,'p1',T96,'p2',T104,'Gamma1',T114,'Gamma2',
+           1
+Warning: Missing '&' in continued character constant at (1)
+io_molpop.f90:1145.23:
+
+                       'Total emission =',1pe9.2,' erg/s/mol')") MCOL, TCOOL
+                       1
+Warning: Missing '&' in continued character constant at (1)
+io_molpop.f90:1121.18:
+
+      kool(arg) = 100.0*arg/tcool + 0.5
+                  1
+Warning: Possible change of value in conversion from REAL(8) to INTEGER(4) at (1)
+io_molpop.f90:1000.3:
+
+810   write(6,'(6x,3a)') 'File ',fn_aij(inmin(fn_aij):inmax(fn_aij)),' is missi
+   1
+Warning: Label 810 at (1) defined but not used
+io_molpop.f90:1226.19:
+
+            kool = 100.0*coolev(i)/tcool +0.5
+                   1
+Warning: Possible change of value in conversion from REAL(8) to INTEGER(4) at (1)
+io_molpop.f90:91.10:
+
+      n = rdinp(iequal,15,16)
+          1
+Warning: Possible change of value in conversion from REAL(8) to INTEGER(4) at (1)
+io_molpop.f90:124.16:
+
+      vib_max = rdinp(iequal,15,16)
+                1
+Warning: Possible change of value in conversion from REAL(8) to INTEGER(4) at (1)
+io_molpop.f90:126.21:
+
+         j_max     = rdinp(iequal,15,16)
+                     1
+Warning: Possible change of value in conversion from REAL(8) to INTEGER(4) at (1)
+io_molpop.f90:289.24:
+
+         n_zones_slab = rdinp(iequal,45,16)
+                        1
+Warning: Possible change of value in conversion from REAL(8) to INTEGER(4) at (1)
+io_molpop.f90:472.14:
+
+      NPR   = rdinp(iequal,iunit,16)
+              1
+Warning: Possible change of value in conversion from REAL(8) to INTEGER(4) at (1)
+io_molpop.f90:473.14:
+
+      NRMAX = rdinp(iequal,iunit,16)
+              1
+Warning: Possible change of value in conversion from REAL(8) to INTEGER(4) at (1)
+io_molpop.f90:474.14:
+
+      NMAX  = rdinp(iequal,iunit,16)
+              1
+Warning: Possible change of value in conversion from REAL(8) to INTEGER(4) at (1)
+io_molpop.f90:476.14:
+
+      itmax = rdinp(iequal,iunit,16)
+              1
+Warning: Possible change of value in conversion from REAL(8) to INTEGER(4) at (1)
+io_molpop.f90:499.22:
+
+      nInitialZones = rdinp(iequal,15,16)
+                      1
+Warning: Possible change of value in conversion from REAL(8) to INTEGER(4) at (1)
+io_molpop.f90:609.13:
+
+      n_tr = rdinp(iequal,15,16)
+             1
+Warning: Possible change of value in conversion from REAL(8) to INTEGER(4) at (1)
+io_molpop.f90:617.20:
+
+           itr(i) = rdinp(iequal,15,16)
+                    1
+Warning: Possible change of value in conversion from REAL(8) to INTEGER(4) at (1)
+io_molpop.f90:618.20:
+
+           jtr(i) = rdinp(iequal,15,16)
+                    1
+Warning: Possible change of value in conversion from REAL(8) to INTEGER(4) at (1)
+io_molpop.f90:1248.24:
+
+   double precision flux,Tex,Tl,Tbr,TRJ
+                        1
+Warning: Unused variable 'flux' declared at (1)
+io_molpop.f90:1244.25:
+
+   integer m(2),i,j,k,i_m
+                         1
+Warning: Unused variable 'i_m' declared at (1)
+io_molpop.f90:1245.48:
+
+   double precision x(n),cool(:,:),taumaser,pop1,pop2,eta
+                                                1
+Warning: Unused variable 'pop1' declared at (1)
+io_molpop.f90:1245.53:
+
+   double precision x(n),cool(:,:),taumaser,pop1,pop2,eta
+                                                     1
+Warning: Unused variable 'pop2' declared at (1)
+io_molpop.f90:1245.43:
+
+   double precision x(n),cool(:,:),taumaser,pop1,pop2,eta
+                                           1
+Warning: Unused variable 'taumaser' declared at (1)
+io_molpop.f90:1117.30:
+
+  double precision x(n),bright,cool(:,:)
+                              1
+Warning: Unused variable 'bright' declared at (1)
+io_molpop.f90:1118.45:
+
+  double precision arg,rprev,test,tex,eta,Tbr
+                                             1
+Warning: Unused variable 'tbr' declared at (1)
+io_molpop.f90:1009.34:
+
+      integer ier,i,j,k,unit,unit2,n1,n2,dn
+                                  1
+Warning: Unused variable 'unit2' declared at (1)
+io_molpop.f90:891.26:
+
+  integer i,j,in,k,l,ii,i1,j1,i2,j2
+                          1
+Warning: Unused variable 'i1' declared at (1)
+io_molpop.f90:891.32:
+
+  integer i,j,in,k,l,ii,i1,j1,i2,j2
+                                1
+Warning: Unused variable 'i2' declared at (1)
+io_molpop.f90:891.23:
+
+  integer i,j,in,k,l,ii,i1,j1,i2,j2
+                       1
+Warning: Unused variable 'ii' declared at (1)
+io_molpop.f90:891.29:
+
+  integer i,j,in,k,l,ii,i1,j1,i2,j2
+                             1
+Warning: Unused variable 'j1' declared at (1)
+io_molpop.f90:891.35:
+
+  integer i,j,in,k,l,ii,i1,j1,i2,j2
+                                   1
+Warning: Unused variable 'j2' declared at (1)
+io_molpop.f90:891.18:
+
+  integer i,j,in,k,l,ii,i1,j1,i2,j2
+                  1
+Warning: Unused variable 'k' declared at (1)
+io_molpop.f90:891.20:
+
+  integer i,j,in,k,l,ii,i1,j1,i2,j2
+                    1
+Warning: Unused variable 'l' declared at (1)
+io_molpop.f90:889.19:
+
+  character*80 line
+                   1
+Warning: Unused variable 'line' declared at (1)
+io_molpop.f90:27.42:
+
+  integer LMeth, LOpt, nradiat, ComingFrom, n_modified
+                                          1
+Warning: Unused variable 'comingfrom' declared at (1)
+io_molpop.f90:18.11:
+
+  integer k, npoints_local
+           1
+Warning: Unused variable 'k' declared at (1)
+io_molpop.f90:17.36:
+
+  integer i,j, npr, iunit, L, L2, L3
+                                    1
+Warning: Unused variable 'l3' declared at (1)
+io_molpop.f90:27.15:
+
+  integer LMeth, LOpt, nradiat, ComingFrom, n_modified
+               1
+Warning: Unused variable 'lmeth' declared at (1)
+io_molpop.f90:27.21:
+
+  integer LMeth, LOpt, nradiat, ComingFrom, n_modified
+                     1
+Warning: Unused variable 'lopt' declared at (1)
+io_molpop.f90:24.27:
+
+  character*168 str, Method, Option, OPT, header
+                           1
+Warning: Unused variable 'method' declared at (1)
+io_molpop.f90:20.31:
+
+  integer unit,unit2,mol_maxlev
+                               1
+Warning: Unused variable 'mol_maxlev' declared at (1)
+io_molpop.f90:27.54:
+
+  integer LMeth, LOpt, nradiat, ComingFrom, n_modified
+                                                      1
+Warning: Unused variable 'n_modified' declared at (1)
+io_molpop.f90:18.26:
+
+  integer k, npoints_local
+                          1
+Warning: Unused variable 'npoints_local' declared at (1)
+io_molpop.f90:24.35:
+
+  character*168 str, Method, Option, OPT, header
+                                   1
+Warning: Unused variable 'option' declared at (1)
+io_molpop.f90:28.35:
+
+  character*72 TableName, TableInfo
+                                   1
+Warning: Unused variable 'tableinfo' declared at (1)
+io_molpop.f90:28.24:
+
+  character*72 TableName, TableInfo
+                        1
+Warning: Unused variable 'tablename' declared at (1)
+io_molpop.f90:22.57:
+
+  double precision aux, w,Tbb,tau_d, T_d, Lbol,dist, temp
+                                                         1
+Warning: Unused variable 'temp' declared at (1)
+gfortran -c -O3 -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Wunused maths_cep.f90	
+maths_cep.f90:704.33:
+
+  real(kind=8) :: a, b, h, extrap
+                                 1
+Warning: Unused variable 'extrap' declared at (1)
+maths_cep.f90:29.22:
+
+   integer :: locat(1), loc
+                      1
+Warning: Unused variable 'locat' declared at (1)
+gfortran -c -O3 -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Wunused constants_cep.f90
+gfortran -c -O3 -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Wunused global_cep.f90	
+gfortran -c -O3 -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Wunused io_cep.f90
+io_cep.f90:440.64:
+
+ real(kind=8) :: sig, glu, acon, chim, chip, tau0, deltaz, chilp, col_up, col_l
+                                                                1
+Warning: Unused variable 'chilp' declared at (1)
+io_cep.f90:440.57:
+
+ real(kind=8) :: sig, glu, acon, chim, chip, tau0, deltaz, chilp, col_up, col_l
+                                                         1
+Warning: Unused variable 'deltaz' declared at (1)
+io_cep.f90:357.31:
+
+ real(kind=8) :: sig, glu, acon, agnus, chilp, chilm, snlte, slte
+                               1
+Warning: Unused variable 'acon' declared at (1)
+io_cep.f90:357.38:
+
+ real(kind=8) :: sig, glu, acon, agnus, chilp, chilm, snlte, slte
+                                      1
+Warning: Unused variable 'agnus' declared at (1)
+io_cep.f90:357.52:
+
+ real(kind=8) :: sig, glu, acon, agnus, chilp, chilm, snlte, slte
+                                                    1
+Warning: Unused variable 'chilm' declared at (1)
+io_cep.f90:357.45:
+
+ real(kind=8) :: sig, glu, acon, agnus, chilp, chilm, snlte, slte
+                                             1
+Warning: Unused variable 'chilp' declared at (1)
+io_cep.f90:358.48:
+
+ real(kind=8) :: sb(nz), source(nz), epsil_equiv, sum, total
+                                                1
+Warning: Unused variable 'epsil_equiv' declared at (1)
+io_cep.f90:359.42:
+
+ real(kind=8), allocatable :: freq_axis(:)
+                                          1
+Warning: Unused variable 'freq_axis' declared at (1)
+io_cep.f90:357.25:
+
+ real(kind=8) :: sig, glu, acon, agnus, chilp, chilm, snlte, slte
+                         1
+Warning: Unused variable 'glu' declared at (1)
+io_cep.f90:356.20:
+
+ integer :: i, j, ip, ipl, ipt, it, up, low
+                    1
+Warning: Unused variable 'ip' declared at (1)
+io_cep.f90:356.25:
+
+ integer :: i, j, ip, ipl, ipt, it, up, low
+                         1
+Warning: Unused variable 'ipl' declared at (1)
+io_cep.f90:356.30:
+
+ integer :: i, j, ip, ipl, ipt, it, up, low
+                              1
+Warning: Unused variable 'ipt' declared at (1)
+io_cep.f90:356.34:
+
+ integer :: i, j, ip, ipl, ipt, it, up, low
+                                  1
+Warning: Unused variable 'it' declared at (1)
+io_cep.f90:358.23:
+
+ real(kind=8) :: sb(nz), source(nz), epsil_equiv, sum, total
+                       1
+Warning: Unused variable 'sb' declared at (1)
+io_cep.f90:357.20:
+
+ real(kind=8) :: sig, glu, acon, agnus, chilp, chilm, snlte, slte
+                    1
+Warning: Unused variable 'sig' declared at (1)
+io_cep.f90:357.65:
+
+ real(kind=8) :: sig, glu, acon, agnus, chilp, chilm, snlte, slte
+                                                                 1
+Warning: Unused variable 'slte' declared at (1)
+io_cep.f90:357.59:
+
+ real(kind=8) :: sig, glu, acon, agnus, chilp, chilm, snlte, slte
+                                                           1
+Warning: Unused variable 'snlte' declared at (1)
+io_cep.f90:358.35:
+
+ real(kind=8) :: sb(nz), source(nz), epsil_equiv, sum, total
+                                   1
+Warning: Unused variable 'source' declared at (1)
+io_cep.f90:358.53:
+
+ real(kind=8) :: sb(nz), source(nz), epsil_equiv, sum, total
+                                                     1
+Warning: Unused variable 'sum' declared at (1)
+io_cep.f90:358.60:
+
+ real(kind=8) :: sb(nz), source(nz), epsil_equiv, sum, total
+                                                            1
+Warning: Unused variable 'total' declared at (1)
+io_cep.f90:185.64:
+
+ real(kind=8) :: sig, glu, acon, chim, chip, tau0, deltaz, chilp
+                                                                1
+Warning: Unused variable 'chilp' declared at (1)
+io_cep.f90:185.57:
+
+ real(kind=8) :: sig, glu, acon, chim, chip, tau0, deltaz, chilp
+                                                         1
+Warning: Unused variable 'deltaz' declared at (1)
+io_cep.f90:184.37:
+
+ integer :: up, low, it, ip, ipl, ipt, ip1, npmip1, i
+                                     1
+Warning: Unused variable 'ipt' declared at (1)
+io_cep.f90:184.50:
+
+ integer :: up, low, it, ip, ipl, ipt, ip1, npmip1, i
+                                                  1
+Warning: Unused variable 'npmip1' declared at (1)
+io_cep.f90:12.30:
+
+ integer :: i, j, up, low, deg, found, n_zones_slab, t1, t2
+                              1
+Warning: Unused variable 'deg' declared at (1)
+gfortran -c -O3 -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Wunused functions_cep.f90
+functions_cep.f90:402.19:
+
+   npoints_local = rdinp(.TRUE.,45,16)
+                   1
+Warning: Possible change of value in conversion from REAL(8) to INTEGER(4) at (1)
+functions_cep.f90:273.19:
+
+   npoints_local = rdinp(.TRUE.,45,16)
+                   1
+Warning: Possible change of value in conversion from REAL(8) to INTEGER(4) at (1)
+functions_cep.f90:833.84:
+
+d=8) :: A(nl, nl), B(nl), cul, acon, blu, glu, djbar, poptot, tol, U(nl,nl), V(
+                                                                           1         
+Warning: Unused variable 'u' declared at (1)
+functions_cep.f90:833.94:
+
+nl, nl), B(nl), cul, acon, blu, glu, djbar, poptot, tol, U(nl,nl), V(nl,nl), w(
+                                                                           1                   
+Warning: Unused variable 'v' declared at (1)
+functions_cep.f90:833.101:
+
+, B(nl), cul, acon, blu, glu, djbar, poptot, tol, U(nl,nl), V(nl,nl), w(nl), x(
+                                                                           1                          
+Warning: Unused variable 'w' declared at (1)
+functions_cep.f90:833.120:
+
+ blu, glu, djbar, poptot, tol, U(nl,nl), V(nl,nl), w(nl), x(nl), wmin, wmax
+                                                                           1                                             
+Warning: Unused variable 'wmax' declared at (1)
+functions_cep.f90:833.114:
+
+ acon, blu, glu, djbar, poptot, tol, U(nl,nl), V(nl,nl), w(nl), x(nl), wmin, wm
+                                                                           1                                       
+Warning: Unused variable 'wmin' declared at (1)
+functions_cep.f90:833.108:
+
+, cul, acon, blu, glu, djbar, poptot, tol, U(nl,nl), V(nl,nl), w(nl), x(nl), wm
+                                                                           1                                 
+Warning: Unused variable 'x' declared at (1)
+functions_cep.f90:652.43:
+
+ real(kind=8) :: u(ni), fi(ni), fl(nl), sum ,kte, tp, fac, tot
+                                           1
+Warning: Unused variable 'sum' declared at (1)
+functions_cep.f90:472.23:
+
+ real(kind=8) :: deltaz, ztemp, tautemp, tau0
+                       1
+Warning: Unused variable 'deltaz' declared at (1)
+functions_cep.f90:475.22:
+
+ integer :: i, ip, ip2, nz_previous_step
+                      1
+Warning: Unused variable 'ip2' declared at (1)
+functions_cep.f90:472.45:
+
+ real(kind=8) :: deltaz, ztemp, tautemp, tau0
+                                             1
+Warning: Unused variable 'tau0' declared at (1)
+functions_cep.f90:472.39:
+
+ real(kind=8) :: deltaz, ztemp, tautemp, tau0
+                                       1
+Warning: Unused variable 'tautemp' declared at (1)
+functions_cep.f90:472.30:
+
+ real(kind=8) :: deltaz, ztemp, tautemp, tau0
+                              1
+Warning: Unused variable 'ztemp' declared at (1)
+functions_cep.f90:367.51:
+
+ real(kind=8), allocatable :: dz_temp(:), dz_old(:)
+                                                   1
+Warning: Unused variable 'dz_old' declared at (1)
+functions_cep.f90:365.45:
+
+ real(kind=8) :: deltaz, ztemp, tautemp, tau0
+                                             1
+Warning: Unused variable 'tau0' declared at (1)
+functions_cep.f90:365.39:
+
+ real(kind=8) :: deltaz, ztemp, tautemp, tau0
+                                       1
+Warning: Unused variable 'tautemp' declared at (1)
+functions_cep.f90:366.52:
+
+ integer :: i, j, npoints_local, loop, which_largest, factor
+                                                    1
+Warning: Unused variable 'which_largest' declared at (1)
+functions_cep.f90:365.30:
+
+ real(kind=8) :: deltaz, ztemp, tautemp, tau0
+                              1
+Warning: Unused variable 'ztemp' declared at (1)
+functions_cep.f90:239.44:
+
+ real(kind=8) :: temp1, temp2, temp3, deltaz, vth
+                                            1
+Warning: Unused variable 'deltaz' declared at (1)
+functions_cep.f90:239.22:
+
+ real(kind=8) :: temp1, temp2, temp3, deltaz, vth
+                      1
+Warning: Unused variable 'temp1' declared at (1)
+functions_cep.f90:239.29:
+
+ real(kind=8) :: temp1, temp2, temp3, deltaz, vth
+                             1
+Warning: Unused variable 'temp2' declared at (1)
+functions_cep.f90:239.36:
+
+ real(kind=8) :: temp1, temp2, temp3, deltaz, vth
+                                    1
+Warning: Unused variable 'temp3' declared at (1)
+functions_cep.f90:238.55:
+
+ integer :: i, j, k, npoints_local, loop, which_largest
+                                                       1
+Warning: Unused variable 'which_largest' declared at (1)
+functions_cep.f90:221.20:
+
+ real(kind=8) :: div
+                    1
+Warning: Unused variable 'div' declared at (1)
+functions_cep.f90:223.13:
+
+ integer :: i
+             1
+Warning: Unused variable 'i' declared at (1)
+functions_cep.f90:222.52:
+
+ real(kind=8), allocatable :: x_quadr(:), w_quadr(:)
+                                                    1
+Warning: Unused variable 'w_quadr' declared at (1)
+functions_cep.f90:222.40:
+
+ real(kind=8), allocatable :: x_quadr(:), w_quadr(:)
+                                        1
+Warning: Unused variable 'x_quadr' declared at (1)
+functions_cep.f90:17.28:
+
+   real(kind=8) :: div, deca, deltatau
+                            1
+Warning: Unused variable 'deca' declared at (1)
+functions_cep.f90:17.38:
+
+   real(kind=8) :: div, deca, deltatau
+                                      1
+Warning: Unused variable 'deltatau' declared at (1)
+functions_cep.f90:17.22:
+
+   real(kind=8) :: div, deca, deltatau
+                      1
+Warning: Unused variable 'div' declared at (1)
+functions_cep.f90:18.15:
+
+   integer :: i
+               1
+Warning: Unused variable 'i' declared at (1)
+gfortran -c -O3 -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Wunused escape_cep.f90
+escape_cep.f90:1173.42:
+
+ real(kind=8) :: A(7,7), C(7), di, dy, sum, wt
+                                          1
+Warning: Unused variable 'sum' declared at (1)
+escape_cep.f90:1052.20:
+
+ integer :: error, i, loop
+                    1
+Warning: Unused variable 'i' declared at (1)
+escape_cep.f90:890.30:
+
+ logical :: calculate_jacobian
+                              1
+Warning: Unused variable 'calculate_jacobian' declared at (1)
+escape_cep.f90:891.18:
+
+ real(kind=8) :: d,errf,errx,fvec(n),p(n), tol, amax, factor, errx_old
+                  1
+Warning: Unused variable 'd' declared at (1)
+escape_cep.f90:862.16:
+
+ integer :: n, i, j
+                1
+Warning: Unused variable 'i' declared at (1)
+escape_cep.f90:862.19:
+
+ integer :: n, i, j
+                   1
+Warning: Unused variable 'j' declared at (1)
+escape_cep.f90:837.16:
+
+ integer :: n,np
+                1
+Warning: Unused variable 'np' declared at (1)
+escape_cep.f90:712.57:
+
+ integer :: low, up, ipl, ipt, i, j, il, it, il2, iz, ind
+                                                         1
+Warning: Unused variable 'ind' declared at (1)
+escape_cep.f90:712.52:
+
+ integer :: low, up, ipl, ipt, i, j, il, it, il2, iz, ind
+                                                    1
+Warning: Unused variable 'iz' declared at (1)
+escape_cep.f90:423.73:
+
+   real(kind=8) :: tau_local, escape, escape2, der_alpha, der_beta, error
+                                                                         1
+Warning: Unused variable 'error' declared at (1)
+escape_cep.f90:347.64:
+
+ real(kind=8) :: sig, glu, acon, chim, chip, tau0, deltaz, chilp, Jinternal
+                                                                1
+Warning: Unused variable 'chilp' declared at (1)
+escape_cep.f90:347.37:
+
+ real(kind=8) :: sig, glu, acon, chim, chip, tau0, deltaz, chilp, Jinternal
+                                     1
+Warning: Unused variable 'chim' declared at (1)
+escape_cep.f90:347.43:
+
+ real(kind=8) :: sig, glu, acon, chim, chip, tau0, deltaz, chilp, Jinternal
+                                           1
+Warning: Unused variable 'chip' declared at (1)
+escape_cep.f90:347.57:
+
+ real(kind=8) :: sig, glu, acon, chim, chip, tau0, deltaz, chilp, Jinternal
+                                                         1
+Warning: Unused variable 'deltaz' declared at (1)
+escape_cep.f90:346.53:
+
+ integer :: up, low, it, ip, ipl, ipt, ip1, npmip1, i
+                                                     1
+Warning: Unused variable 'i' declared at (1)
+escape_cep.f90:346.42:
+
+ integer :: up, low, it, ip, ipl, ipt, ip1, npmip1, i
+                                          1
+Warning: Unused variable 'ip1' declared at (1)
+escape_cep.f90:346.50:
+
+ integer :: up, low, it, ip, ipl, ipt, ip1, npmip1, i
+                                                  1
+Warning: Unused variable 'npmip1' declared at (1)
+escape_cep.f90:347.49:
+
+ real(kind=8) :: sig, glu, acon, chim, chip, tau0, deltaz, chilp, Jinternal
+                                                 1
+Warning: Unused variable 'tau0' declared at (1)
+escape_cep.f90:272.64:
+
+ real(kind=8) :: sig, glu, acon, chim, chip, tau0, deltaz, chilp
+                                                                1
+Warning: Unused variable 'chilp' declared at (1)
+escape_cep.f90:271.53:
+
+ integer :: up, low, it, ip, ipl, ipt, ip1, npmip1, i
+                                                     1
+Warning: Unused variable 'i' declared at (1)
+escape_cep.f90:271.37:
+
+ integer :: up, low, it, ip, ipl, ipt, ip1, npmip1, i
+                                     1
+Warning: Unused variable 'ipt' declared at (1)
+escape_cep.f90:271.50:
+
+ integer :: up, low, it, ip, ipl, ipt, ip1, npmip1, i
+                                                  1
+Warning: Unused variable 'npmip1' declared at (1)
+escape_cep.f90:197.15:
+
+   integer :: i, k
+               1
+Warning: Unused variable 'i' declared at (1)
+escape_cep.f90:195.53:
+
+   real(kind=8) :: alphap2, tau_in, salida, tau, paso, coef
+                                                     1
+Warning: Unused variable 'paso' declared at (1)
+escape_cep.f90:122.15:
+
+   integer :: i, k
+               1
+Warning: Unused variable 'i' declared at (1)
+escape_cep.f90:120.51:
+
+   real(kind=8) :: beta2, tau_in, salida, tau, paso, coef
+                                                   1
+Warning: Unused variable 'paso' declared at (1)
+escape_cep.f90:102.23:
+
+   real(kind=8) :: d, b, q, dbdx, x(1), y(1)
+                       1
+Warning: Unused variable 'b' declared at (1)
+escape_cep.f90:101.58:
+
+   real(kind=8) :: alphap, tau_in, salida, tau, paso, coef, profile
+                                                          1
+Warning: Unused variable 'coef' declared at (1)
+escape_cep.f90:102.20:
+
+   real(kind=8) :: d, b, q, dbdx, x(1), y(1)
+                    1
+Warning: Unused variable 'd' declared at (1)
+escape_cep.f90:102.32:
+
+   real(kind=8) :: d, b, q, dbdx, x(1), y(1)
+                                1
+Warning: Unused variable 'dbdx' declared at (1)
+escape_cep.f90:103.18:
+
+   integer :: i, k
+                  1
+Warning: Unused variable 'k' declared at (1)
+escape_cep.f90:101.52:
+
+   real(kind=8) :: alphap, tau_in, salida, tau, paso, coef, profile
+                                                    1
+Warning: Unused variable 'paso' declared at (1)
+escape_cep.f90:102.26:
+
+   real(kind=8) :: d, b, q, dbdx, x(1), y(1)
+                          1
+Warning: Unused variable 'q' declared at (1)
+escape_cep.f90:101.46:
+
+   real(kind=8) :: alphap, tau_in, salida, tau, paso, coef, profile
+                                              1
+Warning: Unused variable 'tau' declared at (1)
+escape_cep.f90:102.38:
+
+   real(kind=8) :: d, b, q, dbdx, x(1), y(1)
+                                      1
+Warning: Unused variable 'x' declared at (1)
+escape_cep.f90:102.44:
+
+   real(kind=8) :: d, b, q, dbdx, x(1), y(1)
+                                            1
+Warning: Unused variable 'y' declared at (1)
+escape_cep.f90:47.50:
+
+   real(kind=8) :: beta, tau_in, salida, tau, paso, coef
+                                                  1
+Warning: Unused variable 'paso' declared at (1)
+escape_cep.f90:48.38:
+
+   real(kind=8) :: d, b, q, dbdx, x(1), y(1)
+                                      1
+Warning: Unused variable 'x' declared at (1)
+escape_cep.f90:48.44:
+
+   real(kind=8) :: d, b, q, dbdx, x(1), y(1)
+                                            1
+Warning: Unused variable 'y' declared at (1)
+gfortran -c -O3 -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Wunused sol_cep.f90
+sol_cep.f90:15.23:
+
+ real(kind=8) :: factor, previous_factor_abundance, step_factor_abundance, step
+                       1
+Warning: Unused variable 'factor' declared at (1)
+gfortran -c -O3 -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Wunused sol_molpop.f90
+sol_molpop.f90:44.14:
+
+         IR = DLOG10(TAUM/TMIN) + .5
+              1
+Warning: Possible change of value in conversion from REAL(8) to INTEGER(4) at (1)
+sol_molpop.f90:71.14:
+
+         IR = DLOG10(TAUM/TMAX)
+              1
+Warning: Possible change of value in conversion from REAL(8) to INTEGER(4) at (1)
+sol_molpop.f90:303.40:
+
+      INTEGER UP,LOW,ISN,I,J,K,L,im,jm,m,lin1,lin2,ip,jip
+                                        1
+Warning: Unused variable 'm' declared at (1)
+sol_molpop.f90:177.42:
+
+      INTEGER :: N,ITMAX,ITER,K,IER,IRES,I,J,JMX,INDEX(N)
+                                          1
+Warning: Unused variable 'i' declared at (1)
+gfortran -c -O3 -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Wunused molpop.f90 
+molpop.f90:141.15:
+
+               '  POPULATIONS:'/,5(1PE14.6,2X))")  (X(I), I=1,N)
+               1
+Warning: Missing '&' in continued character constant at (1)
+molpop.f90:68.29:
+
+      real(kind=8) :: NHarray
+                             1
+Warning: Unused variable 'nharray' declared at (1)
+molpop.f90:66.43:
+
+      integer io1,I, Tcount, iunit, NHcount
+                                           1
+Warning: Unused variable 'nhcount' declared at (1)
+molpop.f90:69.24:
+
+      character*60 T_tag
+                        1
+Warning: Unused variable 't_tag' declared at (1)
+gfortran coll_molpop.o global_molpop.o io_molpop.o maths_molpop.o molpop.o\
+		sol_molpop.o cep_molpop_interface.o sol_cep.o constants_cep.o\
+		global_cep.o maths_cep.o escape_cep.o functions_cep.o io_cep.o\
+		 -o molpop
+cp molpop ../

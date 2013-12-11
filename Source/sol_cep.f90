@@ -69,7 +69,7 @@ contains
       	call correct_populations
 			optically_thin = 0			
 		endif
-		
+				
 ! If "increasing" or "decreasing" column density, adapt it to its correct value
 ! 		if ((kthick_strategy == 0 .or. kthick_strategy == 1) .and. &
 ! 			trim(adjustl(file_physical_conditions)) == 'none') then
@@ -82,9 +82,7 @@ contains
 			write(*,*) 'deltaz : ', dz(1)
 			
 		endif
-		
-		
-						
+									
 ! Perform a first non-linear solution
 		if (verbose == 2) then
 			write(*,*) 'First non-linear solution...'

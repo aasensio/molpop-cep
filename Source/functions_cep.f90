@@ -293,7 +293,7 @@ contains
 ! 				read(45,*) (physical_conditions_columns(j),j=1,4+n_columns_colliders)
 				read(45,*) dz_temp(i), nh_temp(i), temperature_temp(i), abund_temp(i),&
 					linewidth_temp(i)
-				linewidth_temp(i) = linewidth_temp(i) * 1.d5    ! km/s to  cm/s								
+				linewidth_temp(i) = linewidth_temp(i) * 1.d5    ! km/s to  cm/s		
 			enddo
 			
 			col_density = col_density + sum(dz_temp * abund_temp * nh_temp)
@@ -815,10 +815,10 @@ contains
 				up = itran(1,it)
 				low = itran(2,it)			
 
-				C(up,low) = collis_all(it,ip) * nh(ip)				
+				C(up,low) = collis_all(it,ip) * nh(ip)
 			enddo
 		endif
-		
+				
 	end subroutine collis
 
 !-----------------------------------------------------------------
@@ -840,8 +840,8 @@ contains
 		A = 0.d0
 		
 ! Upward collisional rates A(low,up)
-		call collis(ip,A)		
-
+		call collis(ip,A)
+		
 ! Calculate the downward rates using detailed balance and interchange positions
 		do i = 1, nl
 			do j = 1, i-1

@@ -10,10 +10,11 @@
 # It should be easy to find the equivalent flags in your compiler
 
 COMPILER = ifort
-#COMPILER = gfortran
+COMPILER = gfortran
 
-OPTIONS = -c -O3 
-#-Waliasing -Wampersand -Wconversion -Wsurprising -Wc-binding-type -Wintrinsics-std -Wintrinsic-shadow -Wline-truncation -Wtarget-lifetime -Wreal-q-constant -Wunused
+OPTIONS = -c -O3
+# c -O3 
+# -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Wunused
 
 FINAL_EXECUTABLE = molpop
 

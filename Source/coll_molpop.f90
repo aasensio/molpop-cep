@@ -195,7 +195,7 @@ contains
         	end do
       end do
 		
-      do l=1,n_col      	
+      do l=1,n_col			
       	select case (i_col_src(l))
       		case(1)
       			call loadcij_norm_table(fn_kij(l),fr_col(l),i_col_exsub(l),gxsec(l))
@@ -262,7 +262,6 @@ contains
       end do
       read(4,*) (temp(i),i=1,ntemp)
       read(4,'(a)') line
-
       if(t .le. temp(1)) then
 	  		write(16,"(4x,'*** T =',f6.1,' K is below the values tabulated in ',a)")&
 	  			T,filename(1:fsize(filename))
@@ -297,10 +296,9 @@ contains
         	f2 = (t-temp(kk))/(temp(kk+1)-temp(kk))
         	f1 = 1.0-f2
       end if
-
+		
       do while(.true.)
         	read (4,*, end=10) i, j, (col(k), k=1,ntemp)
-
 ! Only include transitions between levels included in the model        	
         	if(i .gt. j .and. i <= n .and. j <= n) then
           	c(i,j) = c(i,j) + fraction*(col(kk)*f1+col(kk+1)*f2)*xsec
