@@ -1211,23 +1211,24 @@ contains
   integer kool,i
   double precision x(:),tex,xni,bi
 
-    write(16,'(2x,a/,6x,a,4x,a,9x,a,7x,a,5x,a,5x,a,5x,a/,26x,a,22x,a,9x,a)')&
-      &'Populations:','level','x(i)',&
-      &'n(i)','n(i)/n*','T_ex(i,1)','emission','%','cm^{-3}','K','erg/s/mol'
+    write(16,"(2x,'Populations:',/T6,'level',T13,'n_i/g_i/nmol',   &
+                  T28,'n(i)/n*',T40,'T_ex(i,1)',T53,'emission',T66,'%',/, &
+                  T44,'K',T53,'erg/s/mol')")
+
       do i=1,n
           if(i .eq. 1) then
             tex = 0.0
           else
             tex  = tij(i,1)/dlog(pop(1)/pop(i))
           end if
-          xni = nmol*x(i)*we(i)
+          xni = x(i)*we(i)/g(i)
           bi  = x(i)*sumw
           if(tcool .ne. 0.0) then
             kool = 100.0*coolev(i)/tcool +0.5
           else
             kool=0
           end if
-          write(16,'(i9,5(1pe13.3),i5)') i,x(i),xni,bi,tex,coolev(i),kool
+          write(16,'(i9,4(1pe13.3),i5)') i,xni,bi,tex,coolev(i), kool
       end do
       write(16,'()')
       return
