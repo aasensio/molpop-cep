@@ -1528,6 +1528,24 @@ contains
       END function Inv_plexp
 
 
+  double precision function BB(nu, Temp)
+!----------------------------------------------------------------
+!     Planck function in mks units W/m^2/Hz/ster:
+!        W = 1E7 erg/sec   m^2 = 1E4 cm^2
+!        therefore 
+!        W/m^2 = 1E3 erg/cm^2
+!----------------------------------------------------------------
+
+  implicit none
+  double precision, intent(in) :: nu, Temp
+  
+      BB = 1.d-3*(2.*hpl*nu**3/cl**2)*plexp(hpl*nu/bk/Temp)
+      
+  end function BB
+
+
+
+
       Subroutine Tbr4Tx(Tl,Tx,taul,Tbr,TRJ)
 !----------------------------------------------------------------
 !     For a line with temperature-equivalent frequency Tl

@@ -1,7 +1,7 @@
 module io_molpop
 use global_molpop
 use maths_molpop, only: Pass_Header, error_message, inmin, inmax, attach2, ordera, &
-                        optdep, Tbr4Tx
+                        optdep, Tbr4Tx, BB
 use cep_molpop_interface
 implicit none
 double precision Xdust
@@ -219,7 +219,7 @@ contains
          Idust = 0   ! no dust effects, so final printing has fewer columns
          write(16,"(6x,'No considerations of dust absorption')")
       end if
-      n_prt_cols = 12 + Idust
+      n_prt_cols = n_prt_cols + Idust
       nmol  = xmol*nh2
 
 ! Test whether we want line overlap
@@ -1049,17 +1049,38 @@ contains
 
 !=====  Detailed Printing of Individual Transitions  =====
 
-      write (unit,"(/20x,'Parameters for selected transitions')")
+      write (unit,"(/,' *** Parameters for selected transitions; Io is line-center intensity')",advance='no')
+      if (kbeta > 0) then 
+         write (unit, "(' at mu =',f6.2,' to slab face')") mu_output
+      else
+         write (unit,"( )")
+      end if   
 
 !     Prepare header lines common to all transitions
-      header  = "(/,T5,'Nmol',T15,'Tex',T25,'tau',T35,'Flux',T42,'delta(Tb)',T52,'del(TRJ)',&
-        T65,'eta',T75,'p1',T85,'p2',T94,'Gamma1',T104,'Gamma2',T114,'Gamma')"
-      header2 = "(T3,'cm-2/kms',T16,'K',T36,'Jy',T45,'K',T55,'K',T73,'cm-3s-1',T83,'cm-3s-1',3(6x,'s-1 '))"
+
+      header  = "(/,T5,'Nmol',T15,'Tex',T25,'tau',T35,'Flux',T45,'Io',T52,'delta(Tb)',T62,'del(TRJ)',&
+        T75,'eta',T85,'p1',T95,'p2',T104,'Gamma1',T114,'Gamma2',T124,'Gamma')"
+      header2 = "(T3,'cm-2/kms',T16,'K',T36,'Jy',T41,'W/m2/Hz/st',T55,'K',T65,'K',&
+        T83,'cm-3s-1',T93,'cm-3s-1',3(6x,'s-1 '))"
       if (dustAbsorption) then
-         header  = "(/,T5,'Nmol',T15,'Tex',T25,'tau',T35,'Flux',T42,'delta(Tb)',T52,'del(TRJ)',&
-           T64,'Xdust',T75,'eta',T86,'p1',T96,'p2',T104,'Gamma1',T114,'Gamma2',T124,'Gamma')"
-         header2 = "(T3,'cm-2/kms',T16,'K',T36,'Jy',T45,'K',T55,'K',T83,'cm-3s-1',T93,'cm-3s-1',3(6x,'s-1 '))"
+         header  = "(/,T5,'Nmol',T15,'Tex',T25,'tau',T35,'Flux',T45,'Io',T52,'delta(Tb)',T62,'del(TRJ)',&
+           T74,'Xdust',T85,'eta',T96,'p1',T106,'p2',T114,'Gamma1',T124,'Gamma2',T134,'Gamma')"
+         header2 = "(T3,'cm-2/kms',T16,'K',T36,'Jy',T41,'W/m2/Hz/st',T55,'K',T65,'K',&
+           T93,'cm-3s-1',T103,'cm-3s-1',3(6x,'s-1 '))"
       end if
+
+
+!      write (unit,"(/20x,'Parameters for selected transitions')")
+
+!     Prepare header lines common to all transitions
+!      header  = "(/,T5,'Nmol',T15,'Tex',T25,'tau',T35,'Flux',T42,'delta(Tb)',T52,'del(TRJ)',&
+!        T65,'eta',T75,'p1',T85,'p2',T94,'Gamma1',T104,'Gamma2',T114,'Gamma')"
+!      header2 = "(T3,'cm-2/kms',T16,'K',T36,'Jy',T45,'K',T55,'K',T73,'cm-3s-1',T83,'cm-3s-1',3(6x,'s-1 '))"
+!      if (dustAbsorption) then
+!         header  = "(/,T5,'Nmol',T15,'Tex',T25,'tau',T35,'Flux',T42,'delta(Tb)',T52,'del(TRJ)',&
+!           T64,'Xdust',T75,'eta',T86,'p1',T96,'p2',T104,'Gamma1',T114,'Gamma2',T124,'Gamma')"
+!         header2 = "(T3,'cm-2/kms',T16,'K',T36,'Jy',T45,'K',T55,'K',T83,'cm-3s-1',T93,'cm-3s-1',3(6x,'s-1 '))"
+!      end if
 
       do j = 1, n_tr
          if (1.0e-4*wl(itr(j),jtr(j)) .ge. 1) then
@@ -1246,7 +1267,7 @@ contains
    double precision x(n),cool(:,:),taumaser,pop1,pop2,eta
 !   double precision Gamma_av,Gamma(2),p1,p2,depth,aux,flux,Tex,Tl
    double precision Gamma_av,Gamma(2),p1,p2,depth,aux
-   double precision flux,Tex,Tl,Tbr,TRJ
+   double precision flux,Tex,Tl,Tbr,TRJ, nu
 
       call optdep(x)
       nmaser  = 0
@@ -1288,26 +1309,29 @@ contains
       final( 5,nprint) = Xdust*hcol
       if(n_tr .eq. 0) return
 
+
 !  Printing elements for every selected transition:
 !     1 - Molecular column per velocity bandwidth
 !     2 - Excitation temperature
 !     3 - tau
 !     4 - flux density in Jy, obtained from COOL(i,j) which is in erg/s/mol
-!     5 - line brightness temperature against CMB, Tbr
-!     6 - RJ equivalent of Tbr
+!     5 - line intensity (at angle mu for slab)
+!     6 - line brightness temperature against CMB, Tbr
+!     7 - RJ equivalent of Tbr
 !  When dust absorption is on, next element is
-!     7 - fractional contribution of dust to tau when there's dust absorption
+!     8 - fractional contribution of dust to tau when there's dust absorption
 !  For masers only; all elements are pushed by 1 when dust absorption is on:
-!     7 - inversion efficiency
-!     8 - pump rate of lower level; obtained from loss through p_i = n_i*Gamma_i
-!     9 - pump rate of upper level; obtained from loss through p_i = n_i*Gamma_i
-!    10 - loss rate of lower level
-!    11 - loss rate of upper level
-!    12 - mean loss rate from average with statistical weights
+!     8 - inversion efficiency
+!     9 - pump rate of lower level; obtained from loss through p_i = n_i*Gamma_i
+!    10 - pump rate of upper level; obtained from loss through p_i = n_i*Gamma_i
+!    11 - loss rate of lower level
+!    12 - loss rate of upper level
+!    13 - mean loss rate from average with statistical weights
 
       do k = 1, n_tr
          m(2)= itr(k)
          m(1)= jtr(k)
+         nu    = freq(m(2),m(1))
          Tl    = TIJ(m(2),m(1))
          Tex   = Tl/DLOG(POP(m(1))/POP(m(2)))
          depth = tau(m(2),m(1))
@@ -1317,23 +1341,24 @@ contains
          fin_tr(k, 2,nprint) = Tex
          fin_tr(k, 3,nprint) = depth
          fin_tr(k, 4,nprint) = aux*cool(m(2),m(1))/freq(m(2),m(1))
-         fin_tr(k, 5,nprint) = Tbr
-         fin_tr(k, 6,nprint) = TRJ
-         if(dustAbsorption) fin_tr(k,7,nprint) = Xd(m(2),m(1))
+         fin_tr(k, 5,nprint) = BB(nu,Tex)*(1. - dexp(-depth/mu_output))
+         fin_tr(k, 6,nprint) = Tbr
+         fin_tr(k, 7,nprint) = TRJ
+         if(dustAbsorption) fin_tr(k,8,nprint) = Xd(m(2),m(1))
          If (tau(m(2),m(1)) .lt. 0.0) then
             eta = (pop(m(2)) - pop(m(1)))/(pop(m(2)) + pop(m(1)))
             call loss(m,Gamma)
             Gamma_av = (Gamma(1)*g(m(1)) + Gamma(2)*g(m(2)))/(g(m(1))+g(m(2)))
             p2 = nmol*x(m(2))*we(m(2))*Gamma(2)
             p1 = nmol*x(m(1))*we(m(1))*Gamma(1)
-            fin_tr(k, 7+Idust,nprint) = eta
-            fin_tr(k, 8+Idust,nprint) = p1
-            fin_tr(k, 9+Idust,nprint) = p2
-            fin_tr(k,10+Idust,nprint) = Gamma(1)
-            fin_tr(k,11+Idust,nprint) = Gamma(2)
-            fin_tr(k,12+Idust,nprint) = Gamma_av
+            fin_tr(k, 8+Idust,nprint) = eta
+            fin_tr(k, 9+Idust,nprint) = p1
+            fin_tr(k,10+Idust,nprint) = p2
+            fin_tr(k,11+Idust,nprint) = Gamma(1)
+            fin_tr(k,12+Idust,nprint) = Gamma(2)
+            fin_tr(k,13+Idust,nprint) = Gamma_av
          else
-            do i = 7+Idust, 12+Idust
+            do i = 8+Idust, n_prt_cols   ! n_prt_cols = 13+Idust
                fin_tr(k,i,nprint) = 0.0
             end do
          end if
@@ -1342,6 +1367,61 @@ contains
       return
   end subroutine lines
 
+
+!!  Printing elements for every selected transition:
+!!     1 - Molecular column per velocity bandwidth
+!!     2 - Excitation temperature
+!!     3 - tau
+!!     4 - flux density in Jy, obtained from COOL(i,j) which is in erg/s/mol
+!!     5 - line brightness temperature against CMB, Tbr
+!!     6 - RJ equivalent of Tbr
+!!  When dust absorption is on, next element is
+!!     7 - fractional contribution of dust to tau when there's dust absorption
+!!  For masers only; all elements are pushed by 1 when dust absorption is on:
+!!     7 - inversion efficiency
+!!     8 - pump rate of lower level; obtained from loss through p_i = n_i*Gamma_i
+!!     9 - pump rate of upper level; obtained from loss through p_i = n_i*Gamma_i
+!!    10 - loss rate of lower level
+!!    11 - loss rate of upper level
+!!    12 - mean loss rate from average with statistical weights
+!
+!      do k = 1, n_tr
+!         m(2)= itr(k)
+!         m(1)= jtr(k)
+!         Tl    = TIJ(m(2),m(1))
+!         Tex   = Tl/DLOG(POP(m(1))/POP(m(2)))
+!         depth = tau(m(2),m(1))
+!         call Tbr4Tx(Tl,Tex,depth,Tbr,TRJ)
+!
+!         fin_tr(k, 1,nprint) = mcol
+!         fin_tr(k, 2,nprint) = Tex
+!         fin_tr(k, 3,nprint) = depth
+!         fin_tr(k, 4,nprint) = aux*cool(m(2),m(1))/freq(m(2),m(1))
+!         fin_tr(k, 5,nprint) = Tbr
+!         fin_tr(k, 6,nprint) = TRJ
+!         if(dustAbsorption) fin_tr(k,7,nprint) = Xd(m(2),m(1))
+!         If (tau(m(2),m(1)) .lt. 0.0) then
+!            eta = (pop(m(2)) - pop(m(1)))/(pop(m(2)) + pop(m(1)))
+!            call loss(m,Gamma)
+!            Gamma_av = (Gamma(1)*g(m(1)) + Gamma(2)*g(m(2)))/(g(m(1))+g(m(2)))
+!            p2 = nmol*x(m(2))*we(m(2))*Gamma(2)
+!            p1 = nmol*x(m(1))*we(m(1))*Gamma(1)
+!            fin_tr(k, 7+Idust,nprint) = eta
+!            fin_tr(k, 8+Idust,nprint) = p1
+!            fin_tr(k, 9+Idust,nprint) = p2
+!            fin_tr(k,10+Idust,nprint) = Gamma(1)
+!            fin_tr(k,11+Idust,nprint) = Gamma(2)
+!            fin_tr(k,12+Idust,nprint) = Gamma_av
+!         else
+!            do i = 7+Idust, 12+Idust
+!               fin_tr(k,i,nprint) = 0.0
+!            end do
+!         end if
+!      end do
+!
+!      return
+!  end subroutine lines
+!
 
 
    subroutine loss(m,Gamma)
