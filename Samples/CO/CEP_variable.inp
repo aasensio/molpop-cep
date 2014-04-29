@@ -112,12 +112,14 @@ __________________________________________________________________
       print detailed populations (off or on) = off
     
       Select transitions for detailed output:
-      the number of transitions (-1 for all transitions) = 5
+      the number of transitions (-1 for all transitions) = 7
        i =  2      j = 1
 		   i =  3      j = 2
 		   i =  4      j = 3
 		   i =  5      j = 4
        i =  8      j = 7
+       i = 9       j = 8
+       i = 10      j = 9
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

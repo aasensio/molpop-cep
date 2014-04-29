@@ -837,6 +837,211 @@ contains
 		b = x
 		  
 	end subroutine bicgstab	
+	
+!----------------------------------------------------------------
+! This function integrates a tabulated function
+!----------------------------------------------------------------		
+	function int_tabulated(x, f)
+	real(kind=8) :: x(:), f(:), int_tabulated, res, error_res
+	integer :: n
+		n = size(x)
+		call cubint (f, x, n, 1, n, res, error_res)
+		int_tabulated = res
+	end function int_tabulated
+
+!-------------------------------------------------------------
+! CUBINT approximates an integral using cubic interpolation of data.
+!  Parameters:
+!
+!    Input, real FTAB(NTAB), contains the tabulated function
+!    values, FTAB(I) = F(XTAB(I)).
+!
+!    Input, real XTAB(NTAB), contains the points at which the
+!    function was tabulated.  XTAB should contain distinct
+!    values, given in ascending order.
+!
+!    Input, integer NTAB, the number of tabulated points.
+!    NTAB must be at least 4.
+!
+!    Input, integer IA, the entry of XTAB at which integration
+!    is to begin.  IA must be no less than 1 and no greater
+!    than NTAB.
+!
+!    Input, integer IB, the entry of XTAB at which integration
+!    is to end.  IB must be no less than 1 and no greater than
+!    NTAB.
+!
+!    Output, real RESULT, the approximate value of the
+!    integral from XTAB(IA) to XTAB(IB) of the function.
+!
+!    Output, real ERROR, an estimate of the error in
+!    integration.
+!-------------------------------------------------------------
+	subroutine cubint ( ftab, xtab, ntab, ia, ib, result, error )
+
+  	integer ntab
+!
+  	real(kind=8) :: c, d1, d2, d3, error, ftab(ntab), h1, h2, h3, h4
+  	integer :: i, ia, ib, ind, it, j, k
+  	real(kind=8) r1, r2, r3, r4, result, s, term, xtab(ntab)
+!
+  	result = 0.0E+00
+  	error = 0.0E+00
+ 
+  	if ( ia == ib ) then
+    	return
+  	end if
+ 
+  	if ( ntab < 4 ) then
+    	write ( *, '(a)' ) ' '
+    	write ( *, '(a)' ) 'CUBINT - Fatal error!'
+    	write ( *, '(a,i6)' ) '  NTAB must be at least 4, but input NTAB = ',ntab
+    	stop
+  	endif
+ 
+  	if ( ia < 1 ) then
+    	write ( *, '(a)' ) ' '
+    	write ( *, '(a)' ) 'CUBINT - Fatal error!'
+    	write ( *, '(a,i6)' ) '  IA must be at least 1, but input IA = ',ia
+    	stop
+  	endif
+ 
+  	if ( ia > ntab ) then
+   	write ( *, '(a)' ) ' '
+    	write ( *, '(a)' ) 'CUBINT - Fatal error!'
+    	write ( *, '(a,i6)' ) '  IA must be <= NTAB, but input IA=',ia
+    	stop
+  	endif
+ 
+  	if ( ib < 1 ) then
+    	write ( *, '(a)' ) ' '
+    	write ( *, '(a)' ) 'CUBINT - Fatal error!'
+    	write ( *, '(a,i6)' ) '  IB must be at least 1, but input IB = ',ib
+    	stop
+  	endif
+ 
+  	if ( ib > ntab ) then
+    	write ( *, '(a)' ) ' '
+    	write ( *, '(a)' ) 'CUBINT - Fatal error!'
+    	write ( *, '(a,i6)' ) '  IB must be <= NTAB, but input IB=',ib
+    	stop
+  	endif
+!
+!  Temporarily switch IA and IB, and store minus sign in IND
+!  so that, while integration is carried out from low X's
+!  to high ones, the sense of the integral is preserved.
+!
+  	if ( ia > ib ) then
+    	ind = -1
+    	it = ib
+    	ib = ia
+    	ia = it
+  	else
+    	ind = 1
+  	endif
+ 
+  	s = 0.0E+00
+  	c = 0.0E+00
+  	r4 = 0.0E+00
+  	j = ntab-2
+  	if ( ia < ntab-1 .or. ntab == 4 ) then
+    	j=max(3,ia)
+  	endif
+
+  	k = 4
+  	if ( ib > 2 .or. ntab == 4 ) then
+    	k=min(ntab,ib+2)-1
+  	endif
+ 
+  	do i = j, k
+ 
+    	if ( i <= j ) then
+ 
+      	h2 = xtab(j-1)-xtab(j-2)
+      	d3 = (ftab(j-1)-ftab(j-2)) / h2
+      	h3 = xtab(j)-xtab(j-1)
+      	d1 = (ftab(j)-ftab(j-1)) / h3
+      	h1 = h2+h3
+      	d2 = (d1-d3)/h1
+      	h4 = xtab(j+1)-xtab(j)
+      	r1 = (ftab(j+1)-ftab(j)) / h4
+      	r2 = (r1-d1) / (h4+h3)
+      	h1 = h1+h4
+      	r3 = (r2-d2) / h1
+ 
+      	if ( ia <= 1 ) then
+        		result = h2 * (ftab(1)+h2*(0.5*d3-h2*(d2/6.0-(h2+h3+h3)*r3/12.)))
+        		s = -h2**3 * (h2*(3.0*h2+5.0*h4)+10.0*h3*h1)/60.0
+      	endif
+ 
+    	else
+ 
+	      h4 = xtab(i+1)-xtab(i)
+      	r1 = (ftab(i+1)-ftab(i))/h4
+      	r4 = h4+h3
+      	r2 = (r1-d1)/r4
+      	r4 = r4+h2
+      	r3 = (r2-d2)/r4
+      	r4 = (r3-d3)/(r4+h1)
+ 
+    	endif
+ 
+    	if ( i > ia .and. i <= ib ) then
+ 
+      	term = h3*((ftab(i)+ftab(i-1))*0.5-h3*h3*(d2+r2+(h2-h4)*r3) / 12.0 )
+      	result = result+term
+      	c = h3**3*(2.0E+00 *h3*h3+5.*(h3*(h4+h2) + 2.0 * h2 * h4 ) ) / 120.0E+00
+      	error = error+(c+s)*r4
+ 
+      	if ( i /= j ) then
+        		s = c
+      	else
+        		s = s+c+c
+      	endif
+ 
+    	else
+ 
+	      error = error+r4*s
+ 
+    	endif
+ 
+    	if ( i >= k ) then
+ 
+      	if ( ib >= ntab ) then
+	        	term = h4*(ftab(ntab) - h4*(0.5*r1+h4*(r2/6.0 +(h3+h3+h4)*r3/12.)))
+        		result = result + term
+        		error = error - h4**3 * r4 * &
+          		( h4 * ( 3.0 * h4 + 5.0 * h2 ) &
+          		+ 10.0 * h3 * ( h2 + h3 + h4 ) ) / 60.0E+00
+      	endif
+ 
+      	if ( ib >= ntab-1 ) error=error+s*r4
+    	else
+	      h1 = h2
+      	h2 = h3
+      	h3 = h4
+      	d1 = r1
+      	d2 = r2
+      	d3 = r3
+    	endif
+ 
+  	enddo
+!
+!  Restore original values of IA and IB, reverse signs
+!  of RESULT and ERROR, to account for integration
+!  that proceeded from high X to low X.
+!
+  	if ( ind /= 1 ) then
+    	it = ib
+    	ib = ia
+    	ia = it
+    	result = -result
+    	error = -error
+  	endif
+ 
+  	return
+	end subroutine
+
 
 
 end module maths_cep

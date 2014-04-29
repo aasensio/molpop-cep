@@ -411,9 +411,11 @@ contains
 				
 		write(16,*)		
 		
-! Write number of frequency points in flux file		
+! Write number of frequency points in flux file
+		write(32,*) 'N. wavelength points'
 		write(32,*) 100
-				
+		write(32,*)		
+		
 		write(34,*) '*****************************************************'
 		write(34,*) ' SLAB PARTITIONING'
 		write(34,*) '*****************************************************'
@@ -437,11 +439,42 @@ contains
 	integer :: ii, ip, ipl, i, j, up, low, it, k
 	real(kind=8) :: sig, glu, acon, chim, chip, tau0, deltaz, chilp, col_up, col_low
 	real(kind=8) :: sum, intensity, e1, e2, freq_max, deltaTBR, deltaTBRJ
-	real(kind=8), allocatable :: flux_out(:,:), freq_axis(:), Slte(:)
+	real(kind=8), allocatable :: flux_out(:,:), freq_axis(:), Slte(:), total_flux(:)
 	
 		column_density = sum(dz * factor_abundance * abundance * nh)
 		total_radius = sum(dz)
-		
+
+! Write output flux
+		allocate(freq_axis(100))
+		allocate(flux_out(3,100))
+		allocate(total_flux(ntran_output))
+						
+		do i = 1, ntran_output			
+			it = output_transition(i)
+			
+! Generate a frequency axis for this transition so that it can accomodate at least
+! four Doppler widths for the zone with the largest Doppler width
+			freq_max = 4.d0 * maxval(dopplerw(it,:))			
+			do ip = 1, 100
+				freq_axis(ip) = (ip-1.d0) / 99.d0 * 2.d0 * freq_max - freq_max
+			enddo
+			
+			call calcflux_cep(pop, freq_axis, flux_out, it)
+			
+			total_flux(i) = int_tabulated(freq_axis, flux_out(1,:))
+			
+! Output in velocity [km/s] and emergent flux
+			write(32,FMT='(A,I3,A,I3)') 'Transition : ', itran(1,it), ' -> ', itran(2,it)
+			write(32,*) '    v (km/s)       flux          I(mu=1)   I(selected mu)'
+			do j = 1, 100
+				write(32,FMT='(5(2X,1PE12.5))') freq_axis(j) / dtran(2,it) * PC / 1.d5, (flux_out(k,j),k=1,3)
+			enddo
+			write(32,*)
+		enddo
+				
+		deallocate(freq_axis)
+		deallocate(flux_out)
+ 
 		write(16,*)
 		write(16,*) '*******************************************************************************'
 		write(16,FMT='(A,E12.5,A,E12.5,A,I4)') ' N(mol) [cm^-2]: ', column_density, '   -  R [cm]: ',&
@@ -449,7 +482,7 @@ contains
 		write(16,*) '*******************************************************************************'
 		
 		write(16,FMT='(1X,A,F6.3,A)') ' up    low     tau (line center)     cooling         N(up)/N(low)    I_lc(mu=',&
-			mu_output,')   delta(Tb) [K]   del(TRJ) [K]'
+			mu_output,')   delta(Tb) [K]      del(TRJ) [K]       % emission'
 
 		allocate(Slte(nz))
 		
@@ -503,9 +536,9 @@ contains
 ! 			deltaTBR = Tbr_I(dtran(2,it),intensity,tau(it,nz)/sqrt(PI))
 			call Tbr4I(dtran(2,it),intensity,tau(it,nz)/sqrt(PI),deltaTBR,deltaTBRJ)
 			
-			write(16,FMT='(I4,2X,I4,5X,1PE13.5,5X,1PE13.5,5X,1PE13.5,5X,1PE13.5,5X,1PE13.5,5X,1PE13.5)') up, low, &
+			write(16,FMT='(I4,2X,I4,5X,1PE13.5,5X,1PE13.5,5X,1PE13.5,5X,1PE13.5,5X,1PE13.5,5X,1PE13.5,5X,1PG13.5)') up, low, &
 				tau(it,nz)/sqrt(PI), flux_total(it+nr*(nz-1)) * 4.d0*PI, col_up / col_low,&
-				intensity, deltaTBR, deltaTBRJ
+				intensity, deltaTBR, deltaTBRJ, 100.0 * total_flux(i) / sum(total_flux)
 				
 			write(35,FMT='(I4,2X,I4,1X,(1P8E13.5))') up, low, &
 				(PHK*dtran(2,i)/log(1.d0+acon/Sl(ii)), ii = 1, nz)
@@ -525,31 +558,8 @@ contains
 			enddo
 		enddo
 				
-! Write output flux
-		allocate(freq_axis(100))
-		allocate(flux_out(3,100))
-						
-		do i = 1, ntran_output			
-			it = output_transition(i)
-			
-! Generate a frequency axis for this transition so that it can accomodate at least
-! four Doppler widths for the zone with the largest Doppler width
-			freq_max = 4.d0 * maxval(dopplerw(it,:))			
-			do ip = 1, 100
-				freq_axis(ip) = (ip-1.d0) / 99.d0 * 2.d0 * freq_max - freq_max
-			enddo
-			
-			call calcflux_cep(pop, freq_axis, flux_out, it)
-			
-! Output in velocity [km/s] and emergent flux
-			do j = 1, 100
-				write(32,FMT='(5(2X,1PE12.5))') freq_axis(j) / dtran(2,it) * PC / 1.d5, (flux_out(k,j),k=1,3)
-			enddo
-		enddo
-				
-		deallocate(freq_axis)
-		deallocate(flux_out)
 		deallocate(Slte)
+		deallocate(total_flux)
 		
 	end subroutine write_intermediate_results				
 

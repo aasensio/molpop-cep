@@ -30,7 +30,7 @@
 
 
   Molecular column = 1.00E+16 cm-2/kms      Total emission = 9.07E-21 erg/s/mol
-
+ 
   Populations:
      level  n_i/g_i/nmol   n(i)/n*     T_ex(i,1)    emission     %
                                            K        erg/s/mol
@@ -79,7 +79,7 @@
 
 
   Molecular column = 1.78E+16 cm-2/kms      Total emission = 8.73E-21 erg/s/mol
-
+ 
   Populations:
      level  n_i/g_i/nmol   n(i)/n*     T_ex(i,1)    emission     %
                                            K        erg/s/mol
@@ -128,7 +128,7 @@
 
 
   Molecular column = 3.16E+16 cm-2/kms      Total emission = 8.24E-21 erg/s/mol
-
+ 
   Populations:
      level  n_i/g_i/nmol   n(i)/n*     T_ex(i,1)    emission     %
                                            K        erg/s/mol
@@ -178,7 +178,7 @@
 
 
   Molecular column = 5.62E+16 cm-2/kms      Total emission = 7.58E-21 erg/s/mol
-
+ 
   Populations:
      level  n_i/g_i/nmol   n(i)/n*     T_ex(i,1)    emission     %
                                            K        erg/s/mol
@@ -228,7 +228,7 @@
 
 
   Molecular column = 1.00E+17 cm-2/kms      Total emission = 6.77E-21 erg/s/mol
-
+ 
   Populations:
      level  n_i/g_i/nmol   n(i)/n*     T_ex(i,1)    emission     %
                                            K        erg/s/mol
@@ -278,7 +278,7 @@
 
 
   Molecular column = 1.78E+17 cm-2/kms      Total emission = 5.87E-21 erg/s/mol
-
+ 
   Populations:
      level  n_i/g_i/nmol   n(i)/n*     T_ex(i,1)    emission     %
                                            K        erg/s/mol
@@ -329,7 +329,7 @@
 
 
   Molecular column = 3.16E+17 cm-2/kms      Total emission = 4.93E-21 erg/s/mol
-
+ 
   Populations:
      level  n_i/g_i/nmol   n(i)/n*     T_ex(i,1)    emission     %
                                            K        erg/s/mol
@@ -375,7 +375,7 @@
 
 
   Molecular column = 5.62E+17 cm-2/kms      Total emission = 4.01E-21 erg/s/mol
-
+ 
   Populations:
      level  n_i/g_i/nmol   n(i)/n*     T_ex(i,1)    emission     %
                                            K        erg/s/mol
@@ -422,7 +422,7 @@
 
 
   Molecular column = 1.00E+18 cm-2/kms      Total emission = 3.16E-21 erg/s/mol
-
+ 
   Populations:
      level  n_i/g_i/nmol   n(i)/n*     T_ex(i,1)    emission     %
                                            K        erg/s/mol
@@ -468,7 +468,7 @@
 
 
   Molecular column = 1.78E+18 cm-2/kms      Total emission = 2.42E-21 erg/s/mol
-
+ 
   Populations:
      level  n_i/g_i/nmol   n(i)/n*     T_ex(i,1)    emission     %
                                            K        erg/s/mol
@@ -515,7 +515,7 @@
 
 
   Molecular column = 3.16E+18 cm-2/kms      Total emission = 1.80E-21 erg/s/mol
-
+ 
   Populations:
      level  n_i/g_i/nmol   n(i)/n*     T_ex(i,1)    emission     %
                                            K        erg/s/mol
@@ -563,7 +563,7 @@
 
 
   Molecular column = 5.62E+18 cm-2/kms      Total emission = 1.30E-21 erg/s/mol
-
+ 
   Populations:
      level  n_i/g_i/nmol   n(i)/n*     T_ex(i,1)    emission     %
                                            K        erg/s/mol
@@ -611,7 +611,7 @@
 
 
   Molecular column = 1.00E+19 cm-2/kms      Total emission = 9.16E-22 erg/s/mol
-
+ 
   Populations:
      level  n_i/g_i/nmol   n(i)/n*     T_ex(i,1)    emission     %
                                            K        erg/s/mol
