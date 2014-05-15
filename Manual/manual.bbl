@@ -1,0 +1,59 @@
+\begin{thebibliography}{17}
+\expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
+
+\bibitem[{{Abramowitz} \& {Stegun}(1972)}]{abramowitz72}
+{Abramowitz}, M., \& {Stegun}, I.~A. 1972, {Handbook of Mathematical Functions}
+  (New York: Dover)
+
+\bibitem[{{Athay} \& {Skumanich}(1971)}]{athay_skumanich71}
+{Athay}, R.~G., \& {Skumanich}, A. 1971, ApJ, 170, 605
+
+\bibitem[{{Bieniek} \& {Green}(1983)}]{bieniek_green83}
+{Bieniek}, R.~J., \& {Green}, S. 1983, ApJL, 265, L29
+
+\bibitem[{{Capriotti}(1965)}]{capriotti65}
+{Capriotti}, E.~R. 1965, ApJ, 142, 1101
+
+\bibitem[{{Elitzur}(1992)}]{elitzur92}
+{Elitzur}, M. 1992, {Astronomical Masers} (Dordrecht: Kluwer Academic
+  Publishers)
+
+\bibitem[{{Elitzur} \& {Asensio Ramos}(2006)}]{elitzur_asensio_cep06}
+{Elitzur}, M., \& {Asensio Ramos}, A. 2006, MNRAS, 365, 779
+
+\bibitem[{{Fabiani Bendicho} {et~al.}(1997){Fabiani Bendicho}, {Trujillo
+  Bueno}, \& {Auer}}]{fabiani_trujillo_auer97}
+{Fabiani Bendicho}, P., {Trujillo Bueno}, J., \& {Auer}, L.~H. 1997, A\&A, 324,
+  161
+
+\bibitem[{{Flower}(2001)}]{flower01}
+{Flower}, D.~R. 2001, J. Phys. B, 34, 2731
+
+\bibitem[{{Krolik} \& {McKee}(1978)}]{krolik_mckee78}
+{Krolik}, J.~H., \& {McKee}, C.~F. 1978, ApJS, 37, 459
+
+\bibitem[{{Lockett} \& {Elitzur}(1989)}]{lockett_elitzur89}
+{Lockett}, P., \& {Elitzur}, M. 1989, ApJ, 344, 525
+
+\bibitem[{{Lockett} \& {Elitzur}(1992)}]{lockett_elitzur92}
+---. 1992, ApJ, 399, 704
+
+\bibitem[{{Mihalas}(1978)}]{mihalas78}
+{Mihalas}, D. 1978, in {Stellar Atmospheres}, Vol. 455
+
+\bibitem[{{Rybicki} \& {Hummer}(1991)}]{rybicki_hummer91}
+{Rybicki}, G.~B., \& {Hummer}, D.~G. 1991, A\&A, 249, 720
+
+\bibitem[{{Rybicki} \& {Hummer}(1992)}]{rybicki_hummer92}
+---. 1992, A\&A, 262, 209
+
+\bibitem[{{Socas-Navarro} \& {Trujillo Bueno}(1997)}]{socas_trujillo97}
+{Socas-Navarro}, H., \& {Trujillo Bueno}, J. 1997, ApJ, 490, 383
+
+\bibitem[{{Steiner}(1991)}]{steiner91}
+{Steiner}, O. 1991, A\&A, 242, 290
+
+\bibitem[{{Trujillo Bueno} \& {Fabiani Bendicho}(1995)}]{trujillo_fabiani95}
+{Trujillo Bueno}, J., \& {Fabiani Bendicho}, P. 1995, ApJ, 455, 646
+
+\end{thebibliography}

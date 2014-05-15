@@ -722,7 +722,9 @@ and the line emission (erg/s/mol). If the transition is inverted, the last
 quantity is listed as zero. Instead, the output lists quantities relevant for
 the standard, phenomenological maser model \citep[see][]{elitzur92}: The
 inversion efficiency, pump rate for each level, loss rate for each level and
-their average.
+their average. Note that all optical depths in the outputs are at line
+center, so that if you want the total optical depth, you have to multiply
+it by $\sqrt{\pi}$.
 
 
 The input file \texttt{fname.inp} produces the output file \texttt{fname.out}in
@@ -756,44 +758,23 @@ flux in each selected transition
 
 
 As explained above, molecular data can be placed anywhere provided the root
-directory where the file \texttt{mol\_list.dat} is located is indicated in each
-input file. The master list of all available species is in the file
-\texttt{mol\_list.dat} with the following current listing:
+directory where the file is located is indicated in each input file. The directory
+\texttt{DataBase} contains a set of files with data for a few molecules. 
 
-
-\begin{verbatim}
-
-This file contains the MOLPOP molecular list. A molecule whose mol_name is,
-e.g., XYZ should have a data file XYZ.lev with listing of N_lev energy levels
-and XYZ.aij tabulating their A-coefficients. mol_mass is the mass number.
-When adding another molecule make sure to terminate  data lines with CR.
-
-                      mol_name          N_lev     mol_mass
->
-                      'CO'                41       28.0
-                      'H2O_ortho'         48       18.0
-                      'H2O_para'          48       18.0
-                      'OH'                32       17.0
-                      'SiO_vib'          100       44.0
-
-\end{verbatim}
-This file is an index for the available molecules and the maximum number of levels included in each
-model. Furthermore, the molecular mass (in atomic mass units) is also given. A new species can be added as
-simply another entry line. It is important to terminate the last entry with a CR.
-All the lines before the line containing only the symbol ``\texttt{>}'' are
-treated as header. The same applies to the rest of files defining the energy
-levels, radiative and collisional transitions.
-
-\subsection{Energy levels}
-The energy levels of species \texttt{mol\_name} are specified in the
-corresponding file \texttt{mol\_name.lev}.  For example, here are the first few
-lines from \texttt{CO.lev}:
+\subsection{Energy levels and radiative transitions}
+The energy levels and radiative transitions of a model molecule are specified in the
+corresponding file \texttt{mol\_name.molecule}.  For example, here we shown an extract
+of \texttt{CO.molecule}:
 
 \newpage
 
 \begin{verbatim}
 Rotational energy levels for the ground state of CO
 Reference: CDMS
+
+N. levels and molecular mass
+>
+41  28.d0
 
      N        g      Energy in cm^{-1}    Level details
 >
@@ -802,17 +783,12 @@ Reference: CDMS
      3        5          11.5350           'J =   2'
      4        7          23.0695           'J =   3'
      5        9          38.4481           'J =   4'
-\end{verbatim}
-The listing must be ascending in energy.  The statistical weight $g$ is entered
-as integer, energy is in cm$^{-1}$. Each level is internally identified in \M\
-by the running number listed in the first column. The level details are all
-read by \M\ as a single string and used only for information in the output.
+     6       11          57.6704           'J =   5'
+...
+    39       77        2835.7627           'J =  38'
+    40       79        2984.2707           'J =  39'
+    41       81        3136.5095           'J =  40'
 
-\subsection{Radiative Transitions}
-The Einstein coefficients for spontaneous emission ($A_{ij}$) of species
-\texttt{mol\_name} are specified in file \texttt{mol\_name.aij}; here are the
-first few lines from \texttt{CO.aij}:
-\begin{verbatim}
 Einstein coefficients A_ij for CO
 Reference: CDMS
 
@@ -823,41 +799,35 @@ Reference: CDMS
   4         3         2.497e-06
   5         4         6.126e-06
   6         5         1.221e-05
- \end{verbatim}
+  7         6         2.137e-05
+  8         7         3.422e-05
+...
+ 39        38         4.120e-03
+ 40        39         4.365e-03
+ 41        40         4.613e-03
+\end{verbatim}
+The listing must be ascending in energy.  The statistical weight $g$ is entered
+as integer, energy is in cm$^{-1}$. Each level is internally identified in \M\
+by the running number listed in the first column. The level details are all
+read by \M\ as a single string and used only for information in the output.
+All the lines before the line containing only the symbol ``\texttt{>}'' are
+treated as header. The same applies to the rest of files defining the energy
+levels, radiative and collisional transitions.
+After the energy levels, we find a header for the radiative transitions
+and the list of Einstein coefficients for spontaneous emission ($A_{ij}$).
 
 
 \subsection{Collisional Rates}
 As already mentioned (see \S\ref{sec:collisions}), there are several options
 for specifying collision rates. The most common is to supply tabulations in a
-file. A master list of all collision rate files is kept in the file
-\texttt{collision\_tables.dat} inside the directory \texttt{Coll/}. The file
-lists the filename with the collisional data together with two lines for
-comments that will be copied to the output files, and terminated by a
-separator:
+file. The files with the collisional rates are typicall placed inside the directory 
+\texttt{Coll/}. You can use a Python program to genera the file \texttt{list\_collisions.dat}
+with all the collisional files in the directory:
 \begin{verbatim}
-List of available tables of collision rates.
-
->
-H2Oo_H2.kij
-Collision rate coefficients for H2O_ortho-H2 collisions; corrected from H2O-He
-Green et al 1993, ApJS 85, 181
-   ******************
-H2Op_H2.kij
-Collision rate coefficients for H2O_para-H2 collisions; corrected from H2O-He
-Green et al 1993, ApJS 85, 181
-   ******************
-OH_H2o.kij
-Collision rate coefficients for OH-H2_ortho collisions
-Offer et al 1994, JCP 100, 362
-   ******************
-OH_H2p.kij
-Collision rate coefficients for OH-H2_para collisions
-Offer et al 1994, JCP 100, 362
-   ******************
+python listCollisions.py
 \end{verbatim}
 
-
-Here are the first few lines from \texttt{OH\_H2o.kij}:
+As an example, here are the first few lines from \texttt{OH\_H2o.kij}:
 \begin{verbatim}
 Collision rate coefficients for OH-H2_ortho collisions.
 Reference: Offer et al., 1994, J. Chem.Phys., 100, 362
@@ -880,26 +850,26 @@ The rate coefficients are entered in cm$^3$s$^{-1}$.  Only downward
 rates via the Boltzmann detailed-balance relation. Elastic collisions are
 ignored.
 
-\subsection{The Basecol Database}
+\subsection{The LAMBDA Database}
+We provide a Python script to download data from the Leiden Atomic and Molecular Database (LAMDA)\footnote{Accessible at \texttt{http://home.strw.leidenuniv.nl/$\sim$moldata/}.}
+and transform it to the MOLPOP-CEP format. This way, adding new molecules to perform calculations with 
+our code turns out to be straightforward. The LAMDA database contains information for 3 atomic and 29 molecular species. The
+script is placed on the \texttt{DataBase} directory and can be invoked as:
+\begin{verbatim}
+python lamda.py
+\end{verbatim}
+It will list the molecules currently available in the database and ask for which ones to download.
 
+\subsection{The Basecol Database}
 The Basecol bibliographic and numerical database was established at Meudon
 Observatory to address the community needs for data on molecular excitations.
 Accessible at \url{http://basecol.obspm.fr/}, Basecol stores extensive
 information on molecular frequencies, transition rates and collisional
-excitations. The Basecol team has embarked on the development of a web tool
+excitations. The Basecol team has a web tool
 that remotely accesses their database and creates atomic and molecular data
-files in the \M\ input format on the user's local computer. The Basecol web
-access tool will be part of the public \M\ package, which will enable exact
-data analysis of line emission from multi-level systems with the most current
-atomic and molecular data at all times.
-
-A tool has already been included in the
-distribution at directory {\tt Basecol} that generates all collisional
-information in \M\ format. Uncompress it and you will find
-instructions on how to proceed to download data. The directory
-{\tt DataBase\_Basecol} contains previously downloaded data that
-can be overwritten with new data. The input file {\tt Basecol.inp}, included in the samples, triggers a \M\ run
-that utilizes molecular data files generated by the Basecol/MOLPOP tool.
+files in the \M\ input format on the user's local computer. Since the automatic
+access to the database is not simple, we distributed the code with the
+database downloaded in 2009.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
