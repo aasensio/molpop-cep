@@ -1,6 +1,7 @@
 \documentclass[12pt]{article}
 \usepackage{natbib}
 \usepackage[hypertex]{hyperref}
+\usepackage{dirtree}
 
 
  \oddsidemargin 0.0in
@@ -8,7 +9,7 @@
  \textwidth 6.5in
  \topmargin -0.75in
  \textheight 9.5in
- \pagestyle{empty}
+%  \pagestyle{empty}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -180,11 +181,11 @@ run from a directory that contains \texttt{molpop.inp}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{INPUT}
+\section{General input}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\section{Basic considerations}
+\subsection{General considerations}
 A single MOLPOP-CEP run can process an unlimited number of models, each of which
 can correspond to a different molecular species. To accomplish this, MOLPOP-CEP's
 input is always the master input file \texttt{molpop.inp}, which lists the names of the
@@ -223,10 +224,27 @@ different number of input entries. By commenting out with ``\texttt{\%}'', all
 options may be retained in the input file with only the relevant one switched
 on.
 
+\subsection{Directory structure}
+The following is the directory structure.
+\dirtree{%
+.1 molpop/.
+.2 Basecol/.
+.2 DataBase/.
+.3 Coll/.
+.2 DataBaseBasecol/.
+.3 Coll/.
+.2 Manual/.
+.2 Samples/.
+.3 C+/.
+.3 CO/.
+.3 H2O/.
+.3 OH/.
+.3 SiO/.
+.2 Source/.
+}
 
-%
-%At the end of each of them there is a lengthy explanation of all the input
-%parameters and options.
+We recommend the input files defined in \texttt{molpop.inp} to be located in the \texttt{Samples} directory, separated
+in subdirectories for a better organization.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Input files}
@@ -332,13 +350,13 @@ invokes entry of physical conditions from the file
 
      Number of zones = 5
 
-     Width          n          T       Abundance     Linewidth      n(o-H2)/n  n(p-H2)/n
-     [cm]       [cm^(-3)]     [K]                      [km/s]
-     2.d15        1.d4       100.d0      1.d-4          1.d0         0.75       0.25
-     2.d15        1.d4       110.d0      1.d-4          1.d0         0.75       0.25
-     2.d15        1.d4       120.d0      1.d-4          1.d0         0.75       0.25
-     2.d15        1.d4       110.d0      1.d-4          1.d0         0.75       0.25
-     2.d15        1.d4       100.d0      1.d-4          1.d0         0.75       0.25
+  Width          n          T       Abundance     Linewidth      n(o-H2)/n  n(p-H2)/n
+   [cm]       [cm^(-3)]     [K]                      [km/s]
+   2.d15       1.d4       100.d0      1.d-4          1.d0         0.75       0.25
+   2.d15       1.d4       110.d0      1.d-4          1.d0         0.75       0.25
+   2.d15       1.d4       120.d0      1.d-4          1.d0         0.75       0.25
+   2.d15       1.d4       110.d0      1.d-4          1.d0         0.75       0.25
+   2.d15       1.d4       100.d0      1.d-4          1.d0         0.75       0.25
 \end{verbatim}
 Note that the density $n$ enters the calculation in two ways: (1) The collision
 rate (s$^{-1}$) between levels $i$ and $j$ is $C_{ij} = nK_{ij}$, where
@@ -647,6 +665,18 @@ given grid. This strategy is chosen by using a zero:
 \begin{verbatim}
    Precision in CEP grid convergence (0 to ignore convergence) = 1.d-1
 \end{verbatim}
+
+\section{Which files call each other}
+\begin{itemize}
+\item \texttt{molpop.inp} defines the input file for the calculation, usually found in the directory \texttt{Samples}.
+\item The keyword \texttt{Data directory} defines the root directory where the molecular data is stored.
+\item The keyword \texttt{Molecule} inside each configuration file defines the file that contains the molecular information, which is found in the directory defined
+by the previous keyword.
+\item The keyword \texttt{File listing physical conditions} defines the physical properties of the slab when a CEP calculation with variable physical conditions is carried out.
+\item The keyword \texttt{data file} in the definition of the collision partners refers to the specific table with collisional data in the \texttt{Coll} directory
+inside the directory defined by the \texttt{Data directory} keyword.
+\item The keyword \texttt{Radiation from file} defines the spectral shape of the boundary condition.
+\end{itemize}
 
 
 

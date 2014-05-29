@@ -9,8 +9,8 @@
 #             that the object file is generated, without linking
 # It should be easy to find the equivalent flags in your compiler
 
-COMPILER = ifort
-# COMPILER = gfortran
+#COMPILER = ifort
+COMPILER = gfortran
 
 OPTIONS = -c -O3
 # c -O3 

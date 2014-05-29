@@ -1,6 +1,7 @@
 \documentclass[12pt]{article}
 \usepackage{natbib}
 \usepackage[hypertex]{hyperref}
+\usepackage{dirtree}
 
 
  \oddsidemargin 0.0in
@@ -8,7 +9,7 @@
  \textwidth 6.5in
  \topmargin -0.75in
  \textheight 9.5in
- \pagestyle{empty}
+%  \pagestyle{empty}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -126,8 +127,19 @@ is simple and robust.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Uncompressing and compiling MOLPOP-CEP}
 
-The package comes in a single compressed file \texttt{molpop-cep.tar.gz}. After
-unpacking with \texttt{tar zxvf molpop-cep.tar.gz}, the MOLPOP-CEP directory
+The latest version of the code is placed on the Github repository at
+\begin{verbatim}
+https://github.com/aasensio/molpop-cep
+\end{verbatim}
+You can download it
+in two different ways. The most convenient is using \texttt{git}, if installed in
+your system. Just type:
+\begin{verbatim}
+git clone https://github.com/aasensio/molpop-cep
+\end{verbatim}
+and the code will be downloaded on the \texttt{molpop-cep} directory in the
+current directory. An alternative way is by pressing the button ``Download ZIP''
+on the repository webpage and uncompress it. In any case, the MOLPOP-CEP directory
 will contain the master input file \texttt{molpop.inp} (see below) and the
 following subdirectories:
 
@@ -141,6 +153,7 @@ A-coefficients and collision rates
 {\tt Samples} contains sample input files in separate directories for the
 respective molecular species. Each of these directories includes a
 sub-directory \texttt{OutputTest} with the output files these inputs produce.
+{\tt Manual} contains this manual.
 \end{enumerate}
 
 The code has been tested on several Linux platforms using the Intel Fortran
@@ -149,12 +162,7 @@ source code is in the \texttt{Source/} directory. The compilation is performed
 with the supplied \texttt{makefile}. It is quite simple and easy to modify, and
 contains additional comments about compiling and pre-processing flags. The
 default compiler is the free \texttt{gfortran} and you can use any other
-compiler through the variable \texttt{COMPILER}. The \texttt{makefile} also
-assumes that you do not have a license for the NAG library, and this is
-reflected by the statement \texttt{NAG\_AVAILABLE = NO}. If you do have a licence
-and want to utilize this library, change this to \texttt{NAG\_AVAILABLE = YES}
-and set the \texttt{NAG\_LIBRARY} variable to provide the path to your NAG
-library. To compile the code, type:
+compiler through the variable \texttt{COMPILER}. To compile the code, type:
 \begin{verbatim}
        make clean
        make
@@ -173,11 +181,11 @@ run from a directory that contains \texttt{molpop.inp}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{INPUT}
+\section{General input}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\section{Basic considerations}
+\subsection{General considerations}
 A single MOLPOP-CEP run can process an unlimited number of models, each of which
 can correspond to a different molecular species. To accomplish this, MOLPOP-CEP's
 input is always the master input file \texttt{molpop.inp}, which lists the names of the
@@ -192,7 +200,7 @@ sign. This enables you to enter comments and conveniently switch on
 and off the running of any particular model.
 
 The input files have a free format, text and empty lines can be entered
-arbitrarily. All lines that start with the ``\texttt{*}'' sign are echoed in
+arbitrarily. All lines in these files that start with the ``\texttt{*}'' sign are echoed in
 the output, and can be used to print out notes and comments. This option can
 also be useful when the program fails for some mysterious reason and you want
 to compare its output with an exact copy of the input line as it was read in
@@ -216,10 +224,27 @@ different number of input entries. By commenting out with ``\texttt{\%}'', all
 options may be retained in the input file with only the relevant one switched
 on.
 
+\subsection{Directory structure}
+The following is the directory structure.
+\dirtree{%
+.1 molpop/.
+.2 Basecol/.
+.2 DataBase/.
+.3 Coll/.
+.2 DataBaseBasecol/.
+.3 Coll/.
+.2 Manual/.
+.2 Samples/.
+.3 C+/.
+.3 CO/.
+.3 H2O/.
+.3 OH/.
+.3 SiO/.
+.2 Source/.
+}
 
-%
-%At the end of each of them there is a lengthy explanation of all the input
-%parameters and options.
+We recommend the input files defined in \texttt{molpop.inp} to be located in the \texttt{Samples} directory, separated
+in subdirectories for a better organization.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Input files}
@@ -325,13 +350,13 @@ invokes entry of physical conditions from the file
 
      Number of zones = 5
 
-     Width          n          T       Abundance     Linewidth      n(o-H2)/n  n(p-H2)/n
-     [cm]       [cm^(-3)]     [K]                      [km/s]
-     2.d15        1.d4       100.d0      1.d-4          1.d0         0.75       0.25
-     2.d15        1.d4       110.d0      1.d-4          1.d0         0.75       0.25
-     2.d15        1.d4       120.d0      1.d-4          1.d0         0.75       0.25
-     2.d15        1.d4       110.d0      1.d-4          1.d0         0.75       0.25
-     2.d15        1.d4       100.d0      1.d-4          1.d0         0.75       0.25
+  Width          n          T       Abundance     Linewidth      n(o-H2)/n  n(p-H2)/n
+   [cm]       [cm^(-3)]     [K]                      [km/s]
+   2.d15       1.d4       100.d0      1.d-4          1.d0         0.75       0.25
+   2.d15       1.d4       110.d0      1.d-4          1.d0         0.75       0.25
+   2.d15       1.d4       120.d0      1.d-4          1.d0         0.75       0.25
+   2.d15       1.d4       110.d0      1.d-4          1.d0         0.75       0.25
+   2.d15       1.d4       100.d0      1.d-4          1.d0         0.75       0.25
 \end{verbatim}
 Note that the density $n$ enters the calculation in two ways: (1) The collision
 rate (s$^{-1}$) between levels $i$ and $j$ is $C_{ij} = nK_{ij}$, where
@@ -640,6 +665,14 @@ given grid. This strategy is chosen by using a zero:
 \begin{verbatim}
    Precision in CEP grid convergence (0 to ignore convergence) = 1.d-1
 \end{verbatim}
+
+\section{Which files call each other}
+\begin{itemize}
+\item \texttt{molpop.inp} defines the input file for the calculation, usually found in the directory \texttt{Samples}.
+\item The keyword \texttt{Data directory} defines the root directory where the molecular data is stored.
+\item The keyword \texttt{Molecule} inside each configuration file defines the file that contains the molecular information, which is found in the directory defined
+by the previous keyword.
+\end{itemize}
 
 
 
@@ -1262,10 +1295,69 @@ is calculated after discretization with the following summation:
  \left(\alpha^{i,0} - \alpha^{i-1,0} - \alpha^{z,i} + \alpha^{z,i-1}\right)S^i.
 \end{equation}
 
+\begin{thebibliography}{17}
+\expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
+
+\bibitem[{{Abramowitz} \& {Stegun}(1972)}]{abramowitz72}
+{Abramowitz}, M., \& {Stegun}, I.~A. 1972, {Handbook of Mathematical Functions}
+  (New York: Dover)
+
+\bibitem[{{Athay} \& {Skumanich}(1971)}]{athay_skumanich71}
+{Athay}, R.~G., \& {Skumanich}, A. 1971, ApJ, 170, 605
+
+\bibitem[{{Bieniek} \& {Green}(1983)}]{bieniek_green83}
+{Bieniek}, R.~J., \& {Green}, S. 1983, ApJL, 265, L29
+
+\bibitem[{{Capriotti}(1965)}]{capriotti65}
+{Capriotti}, E.~R. 1965, ApJ, 142, 1101
+
+\bibitem[{{Elitzur}(1992)}]{elitzur92}
+{Elitzur}, M. 1992, {Astronomical Masers} (Dordrecht: Kluwer Academic
+  Publishers)
+
+\bibitem[{{Elitzur} \& {Asensio Ramos}(2006)}]{elitzur_asensio_cep06}
+{Elitzur}, M., \& {Asensio Ramos}, A. 2006, MNRAS, 365, 779
+
+\bibitem[{{Fabiani Bendicho} {et~al.}(1997){Fabiani Bendicho}, {Trujillo
+  Bueno}, \& {Auer}}]{fabiani_trujillo_auer97}
+{Fabiani Bendicho}, P., {Trujillo Bueno}, J., \& {Auer}, L.~H. 1997, A\&A, 324,
+  161
+
+\bibitem[{{Flower}(2001)}]{flower01}
+{Flower}, D.~R. 2001, J. Phys. B, 34, 2731
+
+\bibitem[{{Krolik} \& {McKee}(1978)}]{krolik_mckee78}
+{Krolik}, J.~H., \& {McKee}, C.~F. 1978, ApJS, 37, 459
+
+\bibitem[{{Lockett} \& {Elitzur}(1989)}]{lockett_elitzur89}
+{Lockett}, P., \& {Elitzur}, M. 1989, ApJ, 344, 525
+
+\bibitem[{{Lockett} \& {Elitzur}(1992)}]{lockett_elitzur92}
+---. 1992, ApJ, 399, 704
+
+\bibitem[{{Mihalas}(1978)}]{mihalas78}
+{Mihalas}, D. 1978, in {Stellar Atmospheres}, Vol. 455
+
+\bibitem[{{Rybicki} \& {Hummer}(1991)}]{rybicki_hummer91}
+{Rybicki}, G.~B., \& {Hummer}, D.~G. 1991, A\&A, 249, 720
+
+\bibitem[{{Rybicki} \& {Hummer}(1992)}]{rybicki_hummer92}
+---. 1992, A\&A, 262, 209
+
+\bibitem[{{Socas-Navarro} \& {Trujillo Bueno}(1997)}]{socas_trujillo97}
+{Socas-Navarro}, H., \& {Trujillo Bueno}, J. 1997, ApJ, 490, 383
+
+\bibitem[{{Steiner}(1991)}]{steiner91}
+{Steiner}, O. 1991, A\&A, 242, 290
+
+\bibitem[{{Trujillo Bueno} \& {Fabiani Bendicho}(1995)}]{trujillo_fabiani95}
+{Trujillo Bueno}, J., \& {Fabiani Bendicho}, P. 1995, ApJ, 455, 646
+
+\end{thebibliography}
 
 
-\bibliographystyle{apj}
-\bibliography{../../../MYPAPERS/biblio,apjmnemonic}
+% \bibliographystyle{apj}
+% \bibliography{/scratch/Dropbox/biblio,apjmnemonic}
 
 
 \end{document}

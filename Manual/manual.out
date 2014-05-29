@@ -1,34 +1,37 @@
 \BOOKMARK [1][-]{section.1}{Introduction}{}% 1
 \BOOKMARK [1][-]{section.2}{Uncompressing and compiling MOLPOP-CEP}{}% 2
-\BOOKMARK [1][-]{section.3}{INPUT}{}% 3
-\BOOKMARK [1][-]{section.4}{Input files}{}% 4
-\BOOKMARK [2][-]{subsection.4.1}{Solution Method}{section.4}% 5
-\BOOKMARK [2][-]{subsection.4.2}{Molecular Database}{section.4}% 6
-\BOOKMARK [2][-]{subsection.4.3}{The Molecule}{section.4}% 7
-\BOOKMARK [2][-]{subsection.4.4}{Physical Conditions}{section.4}% 8
-\BOOKMARK [2][-]{subsection.4.5}{Line Overlap}{section.4}% 9
-\BOOKMARK [2][-]{subsection.4.6}{Maser Lines}{section.4}% 10
-\BOOKMARK [2][-]{subsection.4.7}{Collision Rates}{section.4}% 11
-\BOOKMARK [3][-]{subsubsection.4.7.1}{Tabulated Cross Sections}{subsection.4.7}% 12
-\BOOKMARK [3][-]{subsubsection.4.7.2}{Hard-Sphere Collisions}{subsection.4.7}% 13
-\BOOKMARK [3][-]{subsubsection.4.7.3}{SiO Rotation-Vibrations}{subsection.4.7}% 14
-\BOOKMARK [2][-]{subsection.4.8}{External Radiation}{section.4}% 15
-\BOOKMARK [3][-]{subsubsection.4.8.1}{Diluted Blackbody}{subsection.4.8}% 16
-\BOOKMARK [3][-]{subsubsection.4.8.2}{Single-Temperature Dust}{subsection.4.8}% 17
-\BOOKMARK [3][-]{subsubsection.4.8.3}{Radiation Field from a File}{subsection.4.8}% 18
-\BOOKMARK [2][-]{subsection.4.9}{Solution Controls}{section.4}% 19
-\BOOKMARK [1][-]{section.5}{Output}{}% 20
-\BOOKMARK [1][-]{section.6}{Molecular Data and the BASECOL Database}{}% 21
-\BOOKMARK [2][-]{subsection.6.1}{Energy levels and radiative transitions}{section.6}% 22
-\BOOKMARK [2][-]{subsection.6.2}{Collisional Rates}{section.6}% 23
-\BOOKMARK [2][-]{subsection.6.3}{The LAMBDA Database}{section.6}% 24
-\BOOKMARK [2][-]{subsection.6.4}{The Basecol Database}{section.6}% 25
-\BOOKMARK [1][-]{appendix.A}{APPENDIX}{}% 26
-\BOOKMARK [2][-]{subsection.A.1}{Formulation of the problem}{appendix.A}% 27
-\BOOKMARK [3][-]{subsubsection.A.1.1}{Coupled Escape Probability}{subsection.A.1}% 28
-\BOOKMARK [1][-]{appendix.B}{Numerical implementation}{}% 29
-\BOOKMARK [2][-]{subsection.B.1}{Internal radiation}{appendix.B}% 30
-\BOOKMARK [2][-]{subsection.B.2}{Numerical evaluation of the auxiliary functions}{appendix.B}% 31
-\BOOKMARK [2][-]{subsection.B.3}{External radiation}{appendix.B}% 32
-\BOOKMARK [2][-]{subsection.B.4}{Solution of the final equations}{appendix.B}% 33
-\BOOKMARK [1][-]{appendix.C}{Cooling and emergent radiation}{}% 34
+\BOOKMARK [1][-]{section.3}{General input}{}% 3
+\BOOKMARK [2][-]{subsection.3.1}{General considerations}{section.3}% 4
+\BOOKMARK [2][-]{subsection.3.2}{Directory structure}{section.3}% 5
+\BOOKMARK [1][-]{section.4}{Input files}{}% 6
+\BOOKMARK [2][-]{subsection.4.1}{Solution Method}{section.4}% 7
+\BOOKMARK [2][-]{subsection.4.2}{Molecular Database}{section.4}% 8
+\BOOKMARK [2][-]{subsection.4.3}{The Molecule}{section.4}% 9
+\BOOKMARK [2][-]{subsection.4.4}{Physical Conditions}{section.4}% 10
+\BOOKMARK [2][-]{subsection.4.5}{Line Overlap}{section.4}% 11
+\BOOKMARK [2][-]{subsection.4.6}{Maser Lines}{section.4}% 12
+\BOOKMARK [2][-]{subsection.4.7}{Collision Rates}{section.4}% 13
+\BOOKMARK [3][-]{subsubsection.4.7.1}{Tabulated Cross Sections}{subsection.4.7}% 14
+\BOOKMARK [3][-]{subsubsection.4.7.2}{Hard-Sphere Collisions}{subsection.4.7}% 15
+\BOOKMARK [3][-]{subsubsection.4.7.3}{SiO Rotation-Vibrations}{subsection.4.7}% 16
+\BOOKMARK [2][-]{subsection.4.8}{External Radiation}{section.4}% 17
+\BOOKMARK [3][-]{subsubsection.4.8.1}{Diluted Blackbody}{subsection.4.8}% 18
+\BOOKMARK [3][-]{subsubsection.4.8.2}{Single-Temperature Dust}{subsection.4.8}% 19
+\BOOKMARK [3][-]{subsubsection.4.8.3}{Radiation Field from a File}{subsection.4.8}% 20
+\BOOKMARK [2][-]{subsection.4.9}{Solution Controls}{section.4}% 21
+\BOOKMARK [1][-]{section.5}{Which files call each other}{}% 22
+\BOOKMARK [1][-]{section.6}{Output}{}% 23
+\BOOKMARK [1][-]{section.7}{Molecular Data and the BASECOL Database}{}% 24
+\BOOKMARK [2][-]{subsection.7.1}{Energy levels and radiative transitions}{section.7}% 25
+\BOOKMARK [2][-]{subsection.7.2}{Collisional Rates}{section.7}% 26
+\BOOKMARK [2][-]{subsection.7.3}{The LAMBDA Database}{section.7}% 27
+\BOOKMARK [2][-]{subsection.7.4}{The Basecol Database}{section.7}% 28
+\BOOKMARK [1][-]{appendix.A}{APPENDIX}{}% 29
+\BOOKMARK [2][-]{subsection.A.1}{Formulation of the problem}{appendix.A}% 30
+\BOOKMARK [3][-]{subsubsection.A.1.1}{Coupled Escape Probability}{subsection.A.1}% 31
+\BOOKMARK [1][-]{appendix.B}{Numerical implementation}{}% 32
+\BOOKMARK [2][-]{subsection.B.1}{Internal radiation}{appendix.B}% 33
+\BOOKMARK [2][-]{subsection.B.2}{Numerical evaluation of the auxiliary functions}{appendix.B}% 34
+\BOOKMARK [2][-]{subsection.B.3}{External radiation}{appendix.B}% 35
+\BOOKMARK [2][-]{subsection.B.4}{Solution of the final equations}{appendix.B}% 36
+\BOOKMARK [1][-]{appendix.C}{Cooling and emergent radiation}{}% 37
