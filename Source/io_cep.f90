@@ -439,7 +439,7 @@ contains
 	integer :: ii, ip, ipl, i, j, up, low, it, k
 	real(kind=8) :: sig, glu, acon, chim, chip, tau0, deltaz, chilp, col_up, col_low
 	real(kind=8) :: sum, intensity, e1, e2, freq_max, deltaTBR, deltaTBRJ
-	real(kind=8), allocatable :: flux_out(:,:), freq_axis(:), Slte(:), total_flux(:)
+	real(kind=8), allocatable :: flux_out(:,:), freq_axis(:), Slte(:), total_flux(:), total_intensity(:)
 	
 		column_density = sum(dz * factor_abundance * abundance * nh)
 		total_radius = sum(dz)
@@ -448,20 +448,22 @@ contains
 		allocate(freq_axis(100))
 		allocate(flux_out(3,100))
 		allocate(total_flux(ntran_output))
+		allocate(total_intensity(ntran_output))
 						
 		do i = 1, ntran_output			
 			it = output_transition(i)
 			
 ! Generate a frequency axis for this transition so that it can accomodate at least
 ! four Doppler widths for the zone with the largest Doppler width
-			freq_max = 4.d0 * maxval(dopplerw(it,:))			
+			freq_max = 4.d0 * maxval(dopplerw(it,:))
 			do ip = 1, 100
 				freq_axis(ip) = (ip-1.d0) / 99.d0 * 2.d0 * freq_max - freq_max
 			enddo
 			
 			call calcflux_cep(pop, freq_axis, flux_out, it)
 			
-			total_flux(i) = int_tabulated(freq_axis, flux_out(1,:))
+			total_flux(i) = int_tabulated(freq_axis, flux_out(1,:))			
+			total_intensity(i) = int_tabulated(freq_axis, flux_out(2,:))
 			
 ! Output in velocity [km/s] and emergent flux
 			write(32,FMT='(A,I3,A,I3)') 'Transition : ', itran(1,it), ' -> ', itran(2,it)
@@ -477,12 +479,20 @@ contains
  
 		write(16,*)
 		write(16,*) '*******************************************************************************'
-		write(16,FMT='(A,E12.5,A,E12.5,A,I4)') ' N(mol) [cm^-2]: ', column_density, '   -  R [cm]: ',&
-			total_radius, '    -  nzones: ', nz
+		write(16,FMT='(A,E12.5,A,I4)') ' N(mol) [cm^-2]: ', column_density, '   -  nzones: ', nz
 		write(16,*) '*******************************************************************************'
 		
 		write(16,FMT='(1X,A,F6.3,A)') ' up    low     tau (line center)     cooling         N(up)/N(low)    I_lc(mu=',&
-			mu_output,')   delta(Tb) [K]      del(TRJ) [K]       % emission'
+			mu_output,')   delta(Tb) [K]      del(TRJ) [K]    Int(Ta dv)    % emission'
+			
+		write(16,FMT='(A,A)') '                                                                        [W/m2/Hz/sr]',&
+			'        [K]               [K]           [K km/s]              '
+						
+		write(18,FMT='(1X,A,F6.3,A)') ' up    low     tau (line center)     cooling         N(up)/N(low)    I_lc(mu=',&
+			mu_output,')   delta(Tb) [K]      del(TRJ) [K]    Int(Ta dv) [K km/s]   % emission'
+			
+		write(18,FMT='(A,A)') '                                                                        [W/m2/Hz/sr]',&
+			'        [K]               [K]           [K km/s]              '
 
 		allocate(Slte(nz))
 		
@@ -530,15 +540,21 @@ contains
 			do ip = 1, nz
 				e1 = exp(-(tau(it,nz)-tau(it,ip)) / (sqrt(PI)*mu_output))
 				e2 = exp(-(tau(it,nz)-tau(it,ip-1)) / (sqrt(PI)*mu_output))
-				intensity = intensity + Sl(ip) * (e1-e2)
+				intensity = intensity + Sl(ip) * (e1-e2)				
 			enddo
-			
+						
 ! 			deltaTBR = Tbr_I(dtran(2,it),intensity,tau(it,nz)/sqrt(PI))
 			call Tbr4I(dtran(2,it),intensity,tau(it,nz)/sqrt(PI),deltaTBR,deltaTBRJ)
 			
-			write(16,FMT='(I4,2X,I4,5X,1PE13.5,5X,1PE13.5,5X,1PE13.5,5X,1PE13.5,5X,1PE13.5,5X,1PE13.5,5X,1PG13.5)') up, low, &
+			write(16,FMT='(I4,2X,I4,5X,1PE13.5,5X,1PE13.5,5X,1PE13.5,5X,1PE13.5,5X,1PE13.5,5X,1PE13.5,5X,1PG13.5,5X,1PG13.5)') up, low, &
 				tau(it,nz)/sqrt(PI), flux_total(it+nr*(nz-1)) * 4.d0*PI, col_up / col_low,&
-				intensity, deltaTBR, deltaTBRJ, 100.0 * total_flux(i) / sum(total_flux)
+				1e-3*intensity, deltaTBR, deltaTBRJ, (PC/dtran(2,i))**3 / (2.d0*PK*1d5) * total_intensity(i), &
+				100.0 * total_flux(i) / sum(total_flux)
+												
+			write(18,FMT='(I4,2X,I4,5X,1PE13.5,5X,1PE13.5,5X,1PE13.5,5X,1PE13.5,5X,1PE13.5,5X,1PE13.5,5X,1PG13.5,5X,1PG13.5)') up, low, &
+				tau(it,nz)/sqrt(PI), flux_total(it+nr*(nz-1)) * 4.d0*PI, col_up / col_low,&
+				1e-3*intensity, deltaTBR, deltaTBRJ, (PC/dtran(2,i))**3 / (2.d0*PK*1d5) * total_intensity(i), &
+				100.0 * total_flux(i) / sum(total_flux)
 				
 			write(35,FMT='(I4,2X,I4,1X,(1P8E13.5))') up, low, &
 				(PHK*dtran(2,i)/log(1.d0+acon/Sl(ii)), ii = 1, nz)

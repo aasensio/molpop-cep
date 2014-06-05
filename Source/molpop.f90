@@ -119,6 +119,7 @@ implicit none
        call attach2(apath, '.out', fn_out)
        call attach2(apath, '.plot', fn_sum)
        open(16, file=fn_out, status='unknown')
+       open(18, file=fn_sum, status='unknown')
        write(6,'('' working on '',a)') fn_out(1:fsize(fn_out))
        write(16,'(10x,a,/)') ver(1:fsize(ver))
        quit = .false.

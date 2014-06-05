@@ -1,7 +1,7 @@
 module io_molpop
 use global_molpop
 use maths_molpop, only: Pass_Header, error_message, inmin, inmax, attach2, ordera, &
-                        optdep, Tbr4Tx, BB
+                        optdep, Tbr4Tx, BB, simpson
 use cep_molpop_interface
 implicit none
 double precision Xdust
@@ -27,6 +27,7 @@ contains
   integer LMeth, LOpt, nradiat, ComingFrom, n_modified
   character*72 TableName, TableInfo
   data UCASE/.TRUE./, NoCase/.FALSE./
+  double precision, allocatable :: boltzmannFactors(:), boltzmannFactors2D(:,:)
 
 !      start reading with negative unit to clean residual info in rdinps
 !      UCASE and NoCase signal whether to convert input strings
@@ -275,6 +276,14 @@ contains
       if (trim(adjustl(to_upper(file_physical_conditions))) == 'NONE') then
 !        everything is constant
          call loadcij
+         
+         allocate(boltzmannFactors(n))
+         aux    = hpl/bk
+         boltzmannFactors = exp(-aux*cl*fr/T)
+         if (minval(boltzmannFactors) < 1e-18) then
+			write(*,*) '  -Boltzmann factor too low. You should consider reducing the number of levels if the calculation is not successful'
+		 endif         
+         deallocate(boltzmannFactors)
       else
 !        Varying physical conditions
 !        First read the number of zones of the file with the physical conditions
@@ -292,6 +301,11 @@ contains
          read(45,*)
          if (allocated(collis_all)) deallocate(collis_all)
          allocate(collis_all(n,n,n_zones_slab))
+         
+         allocate(boltzmannFactors2D(n,n_zones_slab))
+         
+         aux    = hpl/bk
+                  
          do i = 1, n_zones_slab
 !            Read the T and the relative abundance of each collider
              read(45,*) temp1, temp2, T, temp3, temp4, (fr_col(j),j=1,n_col)
@@ -299,7 +313,15 @@ contains
              vt = dsqrt(2.0*bk*T/(mol_mass*xmp))
              call loadcij
              collis_all(:,:,i) = c(1:n,1:n)
-         enddo
+             
+             boltzmannFactors2D(:,i) = exp(-aux*cl*fr/T)			 
+         enddo         
+         
+         if (minval(boltzmannFactors2D) < 1e-18) then
+			write(*,*) '  -Boltzmann factor too low. You should consider reducing the number of levels if the calculation is not successful'
+		 endif         
+         deallocate(boltzmannFactors2D)
+         
          close(45)
       endif
 !__________________________________________________________
@@ -1007,7 +1029,7 @@ contains
    subroutine finish(ier)
 !     Output summary of the run
       integer ier,i,j,k,unit,unit2,n1,n2,dn
-      character*180 header, header2
+      character*190 header, header2
 
       if(ier .eq. -1) write(16,"(/6x,'Terminated. Step size was ',1pe10.3/)") step
       if(ier .eq. 0) write(16,"(/6x,'Terminated. Number of steps reached',I5/)") Nmax
@@ -1058,15 +1080,17 @@ contains
 
 !     Prepare header lines common to all transitions
 
-      header  = "(/,T5,'Nmol',T15,'Tex',T25,'tau',T35,'Flux',T45,'Io',T52,'delta(Tb)',T62,'del(TRJ)',&
-        T75,'eta',T85,'p1',T95,'p2',T104,'Gamma1',T114,'Gamma2',T124,'Gamma')"
-      header2 = "(T3,'cm-2/kms',T16,'K',T36,'Jy',T41,'W/m2/Hz/st',T55,'K',T65,'K',&
-        T83,'cm-3s-1',T93,'cm-3s-1',3(6x,'s-1 '))"
+      header  = "(/,T5,'Nmol',T15,'Tex',T25,'tau',T35,'Flux',T42,'int(Ta dv)',T55,'Io',T62,'delta(Tb)',T72,'del(TRJ)',&
+        T85,'eta',T95,'p1',T105,'p2',T114,'Gamma1',T124,'Gamma2',T134,'Gamma')"
+        
+       header2 = "(T3,'cm-2/kms',T16,'K',T36,'Jy',T43,'K km/s',T52,'W/m2/Hz/st',T65,'K',T75,'K',&
+        T95,'cm-3s-1',T103,'cm-3s-1',3(6x,'s-1 '))"
+                
       if (dustAbsorption) then
-         header  = "(/,T5,'Nmol',T15,'Tex',T25,'tau',T35,'Flux',T45,'Io',T52,'delta(Tb)',T62,'del(TRJ)',&
-           T74,'Xdust',T85,'eta',T96,'p1',T106,'p2',T114,'Gamma1',T124,'Gamma2',T134,'Gamma')"
-         header2 = "(T3,'cm-2/kms',T16,'K',T36,'Jy',T41,'W/m2/Hz/st',T55,'K',T65,'K',&
-           T93,'cm-3s-1',T103,'cm-3s-1',3(6x,'s-1 '))"
+         header  = "(/,T5,'Nmol',T15,'Tex',T25,'tau',T35,'Flux',T42,'int(Ta dv)',T55,'Io',T62,'delta(Tb)',T72,'del(TRJ)',&
+           T84,'Xdust',T95,'eta',T106,'p1',T116,'p2',T124,'Gamma1',T134,'Gamma2',T143,'Gamma')"                     
+         header2 = "(T3,'cm-2/kms',T16,'K',T36,'Jy',T43,'K km/s',T51,'W/m2/Hz/st',T65,'K',T75,'K',&
+           T103,'cm-3s-1',T113,'cm-3s-1',3(6x,'s-1 '))"
       end if
 
       do j = 1, n_tr
@@ -1083,8 +1107,11 @@ contains
          write(unit,"(5x,'Lower Level: ',a)")ledet(jtr(j))
          write(unit,FMT=header)
          write(unit,FMT=header2)
+         write(18,FMT=header)
+         write(18,FMT=header2)
          do i = n1, n2, dn
-           write(unit,'(15(ES10.3))') (fin_tr(j,k,i), k = 1,n_prt_cols)
+           write(unit,'(16(ES10.3))') (fin_tr(j,k,i), k = 1,n_prt_cols)
+           write(18,'(16(ES10.3))') (fin_tr(j,k,i), k = 1,n_prt_cols)
          end do
       end do
 
@@ -1178,10 +1205,10 @@ contains
         if(kool(cool(i,j)) .gt. 0) then
           if(dustAbsorption) then
             write(16,'(6x,i3,2x,i3,ES11.3,5(ES10.2),i4)')i,j,wl(i,j),tau(i,j),&
-            Xd(i,j),esc(i,j),tex,cool(i,j),kool(cool(i,j))
+            Xd(i,j),esc(i,j),tex,cool(i,j),kool(cool(i,j))            
           else
             write(16,'(6x,i3,2x,i3,ES11.3,4(ES10.2),i4)')i,j,wl(i,j),tau(i,j),&
-            esc(i,j),tex,cool(i,j),kool(cool(i,j))
+            esc(i,j),tex,cool(i,j),kool(cool(i,j))            
           end if
         end if
       end do
@@ -1254,7 +1281,8 @@ contains
    double precision x(n),cool(:,:),taumaser,pop1,pop2,eta
 !   double precision Gamma_av,Gamma(2),p1,p2,depth,aux,flux,Tex,Tl
    double precision Gamma_av,Gamma(2),p1,p2,depth,aux
-   double precision flux,Tex,Tl,Tbr,TRJ, nu
+   double precision flux,Tex,Tl,Tbr,TRJ, nu, integral
+   double precision, allocatable :: freq_axis(:)
 
       call optdep(x)
       nmaser  = 0
@@ -1315,6 +1343,11 @@ contains
 !    12 - loss rate of upper level
 !    13 - mean loss rate from average with statistical weights
 
+	  allocate(freq_axis(100))
+	  do k = 1, 100
+		freq_axis(k) = (k-1.d0) / 99.d0 * 8.d0 - 4.d0
+	  enddo
+
       do k = 1, n_tr
          m(2)= itr(k)
          m(1)= jtr(k)
@@ -1323,33 +1356,39 @@ contains
          Tex   = Tl/DLOG(POP(m(1))/POP(m(2)))
          depth = tau(m(2),m(1))
          call Tbr4Tx(Tl,Tex,depth,Tbr,TRJ)
-
+         
+! Integrate (1-exp(-tau_v)) on the line
+         call simpson(100,1,100,freq_axis,1.0-exp(-depth/mu_output/ROOTPI*exp(-freq_axis**2)),integral)
+                           
          fin_tr(k, 1,nprint) = mcol
          fin_tr(k, 2,nprint) = Tex
          fin_tr(k, 3,nprint) = depth
          fin_tr(k, 4,nprint) = aux*cool(m(2),m(1))/freq(m(2),m(1))
-         fin_tr(k, 5,nprint) = BB(nu,Tex)*(1. - dexp(-depth/mu_output))
-         fin_tr(k, 6,nprint) = Tbr
-         fin_tr(k, 7,nprint) = TRJ
-         if(dustAbsorption) fin_tr(k,8,nprint) = Xd(m(2),m(1))
+         fin_tr(k, 5,nprint) = BB(nu,Tex) * 1d3 * integral * vt * nu / cl * (cl/nu)**3 / (2.d0*bk*1d5)       ! Antenna temperature in K km/s         
+         fin_tr(k, 6,nprint) = BB(nu,Tex)*(1. - dexp(-depth/mu_output))
+         fin_tr(k, 7,nprint) = Tbr
+         fin_tr(k, 8,nprint) = TRJ         
+         if(dustAbsorption) fin_tr(k,9,nprint) = Xd(m(2),m(1))
          If (tau(m(2),m(1)) .lt. 0.0) then
             eta = (pop(m(2)) - pop(m(1)))/(pop(m(2)) + pop(m(1)))
             call loss(m,Gamma)
             Gamma_av = (Gamma(1)*g(m(1)) + Gamma(2)*g(m(2)))/(g(m(1))+g(m(2)))
             p2 = nmol*x(m(2))*we(m(2))*Gamma(2)
             p1 = nmol*x(m(1))*we(m(1))*Gamma(1)
-            fin_tr(k, 8+Idust,nprint) = eta
-            fin_tr(k, 9+Idust,nprint) = p1
-            fin_tr(k,10+Idust,nprint) = p2
-            fin_tr(k,11+Idust,nprint) = Gamma(1)
-            fin_tr(k,12+Idust,nprint) = Gamma(2)
-            fin_tr(k,13+Idust,nprint) = Gamma_av
+            fin_tr(k, 9+Idust,nprint) = eta
+            fin_tr(k,10+Idust,nprint) = p1
+            fin_tr(k,11+Idust,nprint) = p2
+            fin_tr(k,12+Idust,nprint) = Gamma(1)
+            fin_tr(k,13+Idust,nprint) = Gamma(2)
+            fin_tr(k,14+Idust,nprint) = Gamma_av
          else
-            do i = 8+Idust, n_prt_cols   ! n_prt_cols = 13+Idust
+            do i = 9+Idust, n_prt_cols   ! n_prt_cols = 14+Idust
                fin_tr(k,i,nprint) = 0.0
             end do
          end if
       end do
+      
+      deallocate(freq_axis)
 
       return
   end subroutine lines
