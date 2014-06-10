@@ -1434,6 +1434,7 @@ contains
       subroutine const
 !     defines physical, astronomical and mathematical constants
       use global_molpop
+      integer k
 !     constants (all units are c.g.s.):
 !
 !     cl  -      speed of light
@@ -1465,6 +1466,13 @@ contains
       fourpi  = 4.0*pi
       eitpi   = 8.0*pi
       rootpi  = dsqrt(pi)
+
+!     Frequency grid for integration over Doppler profile:
+      do k = 1, 100
+         freq_axis(k) = - 4.d0 + 8.d0*(k - 1.d0)/99.d0 
+      enddo
+
+
 
       return
       end subroutine const

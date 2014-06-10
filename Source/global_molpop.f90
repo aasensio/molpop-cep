@@ -6,6 +6,8 @@ implicit none
    real(kind=8) solarl,solarm,solarr,pc
    real(kind=8), parameter ::  Tcmb = 2.725d0
 
+   real(kind=8) freq_axis(100)
+
    character*128 apath, path_database
   
    integer n

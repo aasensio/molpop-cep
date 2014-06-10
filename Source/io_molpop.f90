@@ -27,7 +27,6 @@ contains
   integer LMeth, LOpt, nradiat, ComingFrom, n_modified
   character*72 TableName, TableInfo
   data UCASE/.TRUE./, NoCase/.FALSE./
-  double precision, allocatable :: boltzmannFactors(:), boltzmannFactors2D(:,:)
 
 !      start reading with negative unit to clean residual info in rdinps
 !      UCASE and NoCase signal whether to convert input strings
@@ -154,9 +153,9 @@ contains
       else
 !
 ! ME 2013/11/27: We now use only molecular column density per bandwidth in I/O
-!                Behind the scenes, leave the old structure of R with the values 
+!                Behind the scenes, leave the old structure of R with the values
 !                for xmol and v entered with the dust absorption input
-!                
+!
          T    = rdinp(iequal,15,16)
          nh2  = rdinp(iequal,15,16)
          do unit = 16,unit2
@@ -181,6 +180,9 @@ contains
         error = error_message(opt,str)
         return
       endif
+
+!     Check whether number of levels is too large for the temperature: 
+      call check_num_levels(n,T)
 !_______________________________________________________________
 
 
@@ -200,7 +202,7 @@ contains
       else
          v = vt
          header = 'using thermal doppler width = '
-      end if    
+      end if
       dustAbsorption = .false.
       if (Xdust > 0.) then
          if (kbeta == 3) then
@@ -213,10 +215,10 @@ contains
             write (16,"(8x,'Dust properties from file ',a)") trim(adjustl(dustFile))
             write (16,"(8x,'Dust optical depth at V is ', 1PE9.2,' times column (in cm^-2) of H nuclei')") Xdust
             write (16,'(8x,3a,1pe9.2)') 'n_', s_mol(1:fsize(s_mol)),'/n_tot = ',xmol
-            write (16,"(8x,a,F5.1,' km/s')") trim(adjustl(header)), v 
+            write (16,"(8x,a,F5.1,' km/s')") trim(adjustl(header)), v
             call interpolateExternalFile(dustFile, wl, qdust, norm, error)
          end if
-      else                   
+      else
          Idust = 0   ! no dust effects, so final printing has fewer columns
          write(16,"(6x,'No considerations of dust absorption')")
       end if
@@ -239,8 +241,8 @@ contains
             return
          else
             overlaptest = .true.
-            WRITE (16,"(6x,'Line Overlap effects included')") 
-            write (16,"(8x,a,F5.1,' km/s')") trim(adjustl(header)), v 
+            WRITE (16,"(6x,'Line Overlap effects included')")
+            write (16,"(8x,a,F5.1,' km/s')") trim(adjustl(header)), v
             write (16,"(8x,'FWHM = ',f5.1,' km/s')") V*1.665
          end if
       ELSE
@@ -264,7 +266,7 @@ contains
              sat = 1
              write(16,"(6x,'Maser saturation effects included')")
              if(i_sum .eq. 1)write(17,"(6x,'Maser saturation effects included')")
-          end if   
+          end if
       else
           OPT = 'saturation parameter'
           error = error_message(opt,str)
@@ -276,14 +278,6 @@ contains
       if (trim(adjustl(to_upper(file_physical_conditions))) == 'NONE') then
 !        everything is constant
          call loadcij
-         
-         allocate(boltzmannFactors(n))
-         aux    = hpl/bk
-         boltzmannFactors = exp(-aux*cl*fr/T)
-         if (minval(boltzmannFactors) < 1e-18) then
-			write(*,*) '  -Boltzmann factor too low. You should consider reducing the number of levels if the calculation is not successful'
-		 endif         
-         deallocate(boltzmannFactors)
       else
 !        Varying physical conditions
 !        First read the number of zones of the file with the physical conditions
@@ -301,27 +295,16 @@ contains
          read(45,*)
          if (allocated(collis_all)) deallocate(collis_all)
          allocate(collis_all(n,n,n_zones_slab))
-         
-         allocate(boltzmannFactors2D(n,n_zones_slab))
-         
-         aux    = hpl/bk
-                  
          do i = 1, n_zones_slab
 !            Read the T and the relative abundance of each collider
              read(45,*) temp1, temp2, T, temp3, temp4, (fr_col(j),j=1,n_col)
+!            Check whether number of levels is too large for the temperature: 
+             call check_num_levels(n,T)
 !            In case hard sphere collision rates are used, change the thermal velocity
              vt = dsqrt(2.0*bk*T/(mol_mass*xmp))
              call loadcij
              collis_all(:,:,i) = c(1:n,1:n)
-             
-             boltzmannFactors2D(:,i) = exp(-aux*cl*fr/T)			 
-         enddo         
-         
-         if (minval(boltzmannFactors2D) < 1e-18) then
-			write(*,*) '  -Boltzmann factor too low. You should consider reducing the number of levels if the calculation is not successful'
-		 endif         
-         deallocate(boltzmannFactors2D)
-         
+         enddo
          close(45)
       endif
 !__________________________________________________________
@@ -464,7 +447,7 @@ contains
          error = error_message(opt,str)
          return
       endif
-      
+
       if (trim(adjustl(to_upper(file_physical_conditions))) /= 'NONE') then
 			KTHICK = 2
 			write(16,*) 'Working with fixed physical conditions'
@@ -479,7 +462,7 @@ contains
 !             error = error_message(opt,str)
 !             return
 !          endif
-      
+
       TAUM  = rdinp(iequal,iunit,16)
       COLM  = rdinp(iequal,iunit,16)
 
@@ -489,7 +472,7 @@ contains
 ! NRMAX  - MAXIMUM # OF STEPS PER DECADE; EQUIVALENT TO MINIMUM STEP
 ! NMAX   - MAXIMUM # OF STEPS ALLOWED TO REACH RM
 ! ACC    - ACCURACY REQUIRED IN THE SOLUTION
-! itmax  - MAX # allowed for Newton iterations to reach ACC 
+! itmax  - MAX # allowed for Newton iterations to reach ACC
 !
       NPR   = rdinp(iequal,iunit,16)
       NRMAX = rdinp(iequal,iunit,16)
@@ -712,6 +695,37 @@ contains
       return
 
   end SUBROUTINE INPUT
+
+
+  subroutine check_num_levels(n,T)
+
+! Check whether the number of levels is too large 
+! Give warning if bar = Ti(n)/T exceeds a threshold
+! A reasonable threshold value is 15
+  use global_molpop, only: Ti
+  integer, intent(in) :: n
+  integer i,iunit
+  double precision, intent(in) :: T
+  double precision, parameter  :: bar=15
+
+      if (Ti(n)/T < bar) return ! No problems; n does not seems excessive 
+
+!     Potentially, too many levels
+!     devise suggestion for a smaller number
+      i = n
+      do while (Ti(i)/T > bar)
+         i = i - 1
+      end do
+
+      do iunit = 6, 16, 10
+         write (iunit,"(' ******* WARNING: Energy levels go to',I5, &
+         'K while T is only',I5,'K.'/,9x,&
+         'If you encounter numerical difficulties, consider',/,9x, &
+         'reducing the number of levels from',I4,' to around',I4)" ) &
+          int(Ti(n)), int(T), n, i
+      end do
+      return
+  end subroutine check_num_levels
 
 
   subroutine print_mol_data
@@ -1072,26 +1086,29 @@ contains
 !=====  Detailed Printing of Individual Transitions  =====
 
       write (unit,"(/,' *** Parameters for selected transitions; Io is line-center intensity')",advance='no')
-      if (kbeta > 0) then 
+      if (kbeta > 0) then
          write (unit, "(' at mu =',f6.2,' to slab face')") mu_output
       else
          write (unit,"( )")
-      end if   
+      end if
 
 !     Prepare header lines common to all transitions
 
-      header  = "(/,T5,'Nmol',T15,'Tex',T25,'tau',T35,'Flux',T42,'int(Ta dv)',T55,'Io',T62,'delta(Tb)',T72,'del(TRJ)',&
-        T85,'eta',T95,'p1',T105,'p2',T114,'Gamma1',T124,'Gamma2',T134,'Gamma')"
+      header  = "(/,T5,'Nmol',T15,'Tex',T25,'tau',T35,'Flux',T42,'int(Tb dv)',T55,'Io',&
+                    T62,'delta(Tb)',T72,'del(TRJ)',T85,&
+                    'eta',T95,'p1',T105,'p2',T114,'Gamma1',T124,'Gamma2',T134,'Gamma')"
         
        header2 = "(T3,'cm-2/kms',T16,'K',T36,'Jy',T43,'K km/s',T52,'W/m2/Hz/st',T65,'K',T75,'K',&
         T95,'cm-3s-1',T103,'cm-3s-1',3(6x,'s-1 '))"
                 
       if (dustAbsorption) then
-         header  = "(/,T5,'Nmol',T15,'Tex',T25,'tau',T35,'Flux',T42,'int(Ta dv)',T55,'Io',T62,'delta(Tb)',T72,'del(TRJ)',&
-           T84,'Xdust',T95,'eta',T106,'p1',T116,'p2',T124,'Gamma1',T134,'Gamma2',T143,'Gamma')"                     
+         header  = "(/,T5,'Nmol',T15,'Tex',T25,'tau',T35,'Flux',T42,'int(Tb dv)',T55,'Io',&
+                    T62,'delta(Tb)',T72,'del(TRJ)',T84,'Xdust',T95,&
+                    'eta',T106,'p1',T116,'p2',T124,'Gamma1',T134,'Gamma2',T144,'Gamma')"                     
          header2 = "(T3,'cm-2/kms',T16,'K',T36,'Jy',T43,'K km/s',T51,'W/m2/Hz/st',T65,'K',T75,'K',&
            T103,'cm-3s-1',T113,'cm-3s-1',3(6x,'s-1 '))"
       end if
+
 
       do j = 1, n_tr
          if (1.0e-4*wl(itr(j),jtr(j)) .ge. 1) then
@@ -1107,11 +1124,8 @@ contains
          write(unit,"(5x,'Lower Level: ',a)")ledet(jtr(j))
          write(unit,FMT=header)
          write(unit,FMT=header2)
-         write(18,FMT=header)
-         write(18,FMT=header2)
          do i = n1, n2, dn
-           write(unit,'(16(ES10.3))') (fin_tr(j,k,i), k = 1,n_prt_cols)
-           write(18,'(16(ES10.3))') (fin_tr(j,k,i), k = 1,n_prt_cols)
+           write(unit,'(15(ES10.3))') (fin_tr(j,k,i), k = 1,n_prt_cols)
          end do
       end do
 
@@ -1182,7 +1196,7 @@ contains
          write(16,"(2X,'H-nuclei column  =',1pe9.2,' cm-2', T45,'tau(dust) at V =',1pe9.2)") &
                  Hcol, Xdust*Hcol
       write(16,*)
-      
+
 !     print populations, if required:
       if (kpr .ge. 2) call printx(x)
       if (kpr .eq. 1 .or. kpr .eq. 3) then
@@ -1205,10 +1219,10 @@ contains
         if(kool(cool(i,j)) .gt. 0) then
           if(dustAbsorption) then
             write(16,'(6x,i3,2x,i3,ES11.3,5(ES10.2),i4)')i,j,wl(i,j),tau(i,j),&
-            Xd(i,j),esc(i,j),tex,cool(i,j),kool(cool(i,j))            
+            Xd(i,j),esc(i,j),tex,cool(i,j),kool(cool(i,j))
           else
             write(16,'(6x,i3,2x,i3,ES11.3,4(ES10.2),i4)')i,j,wl(i,j),tau(i,j),&
-            esc(i,j),tex,cool(i,j),kool(cool(i,j))            
+            esc(i,j),tex,cool(i,j),kool(cool(i,j))
           end if
         end if
       end do
@@ -1282,7 +1296,6 @@ contains
 !   double precision Gamma_av,Gamma(2),p1,p2,depth,aux,flux,Tex,Tl
    double precision Gamma_av,Gamma(2),p1,p2,depth,aux
    double precision flux,Tex,Tl,Tbr,TRJ, nu, integral
-   double precision, allocatable :: freq_axis(:)
 
       call optdep(x)
       nmaser  = 0
@@ -1330,45 +1343,40 @@ contains
 !     2 - Excitation temperature
 !     3 - tau
 !     4 - flux density in Jy, obtained from COOL(i,j) which is in erg/s/mol
-!     5 - line intensity (at angle mu for slab)
-!     6 - line brightness temperature against CMB, Tbr
-!     7 - RJ equivalent of Tbr
+!     5 - velocity-integrated line brightness temperature (at angle mu) in K*km/s 
+!     6 - line intensity (at angle mu for slab)
+!     7 - line brightness temperature against CMB, Tbr
+!     8 - RJ equivalent of Tbr
 !  When dust absorption is on, next element is
-!     8 - fractional contribution of dust to tau when there's dust absorption
+!     9 - fractional contribution of dust to tau when there's dust absorption
 !  For masers only; all elements are pushed by 1 when dust absorption is on:
-!     8 - inversion efficiency
-!     9 - pump rate of lower level; obtained from loss through p_i = n_i*Gamma_i
-!    10 - pump rate of upper level; obtained from loss through p_i = n_i*Gamma_i
-!    11 - loss rate of lower level
-!    12 - loss rate of upper level
-!    13 - mean loss rate from average with statistical weights
-
-	  allocate(freq_axis(100))
-	  do k = 1, 100
-		freq_axis(k) = (k-1.d0) / 99.d0 * 8.d0 - 4.d0
-	  enddo
+!     9 - inversion efficiency
+!    10 - pump rate of lower level; obtained from loss through p_i = n_i*Gamma_i
+!    11 - pump rate of upper level; obtained from loss through p_i = n_i*Gamma_i
+!    12 - loss rate of lower level
+!    13 - loss rate of upper level
+!    14 - mean loss rate from average with statistical weights
 
       do k = 1, n_tr
-         m(2)= itr(k)
-         m(1)= jtr(k)
+         m(2) = itr(k)
+         m(1) = jtr(k)
          nu    = freq(m(2),m(1))
          Tl    = TIJ(m(2),m(1))
          Tex   = Tl/DLOG(POP(m(1))/POP(m(2)))
          depth = tau(m(2),m(1))
+!        Integrate (1 - exp(-tau_v)) over the line
+         call simpson(100,1,100,freq_axis,1.0 - dexp(-(depth/mu_output)*exp(-freq_axis**2)),integral)
          call Tbr4Tx(Tl,Tex,depth,Tbr,TRJ)
-         
-! Integrate (1-exp(-tau_v)) on the line
-         call simpson(100,1,100,freq_axis,1.0-exp(-depth/mu_output/ROOTPI*exp(-freq_axis**2)),integral)
-                           
+
          fin_tr(k, 1,nprint) = mcol
          fin_tr(k, 2,nprint) = Tex
          fin_tr(k, 3,nprint) = depth
          fin_tr(k, 4,nprint) = aux*cool(m(2),m(1))/freq(m(2),m(1))
-         fin_tr(k, 5,nprint) = BB(nu,Tex) * 1d3 * integral * vt * nu / cl * (cl/nu)**3 / (2.d0*bk*1d5)       ! Antenna temperature in K km/s         
+         fin_tr(k, 5,nprint) = Tex*(vt/1.d5)*integral
          fin_tr(k, 6,nprint) = BB(nu,Tex)*(1. - dexp(-depth/mu_output))
          fin_tr(k, 7,nprint) = Tbr
-         fin_tr(k, 8,nprint) = TRJ         
-         if(dustAbsorption) fin_tr(k,9,nprint) = Xd(m(2),m(1))
+         fin_tr(k, 8,nprint) = TRJ
+         if (dustAbsorption) fin_tr(k,9,nprint) = Xd(m(2),m(1))
          If (tau(m(2),m(1)) .lt. 0.0) then
             eta = (pop(m(2)) - pop(m(1)))/(pop(m(2)) + pop(m(1)))
             call loss(m,Gamma)
@@ -1387,19 +1395,16 @@ contains
             end do
          end if
       end do
-      
-      deallocate(freq_axis)
 
       return
   end subroutine lines
 
 
    subroutine loss(m,Gamma)
-!     calculate the loss rate of each maser level using eq. 7.1.1 of
-! Astronomical Masers
+!    calculate the loss rate of each maser level using eq. 7.1.1 of
+!    Astronomical Masers
    integer m(2),i,j,l
    double precision Gamma(2)
-!      include 'common__loss.inc'
 
     DO i = 1, 2
         l = m(i)
