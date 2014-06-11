@@ -169,8 +169,8 @@ contains
 		close(28)
 		
 ! Delete the intermediate file
-!  		open(unit=28,file='interface.dat',action='read',status='old')
-!  		close(28,STATUS='delete')
+  		open(unit=28,file='interface.dat',action='read',status='old')
+  		close(28,STATUS='delete')
 		
 	end subroutine read_intermediate_data
 	
@@ -217,7 +217,7 @@ contains
 				line_profile = exp(-(freq_axis(i)/dopplerw(it,ip))**2) / sqrt(PI)
 
 ! Flux in the line
-				flux_out(1,i) = flux_out(1,i) + 2.d0 * PI * Sl(ip) * &
+				flux_out(1,i) = flux_out(1,i) + 2.d0 * PI * abs(Sl(ip)) * &
 					(expint(3,abs(tau(it,nz)-tau(it,ip))*line_profile) - &
 					expint(3,abs(tau(it,ip)-tau(it,0))*line_profile) + &
 					expint(3,abs(tau(it,ip-1)-tau(it,0))*line_profile) - &
@@ -404,7 +404,7 @@ contains
 			enddo
 			up = itran(1,i)
 			low = itran(2,i)
-			write(16,FMT='(I3,2X,I3,2X,F12.6,2X,E13.6,3X,A)') itran(1,i), itran(2,i), &
+			write(16,FMT='(I3,2X,I3,2X,F12.6,2X,1PE13.6,3X,A)') itran(1,i), itran(2,i), &
 				dtran(2,i)/1.d9,&
 				dtran(1,i)*(pi8c2*dtran(2,i)**2)/(dlevel(2,up)/dlevel(2,low)), selected							
 		enddo
@@ -424,7 +424,7 @@ contains
 		write(34,*)
 		write(34,*) '   dz [cm]        nh [cm^-3]          T [K]         Abundance  '
 		do i = 1, nz
-			write(34,FMT='(E13.6,4X,E13.6,4X,E13.6,4X,E13.6)') dz(i), nh(i), temperature(i),&
+			write(34,FMT='(1PE13.6,4X,1PE13.6,4X,1PE13.6,4X,1PE13.6)') dz(i), nh(i), temperature(i),&
 				abundance(i)
 		enddo
 				
