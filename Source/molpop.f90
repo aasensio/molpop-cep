@@ -68,7 +68,7 @@ implicit none
       real(kind=8) :: NHarray
       character*60 T_tag
       character*80 ver
-      ver = '*** MOLPOP-CEP; version of June 10, 2014 ***'
+      ver = '*** MOLPOP-CEP; version of June 12, 2014 ***'
 !
 !        code uses the input method of DUSTY
 !        the file mol.inp contains a list of molecule specific input files

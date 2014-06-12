@@ -479,17 +479,17 @@ contains
  
 		write(16,*)
 		write(16,*) '*******************************************************************************'
-		write(16,FMT='(A,E12.5,A,I4)') ' N(mol) [cm^-2]: ', column_density, '   -  nzones: ', nz
+		write(16,FMT='(A,1PE12.5,A,I4)') ' N(mol) [cm^-2]: ', column_density, '   -  nzones: ', nz
 		write(16,*) '*******************************************************************************'
 		
 		write(16,FMT='(1X,A,F6.3,A)') ' up    low     tau (line center)     cooling         N(up)/N(low)    I_lc(mu=',&
-			mu_output,')   delta(Tb) [K]      del(TRJ) [K]    Int(Ta dv)    % emission'
+			mu_output,')   delta(Tb) [K]      del(TRJ) [K]    Int(Tb dv)    % emission'
 			
 		write(16,FMT='(A,A)') '                                                                        [W/m2/Hz/sr]',&
 			'        [K]               [K]           [K km/s]              '
 						
 		write(18,FMT='(1X,A,F6.3,A)') ' up    low     tau (line center)     cooling         N(up)/N(low)    I_lc(mu=',&
-			mu_output,')   delta(Tb) [K]      del(TRJ) [K]    Int(Ta dv) [K km/s]   % emission'
+			mu_output,')   delta(Tb) [K]      del(TRJ) [K]    Int(Tb dv) [K km/s]   % emission'
 			
 		write(18,FMT='(A,A)') '                                                                        [W/m2/Hz/sr]',&
 			'        [K]               [K]           [K km/s]              '
@@ -498,7 +498,7 @@ contains
 		
 ! Write populations
 		write(35,*) '**********************************************************'
-		write(35,FMT='(A,E12.5,A,I4)') ' N(mol) [cm^-2]: ', column_density, '    -  nzones: ', nz 
+		write(35,FMT='(A,1PE12.5,A,I4)') ' N(mol) [cm^-2]: ', column_density, '    -  nzones: ', nz 
 		write(35,*) '**********************************************************'
 		write(35,FMT='(A)') 'Upper  Lower   Trad (all zones)'
 
@@ -562,7 +562,7 @@ contains
 
 ! Write populations
 		write(31,*) '**********************************************************'
-		write(31,FMT='(A,E12.5,A,I4)') ' N(mol) [cm^-2]: ', column_density, '    -  nzones: ', nz 
+		write(31,FMT='(A,1PE12.5,A,I4)') ' N(mol) [cm^-2]: ', column_density, '    -  nzones: ', nz 
 		write(31,*) '**********************************************************'
 		write(31,FMT='(A)') 'Level   n [cm^-3]        n/n*       n* [cm^-3]'
 		do ip = 1, nz

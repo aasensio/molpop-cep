@@ -1,4 +1,4 @@
-          *** MOLPOP-CEP; version of June 10, 2014 ***
+          *** MOLPOP-CEP; version of June 12, 2014 ***
 
 * CO with collision rates from Yang et al 2010
 * CEP solution for variable physical conditions
@@ -88,9 +88,9 @@
 
 
  *******************************************************************************
- N(mol) [cm^-2]:  0.10000E+17   -  nzones:    5
+ N(mol) [cm^-2]:  1.00000E+16   -  nzones:    5
  *******************************************************************************
-  up    low     tau (line center)     cooling         N(up)/N(low)    I_lc(mu= 0.500)   delta(Tb) [K]      del(TRJ) [K]    Int(Ta dv)    % emission
+  up    low     tau (line center)     cooling         N(up)/N(low)    I_lc(mu= 0.500)   delta(Tb) [K]      del(TRJ) [K]    Int(Tb dv)    % emission
                                                                         [W/m2/Hz/sr]        [K]               [K]           [K km/s]              
    2     1      -2.20846E-02       9.44780E-08       3.14205E+00       2.25584E-17       7.99411E+00       5.54457E+00        4.8274           0.17027    
    3     2       1.17647E-01       2.27929E-06       1.46583E+00       2.76415E-16       2.19759E+01       1.69060E+01        16.160            4.2860    

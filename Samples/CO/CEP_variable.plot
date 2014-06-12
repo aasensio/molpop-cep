@@ -1,4 +1,4 @@
-  up    low     tau (line center)     cooling         N(up)/N(low)    I_lc(mu= 0.500)   delta(Tb) [K]      del(TRJ) [K]    Int(Ta dv) [K km/s]   % emission
+  up    low     tau (line center)     cooling         N(up)/N(low)    I_lc(mu= 0.500)   delta(Tb) [K]      del(TRJ) [K]    Int(Tb dv) [K km/s]   % emission
                                                                         [W/m2/Hz/sr]        [K]               [K]           [K km/s]              
    2     1      -2.20846E-02       9.44780E-08       3.14205E+00       2.25584E-17       7.99411E+00       5.54457E+00        4.8274           0.17027    
    3     2       1.17647E-01       2.27929E-06       1.46583E+00       2.76415E-16       2.19759E+01       1.69060E+01        16.160            4.2860    

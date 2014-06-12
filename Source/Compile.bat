@@ -24,3 +24,6 @@ gfortran coll_molpop.o global_molpop.o io_molpop.o maths_molpop.o molpop.o sol_m
 
 @echo Done!
 @pause
+
+@del *.o
+@del *.mod
