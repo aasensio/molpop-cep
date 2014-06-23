@@ -15,7 +15,7 @@ contains
   use coll_molpop
 
   integer i,j, npr, iunit, L, L2, L3
-  integer k, npoints_local
+  integer k, npoints_local, prt_cols0
   integer :: j_max, vib_max
   integer unit,unit2,mol_maxlev
 !  double precision aux, w,Tbb,tau_d, T_d, Lbol,dist, temp, Xdust
@@ -34,6 +34,7 @@ contains
       iequal = .true.
       iunit = -15
       norm = .FALSE.
+      prt_cols0 = 14  ! # of columns for detailed printing when no dust absorption
 
 !   Keep this option for possible future uses:
 !     Decide whether to output PLOTTING file
@@ -184,8 +185,8 @@ contains
 
 !     Check whether number of levels is too large for the temperature: 
       if (kbeta < 3) then
-		call check_num_levels(n,T)
-	  endif
+		     call check_num_levels(n,T)
+	    endif
 !_______________________________________________________________
 
 
@@ -225,7 +226,7 @@ contains
          Idust = 0   ! no dust effects, so final printing has fewer columns
          write(16,"(6x,'No considerations of dust absorption')")
       end if
-      n_prt_cols = n_prt_cols + Idust
+      n_prt_cols = prt_cols0 + Idust     
       nmol  = xmol*nh2
       
 ! Test whether we want line overlap
@@ -409,7 +410,7 @@ contains
          else if (str(1:L2) == 'L&R') then
             Lbol = rdinp(iequal,iunit,16)          ! luminosity in Lo
             dist = rdinp(iequal,iunit,16)          ! at distance in cm
-            Jbol = Lbol*SolarL/(fourpi*dist**2) ! in erg/cm^2/sec
+            Jbol = Lbol*SolarL/(fourpi*dist**2)    ! in erg/cm^2/sec
             write(16,"(10x,'Normalized to bolometric energy density',ES9.2,' W/m^2',/&
              &10x,'for luminosity',ES9.2,' Lo at distance',ES9.2,' cm')")&
              & Jbol*1.E-3, Lbol, dist
