@@ -48,11 +48,12 @@ contains
          END DO
          RETURN
       END IF
+      
 !
       DO I = 2, N
         DO J = 1, I - 1
           IF (TAUX(I,J).NE.0.) THEN
-            TAU(I,J) = R*TAUX(I,J)*(X(J)*GAP(I,J)-X(I))
+            TAU(I,J) = R*TAUX(I,J)*(X(J)*GAP(I,J)-X(I))            
             if (dustAbsorption) then
                TAUd     = R*qdust(I,J)
                TAU(I,J) = TAU(I,J) + TAUd
@@ -69,7 +70,7 @@ contains
           END IF
         END DO
       END DO
-
+      
       RETURN
       END SUBROUTINE OPTDEP
 
@@ -1689,8 +1690,8 @@ contains
 
       nx = size(wl,1)
       ny = size(wl,2)
-
-      inquire(file=trim(adjustl(fileName)),exist=stat)
+      
+      inquire(file=trim(adjustl(fileName)),exist=stat)      
       if (.not.stat) then
         do k = 6,16,10
            write(k,"(/'**** Error opening file ',a)") trim(adjustl(fileName))
@@ -1735,7 +1736,7 @@ contains
 
          call Simpson(Nin,1,Nin,w,F/w,scale)
          F = F/scale
-      End If
+      End If      
 
       do i = 1, nx
         do j = 1, ny

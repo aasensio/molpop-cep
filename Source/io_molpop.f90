@@ -33,6 +33,7 @@ contains
 !      to UCASE to trap possible keyboard entry problems
       iequal = .true.
       iunit = -15
+      norm = .FALSE.
 
 !   Keep this option for possible future uses:
 !     Decide whether to output PLOTTING file
@@ -182,7 +183,9 @@ contains
       endif
 
 !     Check whether number of levels is too large for the temperature: 
-      call check_num_levels(n,T)
+      if (kbeta < 3) then
+		call check_num_levels(n,T)
+	  endif
 !_______________________________________________________________
 
 
@@ -224,7 +227,7 @@ contains
       end if
       n_prt_cols = n_prt_cols + Idust
       nmol  = xmol*nh2
-
+      
 ! Test whether we want line overlap
       overlaptest = .false.
       call rdinps2(iequal,15,str,L,UCASE)
@@ -326,7 +329,7 @@ contains
             rad_tauT(i,j)  = plexp(tij(i,j)/Tcmb)
          end do
       end do
-
+           
 !     optionally add diluted black bodies with temperature
 !     Tbb and constant dilution coefficient W:
 !
@@ -368,7 +371,7 @@ contains
             end do
          end if
       end do
-
+      
 !     optionally add dust radiation; approximation of uniform T
 !     Lockett & Elitzur 2008, ApJ 677, 985 (eq. 1 of that paper)
       tau_d = 1.
@@ -388,11 +391,12 @@ contains
                call interpolateExternalFile(dustFile, wl, qdust, norm, error)
                write (16,"(10x,'Dust properties from file ',a)") trim(adjustl(dustFile))
             end if
-
-            call dust_rad(T_d,tau_d,str,L)
+					
+            call dust_rad(T_d,tau_d,str,L)            
          end if
       end do
-
+      
+      
 !     Radiation from DUSTY or any other similar SED file
       call rdinps2(iequal,15,fn_DUSTY,L,Nocase)
       if (to_upper(fn_DUSTY(1:L)) /= 'NONE') then
@@ -419,6 +423,7 @@ contains
          call rad_file(fn_DUSTY(1:L),Jbol,str,L2,error)
          if (error) return
       end if
+      
 !__________________________________________________________
 
 
@@ -673,6 +678,7 @@ contains
 !     do not use in the CEP part
       if (kbeta > 2) then
          call generate_intermediate_data
+         open(17, file=fn_sum, status='unknown')
       endif
 
 !
@@ -1125,7 +1131,7 @@ contains
          write(unit,FMT=header)
          write(unit,FMT=header2)
          do i = n1, n2, dn
-           write(unit,'(15(ES10.3))') (fin_tr(j,k,i), k = 1,n_prt_cols)
+           write(unit,'(15(ES10.2))') (fin_tr(j,k,i), k = 1,n_prt_cols)
          end do
       end do
 

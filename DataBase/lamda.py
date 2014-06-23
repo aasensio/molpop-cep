@@ -1,23 +1,49 @@
 #/usr/bin/env python
 
 from HTMLParser import HTMLParser
-import IPython
 import urllib
 
 class AnchorParser(HTMLParser):
-	def __init__(self):
-		HTMLParser.__init__(self)
+	def __init__(self, verbose):
+		HTMLParser.__init__(self)		
 		self.loop = 0
 		self.files = []
+		self.goodSection = False
+		self.inside = False
+		self.recording = False
+		self.data = []
+		self.verbose = verbose
+		
+	def setLimits(self, labelFrom, labelTo):
+		self.labelFrom = labelFrom
+		self.labelTo = labelTo
 		
 	def handle_starttag(self, tag, attrs):
-		if tag =='a':
+		if (tag == 'div' and attrs[0][1] == 'sidebar'):
+			self.inside = True
+			
+		if (tag == 'b'):
+			self.recording = True
+			
+		if (tag =='a' and self.inside and self.goodSection):
 			for key, value in attrs:
 				if key == 'href':
-					if (value.find(".dat") != -1):
-						print self.loop, value
+					if (value.find("http://www.strw.leidenuniv.nl/~moldata") != -1):
+						if (self.verbose):
+							print self.loop, value
 						self.loop = self.loop + 1
 						self.files.append(value)
+	def handle_endtag(self, tag):
+		if (tag == 'div' and self.inside):
+			self.inside = False
+			
+	def handle_data(self, data):
+		if (self.recording):
+			if (data.find(self.labelFrom) != -1):
+				self.goodSection = True				
+			if (data.find(self.labelTo) != -1):
+				self.goodSection = False				
+				
 						
 class molpop():
 	def __init__(self):
@@ -27,7 +53,7 @@ class molpop():
 # File with energy levels and Einstein A coefficients
 		print "Writing radiative data..."
 		
-		molName = file.split('.')[0]
+		molName = file.split('/')[-1].split('.')[0]
 		nLevels = int(data[5])
 		molMass = float(data[3])
 		
@@ -73,7 +99,7 @@ class molpop():
 			whichCollision = data[pointer].split()
 			temp = whichCollision[1].split('-')
 			
-			fileName = file+'_'+temp[1]+"_lamda.kij"
+			fileName = molName+'_'+temp[1]+"_lamda.kij"
 			
 			print "Collisions with "+temp[1]+" -> "+'Coll/'+fileName
 			
@@ -110,24 +136,32 @@ class molpop():
 			
 
 # Parse the directory with all the molecules
-parser = AnchorParser()
+parser = AnchorParser(False)
+parser.setLimits('Molecular datafiles', 'Radiative transfer')
 data = urllib.urlopen('http://home.strw.leidenuniv.nl/~moldata/').read()
 print "List of available molecules"
 parser.feed(data)
 
+
+parser2 = AnchorParser(True)
+parser2.setLimits('Datafiles', 'Links')
+for f in parser.files:	
+	data = urllib.urlopen(f).read()
+	parser2.feed(data)
+
 # Select the desired molecule
-nb = raw_input("Select which one to download (separated with spaces if many) (0-"+str(parser.loop-1)+") ")
+nb = raw_input("Select which one to download (separated with spaces if many) (0-"+str(parser2.loop-1)+") ")
 
 nb = nb.split()
 
 for iterator in nb:
 	indexMolecule = int(iterator)
-	print "Downloading "+parser.files[indexMolecule]
+	print "Downloading "+parser2.files[indexMolecule]
 
 # Download the molecule and parse it, generating the appropriate files
-	ur = urllib.urlopen('http://home.strw.leidenuniv.nl/~moldata/datafiles/'+parser.files[indexMolecule])
+	ur = urllib.urlopen(parser2.files[indexMolecule])
 	data = ur.readlines()
 
 	mol = molpop()
 
-	mol.parse(parser.files[indexMolecule],data)
+	mol.parse(parser2.files[indexMolecule],data)

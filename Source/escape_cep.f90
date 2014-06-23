@@ -115,6 +115,7 @@ contains
    
 !---------------------------------------------------------
 ! This function calculates the beta function by interpolating with a spline routine
+! If the optical depth is negative, we neglect this transition in the SEE
 !---------------------------------------------------------
 	function beta2(tau_in)
    real(kind=8) :: beta2, tau_in, salida, tau, paso, coef
@@ -131,35 +132,36 @@ contains
 ! depth of the line. The Krolik & McKee expressions are obtained for line center optical depth and we are
 ! working outside these routines with the total optical depth of the line
    		tau = tau_in / dsqrt(PI)
-			if (tau < 0.d0) then
-				if (tau < -60.d0) tau = -60.d0
-				beta2 = (1.d0-exp(-tau)) / tau
-				return
-			endif
+		if (tau < 0.d0) then
+			if (tau < -60.d0) tau = -60.d0
+			beta2 = (1.d0-exp(-tau)) / tau
+			beta2 = 1.d0
+			return
+		endif
 			
    		if (tau < 1.d-4) then 
-				salida = 1.d0
-			else
-				if (tau >= 3.41d0) then
-   				salida = 1.d0 / (dsqrt(PI)*tau) * ( dsqrt(log(tau)) + &
-   					0.25d0 / dsqrt(log(tau)) + 0.14d0)
+			salida = 1.d0
+		else
+			if (tau >= 3.41d0) then
+				salida = 1.d0 / (dsqrt(PI)*tau) * ( dsqrt(log(tau)) + &
+   				0.25d0 / dsqrt(log(tau)) + 0.14d0)
    			else
-					salida = 1.d0 - 0.415d0*tau + 0.355d0*tau*log(tau)
-   				dbdx = 0.355 -0.415 + 0.355*log(tau)
-   				k = 1
-   				d = tau * coef
-   				b = 2.d0 * d
-   				q = 1.d0
-          		do while (q > 1.d-3)          
-            		salida = salida - d * tau
-            		dbdx = dbdx - b
-             		k = k + 1             	
-             		d = -d * tau * sqrt((k+1.d0)/(k+2.d0))*(k-1.d0)/(k*(k+2.d0))
-             		b = (k+1.d0) * d
-             		q = abs(b/dbdx)
-            	enddo	    			
-	   		endif
-			endif
+				salida = 1.d0 - 0.415d0*tau + 0.355d0*tau*log(tau)
+   			dbdx = 0.355 -0.415 + 0.355*log(tau)
+			k = 1
+			d = tau * coef
+			b = 2.d0 * d
+			q = 1.d0
+			do while (q > 1.d-3)          
+				salida = salida - d * tau
+				dbdx = dbdx - b
+				k = k + 1             	
+				d = -d * tau * sqrt((k+1.d0)/(k+2.d0))*(k-1.d0)/(k*(k+2.d0))
+				b = (k+1.d0) * d
+				q = abs(b/dbdx)
+			enddo	    			
+		endif
+		endif
    		beta2 = salida
 
 ! Interpolation on a table calculated with the exact expression
@@ -190,6 +192,7 @@ contains
 	
 !---------------------------------------------------------
 ! This function calculates the derivative of the alpha function by interpolating with a spline routine
+! If the optical depth is negative, we neglect this transition in the SEE
 !---------------------------------------------------------
 	function alphap2(tau_in)
    real(kind=8) :: alphap2, tau_in, salida, tau, paso, coef
@@ -209,6 +212,7 @@ contains
 				salida = (1.d0-exp(-tau)) / tau
 				dbdx = (-1.d0+(1.d0+tau)*exp(-tau)) / tau**2
 				alphap2 = salida + tau * dbdx
+				alphap2 = 0.d0
 				return
 			endif
 			
@@ -405,6 +409,7 @@ contains
 					Jbar_total(it+ipt) = Jbar(ip) + Jinternal
 					dJbar_totaldn(it+ipt,:) = dJbardn(ip,:)
 					flux_total(it+ipt) = flux(ip)
+					if (tau(it,nz) < 0) flux_total(it+ipt) = 0.d0
 				endif
 				
 			enddo

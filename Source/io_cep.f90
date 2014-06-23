@@ -1,5 +1,6 @@
 module io_cep
 use global_cep
+use global_molpop, only : freq_axis
 use maths_cep
 use maths_molpop, only : Tbr4I
 implicit none
@@ -177,11 +178,11 @@ contains
 !---------------------------------------------------------
 ! This subroutine calculates the flux for every transition using the coupled escape probability method
 !---------------------------------------------------------
-   subroutine calcflux_cep(x, freq_axis, flux_out, it)
-	real(kind=8) :: x(:), freq_axis(:), flux_out(:,:)
+   subroutine calcflux_cep(x, flux_out, it)
+	real(kind=8) :: x(:), flux_out(:,:)
 	integer :: up, low, it, ip, ipl, ipt, ip1, npmip1, i
 	real(kind=8) :: sig, glu, acon, chim, chip, tau0, deltaz, chilp
-	real(kind=8) :: line_profile
+	real(kind=8) :: line_profile, f
 			
 		flux_out = 0.d0
 
@@ -213,8 +214,10 @@ contains
 
 ! Calculate the flux at each wavelength (Eq. (77) in the notes)			
 		do i = 1, size(freq_axis)
-			do ip = 1, nz				
-				line_profile = exp(-(freq_axis(i)/dopplerw(it,ip))**2) / sqrt(PI)
+			do ip = 1, nz
+				f = freq_axis(i) * maxval(dopplerw(it,:)) / dopplerw(it,ip)
+! 				line_profile = exp(-(freq_axis(i)/dopplerw(it,ip))**2) / sqrt(PI)
+				line_profile = exp(-f**2) / sqrt(PI)
 
 ! Flux in the line
 				flux_out(1,i) = flux_out(1,i) + 2.d0 * PI * abs(Sl(ip)) * &
@@ -231,6 +234,10 @@ contains
 					exp(-(tau(it,nz)-tau(it,ip-1))*line_profile / (mu_output)) )
 			enddo
 		enddo
+		
+		if (tau(it,nz) < 0.d0) then
+			flux_out(1,:) = 0.d0
+		endif
 		  
    end subroutine calcflux_cep
 	
@@ -354,7 +361,6 @@ contains
 	integer :: i, j, ip, ipl, ipt, it, up, low
 	real(kind=8) :: sig, glu, acon, agnus, chilp, chilm, snlte, slte
 	real(kind=8) :: sb(nz), source(nz), epsil_equiv, sum, total
-	real(kind=8), allocatable :: freq_axis(:)
 	character(len=20) :: selected
 	
 ! 		call write_fits
@@ -439,13 +445,12 @@ contains
 	integer :: ii, ip, ipl, i, j, up, low, it, k
 	real(kind=8) :: sig, glu, acon, chim, chip, tau0, deltaz, chilp, col_up, col_low
 	real(kind=8) :: sum, intensity, e1, e2, freq_max, deltaTBR, deltaTBRJ
-	real(kind=8), allocatable :: flux_out(:,:), freq_axis(:), Slte(:), total_flux(:), total_intensity(:)
+	real(kind=8), allocatable :: flux_out(:,:), Slte(:), total_flux(:), total_intensity(:)
 	
 		column_density = sum(dz * factor_abundance * abundance * nh)
 		total_radius = sum(dz)
 
-! Write output flux
-		allocate(freq_axis(100))
+! Write output flux		
 		allocate(flux_out(3,100))
 		allocate(total_flux(ntran_output))
 		allocate(total_intensity(ntran_output))
@@ -455,15 +460,15 @@ contains
 			
 ! Generate a frequency axis for this transition so that it can accomodate at least
 ! four Doppler widths for the zone with the largest Doppler width
-			freq_max = 4.d0 * maxval(dopplerw(it,:))
-			do ip = 1, 100
-				freq_axis(ip) = (ip-1.d0) / 99.d0 * 2.d0 * freq_max - freq_max
-			enddo
+! 			freq_max = 4.d0 * maxval(dopplerw(it,:))
+! 			do ip = 1, 100
+! 				freq_axis(ip) = (ip-1.d0) / 99.d0 * 2.d0 * freq_max - freq_max
+! 			enddo
 			
-			call calcflux_cep(pop, freq_axis, flux_out, it)
+			call calcflux_cep(pop, flux_out, it)
 			
-			total_flux(i) = int_tabulated(freq_axis, flux_out(1,:))			
-			total_intensity(i) = int_tabulated(freq_axis, flux_out(2,:))
+			total_flux(i) = int_tabulated(freq_axis * maxval(dopplerw(it,:)), flux_out(1,:))
+			total_intensity(i) = int_tabulated(freq_axis * maxval(dopplerw(it,:)), flux_out(2,:))
 			
 ! Output in velocity [km/s] and emergent flux
 			write(32,FMT='(A,I3,A,I3)') 'Transition : ', itran(1,it), ' -> ', itran(2,it)
@@ -474,7 +479,7 @@ contains
 			write(32,*)
 		enddo
 				
-		deallocate(freq_axis)
+! 		deallocate(freq_axis)
 		deallocate(flux_out)
  
 		write(16,*)
@@ -488,10 +493,10 @@ contains
 		write(16,FMT='(A,A)') '                                                                        [W/m2/Hz/sr]',&
 			'        [K]               [K]           [K km/s]              '
 						
-		write(18,FMT='(1X,A,F6.3,A)') ' up    low     tau (line center)     cooling         N(up)/N(low)    I_lc(mu=',&
+		write(17,FMT='(1X,A,F6.3,A)') ' up    low     tau (line center)     cooling         N(up)/N(low)    I_lc(mu=',&
 			mu_output,')   delta(Tb) [K]      del(TRJ) [K]    Int(Tb dv) [K km/s]   % emission'
 			
-		write(18,FMT='(A,A)') '                                                                        [W/m2/Hz/sr]',&
+		write(17,FMT='(A,A)') '                                                                        [W/m2/Hz/sr]',&
 			'        [K]               [K]           [K km/s]              '
 
 		allocate(Slte(nz))
@@ -551,7 +556,7 @@ contains
 				1e-3*intensity, deltaTBR, deltaTBRJ, (PC/dtran(2,i))**3 / (2.d0*PK*1d5) * total_intensity(i), &
 				100.0 * total_flux(i) / sum(total_flux)
 												
-			write(18,FMT='(I4,2X,I4,5X,1PE13.5,5X,1PE13.5,5X,1PE13.5,5X,1PE13.5,5X,1PE13.5,5X,1PE13.5,5X,1PG13.5,5X,1PG13.5)') up, low, &
+			write(17,FMT='(I4,2X,I4,5X,1PE13.5,5X,1PE13.5,5X,1PE13.5,5X,1PE13.5,5X,1PE13.5,5X,1PE13.5,5X,1PG13.5,5X,1PG13.5)') up, low, &
 				tau(it,nz)/sqrt(PI), flux_total(it+nr*(nz-1)) * 4.d0*PI, col_up / col_low,&
 				1e-3*intensity, deltaTBR, deltaTBRJ, (PC/dtran(2,i))**3 / (2.d0*PK*1d5) * total_intensity(i), &
 				100.0 * total_flux(i) / sum(total_flux)

@@ -68,7 +68,7 @@
         Moshe Elitzur \\
         Department of Physics and Astronomy \\
         University of Kentucky, Lexington, KY 40506-0055
-        \\[0.5in] May 16, 2008}% \today}
+        \\[0.5in] \today}% \today}
 \date{}
 \maketitle
 
@@ -858,7 +858,7 @@ and the list of Einstein coefficients for spontaneous emission ($A_{ij}$).
 As already mentioned (see \S\ref{sec:collisions}), there are several options
 for specifying collision rates. The most common is to supply tabulations in a
 file. The files with the collisional rates are typicall placed inside the directory 
-\texttt{Coll/}. You can use a Python program to genera the file \texttt{list\_collisions.dat}
+\texttt{Coll/}. You can use a Python program to generate the file \texttt{list\_collisions.dat}
 with all the collisional files in the directory:
 \begin{verbatim}
 python listCollisions.py
@@ -888,9 +888,9 @@ rates via the Boltzmann detailed-balance relation. Elastic collisions are
 ignored.
 
 \subsection{The LAMBDA Database}
-We provide a Python script to download data from the Leiden Atomic and Molecular Database (LAMDA)\footnote{Accessible at \texttt{http://home.strw.leidenuniv.nl/$\sim$moldata/}.}
+We provide a Python (Python 2.7) script to download data from the Leiden Atomic and Molecular Database (LAMDA)\footnote{Accessible at \texttt{http://home.strw.leidenuniv.nl/$\sim$moldata/}.}
 and transform it to the MOLPOP-CEP format. This way, adding new molecules to perform calculations with 
-our code turns out to be straightforward. The LAMDA database contains information for 3 atomic and 29 molecular species. The
+our code turns out to be straightforward. The LAMDA database contains information for 3 atomic and an increasing number of molecular species. The
 script is placed on the \texttt{DataBase} directory and can be invoked as:
 \begin{verbatim}
 python lamda.py

@@ -23,10 +23,10 @@ contains
       LOGICAL ERROR,LINEAR
 
       SUMW = VSUM(WE,N)
-      
+            
 ! DECREASING STRATEGY. LOOK FOR A RADIUS THAT GIVES ALL OPACITIES LARGER THAN A THRESHOLD
 ! ASSUME THAT THE POPULATIONS ARE IN LTE
-      IF (KTHICK.EQ.1) THEN
+      IF (KTHICK.EQ.1) THEN		
          DO I = 1,N
             X(I)  = 1./SUMW
             XP(I) = 1./SUMW
@@ -46,8 +46,10 @@ contains
       ELSE
 ! INCREASING STRATEGY. LOOK FOR A RADIUS THAT GIVES ALL OPACITIES SMALLER THAN A THRESHOLD
 ! ASSUME THAT THE POPULATIONS ARE IN THE OPTICALLY THIN LIMIT
-         R   = 0.
+         R   = 0.         
          LINEAR = .TRUE.
+         d = 0.d0
+         f = 0.d0
          CALL SOLVEQ(X,D,F,1,LINEAR,ERROR)
          IF (ERROR) RETURN
          IF (KFIRST.GT.0) THEN
@@ -99,12 +101,11 @@ contains
 
 !     SOLVE THE RATE EQUATIONS AND CHECK THAT SOLUTION IS PHYSICAL
 !     THE STARTING POINT IS THE LAST SUCCESSFUL SOLUTION, STORED IN XP
-
       DO I = 1,N
-         X(I) = XP(I)
-      END DO
+         X(I) = XP(I)      
+      END DO      
       error = .false.
-      CALL NEWTON(N,X,F,D,ACC,ITER,LINEAR,NEWTPR,ERROR)
+      CALL NEWTON(N,X,F,D,ACC,ITER,LINEAR,NEWTPR,ERROR)      
       IF (ERROR) RETURN
       DO I = 1,N
          POP(I) = X(I)*BOLTZ(I)
@@ -180,7 +181,7 @@ contains
       DOUBLE PRECISION X(N),F(N),DJAC(N,N+1),AMAX
       DOUBLE PRECISION ACC,CHECK,DET,RES,AF,DETP,AC,A,APR
       DO ITER=1,ITMAX
-         CALL EQ(X,F,DJAC,LINEAR)
+         CALL EQ(X,F,DJAC,LINEAR)         
          DO K = 1,N
             DJAC(K,N + 1) = F(K)
          END DO
@@ -312,17 +313,11 @@ contains
       allocate(p(num,num))
       allocate(dp(num,num,num))
 
-      DO I = 1,N
-       F(I) = 0.
-       DO J = 1,N
-          D(I,J) = 0.
-       END DO
-      END DO
-      do im=1,num
-       do jm=1,num
-          p(im,jm)=0.
-       end do
-      end do 
+	  f = 0.d0
+	  d = 0.d0
+      dp = 0.d0
+      p = 0.d0
+      
       CALL OPTDEP(X)
       if (.not. overlaptest) then
 !
@@ -403,8 +398,10 @@ contains
       else
 !
 !  ***Use OVERLAP code***
+	
 !
       if (.not. LINEAR) call overlap(p,dp)
+            
 !  FIRST THE LOWER N-1 RATE EQUATIONS WITH K THE EQUATION NUMBER:
       DO 2 K = 1,N-1
 !     SUM THE CONTRIBUTION OF ALL LEVELS; L IS THE SUMMATION INDEX:
@@ -430,6 +427,8 @@ contains
          END IF
          D(K,UP) = D(K,UP)+ISN*C(UP,LOW)
          D(K,LOW) = D(K,LOW)-ISN*C(UP,LOW)
+         
+         
 !
 !        RADIATION:
 !
@@ -579,6 +578,7 @@ contains
       if (iter .eq. 1) p0=hermite(it,dtau,delta,i2,j2,m,iter)/rootpi
       if (iter .eq. 2) p1=hermite(it,dtau,delta,i2,j2,m,iter)/rootpi
       if (iter .eq. 3) p2=hermite(it,dtau,delta,i2,j2,m,iter)/rootpi
+            
   60       continue 
        p(lin1,lin2)=p0 
 !     Use relation: tau1*p(lin1,lin2)=tau2*p(lin2,lin1)to reduce number of numerical integrations
@@ -591,7 +591,7 @@ contains
            dp(lin2,lin1,lin1)=t1ovt2*dp(lin1,lin2,lin1)+p(lin1,lin2)/tau(i2(it),j2(it)) 
            dp(lin2,lin1,lin2)=t1ovt2*dp(lin1,lin2,lin2)-p(lin1,lin2)*t1ovt2/tau(i2(it),j2(it)) 
         end if
-        
+                
   200   continue
   100   continue        
         return
