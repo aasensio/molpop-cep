@@ -2,9 +2,10 @@
 
 from HTMLParser import HTMLParser
 import urllib
+import pdb
 
 class AnchorParser(HTMLParser):
-	def __init__(self, verbose):
+	def __init__(self, verbose, datafiles):
 		HTMLParser.__init__(self)		
 		self.loop = 0
 		self.files = []
@@ -13,28 +14,40 @@ class AnchorParser(HTMLParser):
 		self.recording = False
 		self.data = []
 		self.verbose = verbose
+		self.datafiles = datafiles
 		
 	def setLimits(self, labelFrom, labelTo):
 		self.labelFrom = labelFrom
 		self.labelTo = labelTo
 		
 	def handle_starttag(self, tag, attrs):
-		if (tag == 'div' and attrs[0][1] == 'sidebar'):
-			self.inside = True
-			
-		if (tag == 'b'):
-			self.recording = True
-			
-		if (tag =='a' and self.inside and self.goodSection):
-			for key, value in attrs:
-				if key == 'href':
-					if (value.find("http://www.strw.leidenuniv.nl/~moldata") != -1):
-						if (self.verbose):
-							print self.loop, value
-						self.loop = self.loop + 1
-						self.files.append(value)
+		if (self.datafiles):
+			if (tag.lower() =='a'):
+				for key, value in attrs:
+					if (key.lower() == 'href'):
+						if (value.find("http://www.strw.leidenuniv.nl/~moldata/datafiles/") != -1):
+							if (self.verbose):
+								print self.loop, value
+							self.loop = self.loop + 1
+							self.files.append(value)
+		else:
+			if (tag.lower() == 'div' and attrs[0][1] == 'sidebar'):
+				self.inside = True
+				
+			if (tag.lower() == 'b'):
+				self.recording = True
+				
+			if (tag.lower() =='a' and self.inside and self.goodSection):
+				for key, value in attrs:
+					if (key.lower() == 'href'):
+						if (value.find("http://www.strw.leidenuniv.nl/~moldata/") != -1):
+							if (self.verbose):
+								print self.loop, value
+							self.loop = self.loop + 1
+							self.files.append(value)
+						
 	def handle_endtag(self, tag):
-		if (tag == 'div' and self.inside):
+		if (tag.lower() == 'div' and self.inside):
 			self.inside = False
 			
 	def handle_data(self, data):
@@ -96,7 +109,10 @@ class molpop():
 		print "Writing collisional data..."
 		for i in range(nCollPartners):
 			pointer += 1
-			whichCollision = data[pointer].split()
+			
+			collisionDescription = data[pointer]
+			whichCollision = data[pointer].replace(" - ","-").split()
+			
 			temp = whichCollision[1].split('-')
 			
 			fileName = molName+'_'+temp[1]+"_lamda.kij"
@@ -118,6 +134,7 @@ class molpop():
 		
 			f.write('Collision rate coefficients \n')
 			f.write('Reference: LAMDA\n')
+			f.write(collisionDescription[2:])
 			f.write('\n')
 			f.write('>\n')
 			f.write('\n')
@@ -136,16 +153,16 @@ class molpop():
 			
 
 # Parse the directory with all the molecules
-parser = AnchorParser(False)
+parser = AnchorParser(False, False)
 parser.setLimits('Molecular datafiles', 'Radiative transfer')
 data = urllib.urlopen('http://home.strw.leidenuniv.nl/~moldata/').read()
 print "List of available molecules"
 parser.feed(data)
 
 
-parser2 = AnchorParser(True)
+parser2 = AnchorParser(True, True)
 parser2.setLimits('Datafiles', 'Links')
-for f in parser.files:	
+for f in parser.files:
 	data = urllib.urlopen(f).read()
 	parser2.feed(data)
 
