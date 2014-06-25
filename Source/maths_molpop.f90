@@ -1771,14 +1771,15 @@ contains
     real(kind=8) :: F(N,N)
     real(kind=8) :: Jbol, factor
     character*(*) :: fname, str
-    logical norm/.true./
     logical error
+    logical norm
 
 !   Read SED of external radiation from file such as, e.g., DUSTY output
 !   1st column is wavelength (in micron)
 !   2nd column is spectral shape lambda*F_lambda
 !   Normalize the spectral shape to unit bolometric flux and scale it by Jbol
 
+    norm = .true.
     call interpolateExternalFile(trim(adjustl(fname)), wl, F, norm, error)
     if (error) return
 

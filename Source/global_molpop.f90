@@ -94,6 +94,6 @@ implicit none
 ! Dust absorption effects
    real(kind=8), allocatable :: qdust(:,:), Xd(:,:)
    logical dustAbsorption
-   integer :: Idust, n_prt_cols = 14
-  
+   integer :: Idust, n_prt_cols
+     
 end module global_molpop
