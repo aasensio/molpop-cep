@@ -71,32 +71,34 @@ class molpop():
 		molMass = float(data[3])
 		
 		f = open(molName+"_lamda.molecule", "w")
-		f.write('Energy levels and radiative transitions of molecule\n')
+		f.write('MOLPOP Energy levels and A-coefficients file\n')
+		f.write('Generated from the Leiden database file'+molName+'\n')
+		f.write('Molecular species: '+data[1]+'\n')
 		f.write(file+'\n')		
 		f.write('\n')
 		f.write('N. levels and molecular mass\n')
 		f.write('>\n')
 		f.write('%d   %f\n'%(nLevels,molMass))
 		f.write('\n')
-		f.write('      N        g      Energy in cm^{-1}    Level details\n')
+		f.write('   N     g      Energy in cm^{-1}     Level details\n')
 		f.write('>\n')
 		
 		for i in range(nLevels):
 			temp = data[7+i].split()
-			f.write(temp[0]+'   '+temp[2]+'   '+temp[1]+"   '"+temp[3]+"'\n")
+			f.write("{0:5d}   {1:3d}  {2:18.6f}        '{3}'\n".format(int(temp[0]),int(float(temp[2])),float(temp[1]),temp[3]))
 			
 		f.write('\n')
 		f.write('Einstein coefficients A_ij\n')
 		f.write('Reference: LAMDA\n')
 		f.write('\n')
-		f.write('    i         j         A_ij in s^{-1}\n')
+		f.write('   i     j    A_ij in s^{-1}\n')
 		f.write('>\n')
 				
 		
 		nTransitions = int(data[7+nLevels+1])
 		for i in range(nTransitions):
 			temp = data[7+nLevels+3+i].split()
-			f.write(temp[1]+' '+temp[2]+'  '+temp[3]+'\n')
+			f.write("{0:5d}   {1:3d}  {2:12.3e}\n".format(int(float(temp[1])),int(float(temp[2])),float(temp[3])))
 			
 		f.close()
 						
@@ -128,25 +130,27 @@ class molpop():
 			nTemperatures = int(data[pointer])
 			
 			pointer += 2
-			Temperatures = data[pointer]
+			temp = data[pointer].split()
+			Temperatures = map(float, temp)
 			
 			pointer += 2
 		
-			f.write('Collision rate coefficients \n')
-			f.write('Reference: LAMDA\n')
+			f.write('MOLPOP collision rates generated from the Leiden database file {0}\n'.format(molName))
 			f.write(collisionDescription[2:])
 			f.write('\n')
 			f.write('>\n')
 			f.write('\n')
 			f.write('Number of temperature columns = '+str(nTemperatures)+'\n')
 			f.write('\n')
-			f.write('  I   J                        TEMPERATURE (K)\n')
+			f.write('I    J                        TEMPERATURE (K)\n')
 			f.write('\n')
-			f.write(Temperatures)
+			f.write(("          "+"{:12.2f}"*len(Temperatures)+"\n").format(*Temperatures))
 			f.write('\n')
 			
 			for j in range(nCollisions):
-				f.write(data[pointer])
+				temp = data[pointer].split()
+				coll = map(float, temp)
+				f.write((("{:5d}   {:3d}  "+("{:12.3e}")*len(coll[3:])+"\n").format(int(coll[1]), int(coll[2]), *coll[3:])))
 				pointer += 1
 				
 			f.close()
@@ -162,7 +166,7 @@ parser.feed(data)
 
 parser2 = AnchorParser(True, True)
 parser2.setLimits('Datafiles', 'Links')
-for f in parser.files:
+for f in parser.files[16:17]:
 	data = urllib.urlopen(f).read()
 	parser2.feed(data)
 
