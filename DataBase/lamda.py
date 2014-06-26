@@ -166,7 +166,7 @@ parser.feed(data)
 
 parser2 = AnchorParser(True, True)
 parser2.setLimits('Datafiles', 'Links')
-for f in parser.files[16:17]:
+for f in parser.files:
 	data = urllib.urlopen(f).read()
 	parser2.feed(data)
 
