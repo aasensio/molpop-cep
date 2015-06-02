@@ -48,12 +48,11 @@ contains
          END DO
          RETURN
       END IF
-      
 !
       DO I = 2, N
         DO J = 1, I - 1
           IF (TAUX(I,J).NE.0.) THEN
-            TAU(I,J) = R*TAUX(I,J)*(X(J)*GAP(I,J)-X(I))            
+            TAU(I,J) = R*TAUX(I,J)*(X(J)*GAP(I,J)-X(I))
             if (dustAbsorption) then
                TAUd     = R*qdust(I,J)
                TAU(I,J) = TAU(I,J) + TAUd
@@ -61,6 +60,8 @@ contains
             end if
             IF (KBETA.EQ.2) THEN
                CALL BETA_SLAB(TAU(I,J),ESC(I,J),DBDTAU(I,J))
+            ELSEIF (KBETA.EQ.1) THEN
+               CALL BETA_SPHERE(TAU(I,J),ESC(I,J),DBDTAU(I,J))
             ELSEIF (KBETA.EQ.0) THEN
                CALL BETA_LVG(TAU(I,J),ESC(I,J),DBDTAU(I,J))
             ELSEIF (KBETA.EQ.-1) THEN
@@ -70,7 +71,7 @@ contains
           END IF
         END DO
       END DO
-      
+
       RETURN
       END SUBROUTINE OPTDEP
 
@@ -109,7 +110,7 @@ contains
 !     TAU CLOSE TO 0
 !
       IF (X.LT.1.D-4) THEN
-          BETA = 1.
+          BETA = 1. - 0.5*X
           DBDX = -0.5
           RETURN
 !
@@ -144,6 +145,44 @@ contains
       END IF
       END SUBROUTINE BETA_SLAB
 
+
+      SUBROUTINE BETA_SPHERE(TAUIN,BETA,DBDX)
+!     STATIC SPHERE ESCAPE PROBABILITY AND ITS DERIVATIVE
+!     WITH RESPECT TO TAU
+!     From van der Tak et al 2007, A&A 468, 627; eq 19
+!     Expression in terms of line center optical depth
+!     across the diameter
+!
+      use global_molpop
+      DOUBLE PRECISION X,TAUIN,BETA,DBDX
+
+      X = TAUIN
+!     TAU < 0 - FUDGE FOR INVERTED TRANSITIONS:
+      IF (X.LT.0.) THEN
+          IF (X.LT.-60.) X=-60.
+          BETA = (1.-DEXP(-X))/X
+          DBDX = (-1.+(1.+X)*DEXP(-X))/(X*X)
+          RETURN
+      END IF
+
+!     TAU CLOSE TO 0
+!
+      IF (X.LT.1.D-4) THEN
+          BETA = 1. - 0.375*X
+          DBDX = -0.375
+          RETURN
+      END IF    
+
+      BETA = (1.5/X)*(1 - 2./X**2)
+      DBDX = -1.5/X**2 + 9./X**4
+      IF (X > 50) RETURN
+!     AT SMALLER TAU, ADD THE EXPONENIAL TERMS:
+      BETA = BETA + (3.*DEXP(-X)/X**2)*(1. + 1./X)
+      DBDX = DBDX - (3.*DEXP(-X)/X**2)*(1. + 3./X + 3./X**2)
+      RETURN
+      END SUBROUTINE BETA_SPHERE
+
+
       SUBROUTINE BETA_LVG(TAUIN,BETA,DBDX)
 !     THIS IS THE LVG SOBOLEV APPROXIMATION:
       use global_molpop
@@ -161,7 +200,7 @@ contains
 !     EPS=1
       IF (EPS.EQ.1.) THEN
            IF (DABS(X).LT.1.E-4) THEN
-             BETA =  1.
+             BETA =  1. - .5*X
              DBDX = -.5
              RETURN
            ELSE IF (X.GT.40.) THEN
@@ -392,7 +431,7 @@ contains
 !     array(index(k),jndex(k)) is the k-th biggest element of the array.
 
 !      use sizes_molpop
-    implicit none
+      implicit none
 
       integer index(:),jndex(:),n,nbig,i,j,k,l
       double precision array(:,:),big
@@ -779,7 +818,7 @@ contains
 !     returns the length of left-aligned string different from ' '
       implicit none
       character*(*) string
-  fsize = inmax(string)
+      fsize = inmax(string)
     1 return
       end function fsize
 
@@ -1473,8 +1512,6 @@ contains
          freq_axis(k) = - 4.d0 + 8.d0*(k - 1.d0)/99.d0 
       enddo
 
-
-
       return
       end subroutine const
 
@@ -1690,8 +1727,8 @@ contains
 
       nx = size(wl,1)
       ny = size(wl,2)
-      
-      inquire(file=trim(adjustl(fileName)),exist=stat)      
+
+      inquire(file=trim(adjustl(fileName)),exist=stat)
       if (.not.stat) then
         do k = 6,16,10
            write(k,"(/'**** Error opening file ',a)") trim(adjustl(fileName))
@@ -1736,7 +1773,7 @@ contains
 
          call Simpson(Nin,1,Nin,w,F/w,scale)
          F = F/scale
-      End If      
+      End If
 
       do i = 1, nx
         do j = 1, ny
@@ -1771,15 +1808,14 @@ contains
     real(kind=8) :: F(N,N)
     real(kind=8) :: Jbol, factor
     character*(*) :: fname, str
+    logical norm/.true./
     logical error
-    logical norm
 
 !   Read SED of external radiation from file such as, e.g., DUSTY output
 !   1st column is wavelength (in micron)
 !   2nd column is spectral shape lambda*F_lambda
 !   Normalize the spectral shape to unit bolometric flux and scale it by Jbol
 
-    norm = .true.
     call interpolateExternalFile(trim(adjustl(fname)), wl, F, norm, error)
     if (error) return
 
