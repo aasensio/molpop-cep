@@ -10,30 +10,27 @@ because unix systems are case sensitive.
 __________________________________________________________________
 
 
-These lines are echoed in the output because they start with a '*'
 
-* CO with collision rates from Yang et al 2010
+* Sample run for ortho H2O 
+* These lines are echoed in the output because they start with a '*'
 *
 
-		Solution Method of Radiative Transfer (LVG / LVGPP / slab / sphere / CEP) = sphere
+		Solution Method of Radiative Transfer (LVG / LVGPP / slab / CEP) = sphere
       dlogV/dlogr = 1.0 (in effect only for LVG and LVGPP)
 
 		Data directory = DataBase      
-		Molecule = CO
-    Number of energy levels = 8
+		Molecule = H2O_ortho
+    Number of energy levels = 45
     vib_max =  0
 
-    Number of collision partners = 2
-         weight / column for CEP = 3
-                       data file = Yang_CO_H2o.kij
-            extrapolation option = sqrt(T)
+    Number of collision partners = 1
          weight / column for CEP = 1
-                       data file = Yang_CO_H2p.kij
+                       data file = H2Oo_H2.kij
             extrapolation option = sqrt(T)
 
     File listing physical conditions = none
-    Gas Temperature = 10 K      
-    n = 1.0e2 cm-3
+    Gas Temperature = 500 K      
+    n = 5.0e8 cm-3
 
   Some special radiative transfer effects that are only implemented
   in escape probability calculations:
@@ -42,11 +39,10 @@ These lines are echoed in the output because they start with a '*'
                            when not 0, dust absorption effects are included 
                            The following two input parameters are in effect 
                            only when the dust abundance is not 0
-    Molecular abundance = 1.d-4     
+    Molecular abundance = 2.d-4     
     linewidth = 1 km/sec 
 
-    Line overlap (on/off) = off ;when ON, will use the linweidth entered
-above 
+    Line overlap (on/off) = off ;when ON, will use above linweidth
      
     Maser saturation (on/off) = off      
 
@@ -59,11 +55,10 @@ above
 %           W = 0
 
     Dust radiation:
-           Dust tau at visual = 0.
 %           Dust tau at visual = 3.
 %           Dust temperature = 100 K
 %           Illumination from (left/right/both/internal) = internal
-%           Dust tau at visual = 0.
+           Dust tau at visual = 0.
            
      Radiation from file = none
 %           Type of entry for the bolometric scale (ENERGY_DEN/L&R) = L&R
@@ -74,9 +69,9 @@ above
 
   NUMERICS CONTROLS:
     Solution strategy (increasing/decreasing)            = increasing 
-    start with every tau smaller/greater than tau_m      =  0.1
+    start with every tau smaller/greater than tau_m      = 1
     stop when molecular column density reaches Nmol_m    = 1.E19 cm-2/kms
-    Number of printings per decade                       = 9
+    Number of printings per decade                       = 4
     Max # of dimension steps allowed per decade          = 20
     Total number of steps allowed to reach Nmol_m        = 100
 	  Accuracy in solution of the equations                = 1.0e-4
@@ -113,10 +108,14 @@ above
       print detailed populations (off or on) = on
     
       Select transitions for detailed output:
-      The number of transitions (-1 for all transitions) = -1
+      the number of transitions (-1 for all transitions) = 3
          When any of these transitions is inverted, list its
          maser pump parameters (off or on) = off
          (this option is ignored in CEP calculations)
+      The transitions are: 
+       i =  2      j =  1
+       i =  8      j =  7
+       i = 15      j = 14
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

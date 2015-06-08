@@ -108,7 +108,12 @@ __________________________________________________________________
       print detailed populations (off or on) = on
     
       Select transitions for detailed output:
-      the number of transitions (-1 for all transitions) = 2
+      the number of transitions (-1 for all transitions) = 3
+         When any of these transitions is inverted, list its
+         maser pump parameters (off or on) = on
+         (this option is ignored in CEP calculations)
+      The transitions are: 
+       i =  2      j =  1
        i =  8      j =  7
        i = 15      j = 14
 

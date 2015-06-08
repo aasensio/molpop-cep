@@ -15,12 +15,12 @@ These lines are echoed in the output because they start with a '*'
 * CO with collision rates from Yang et al 2010
 *
 
-		Solution Method of Radiative Transfer (LVG / LVGPP / slab / sphere / CEP) = sphere
+		Solution Method of Radiative Transfer (LVG / LVGPP / slab / CEP) = slab
       dlogV/dlogr = 1.0 (in effect only for LVG and LVGPP)
 
 		Data directory = DataBase      
 		Molecule = CO
-    Number of energy levels = 8
+    Number of energy levels = 12
     vib_max =  0
 
     Number of collision partners = 2
@@ -32,13 +32,13 @@ These lines are echoed in the output because they start with a '*'
             extrapolation option = sqrt(T)
 
     File listing physical conditions = none
-    Gas Temperature = 10 K      
+    Gas Temperature = 25 K      
     n = 1.0e2 cm-3
 
   Some special radiative transfer effects that are only implemented
   in escape probability calculations:
     Dust properties file = DataBase/Standard_ISM.dat
-    Dust abundance = 0.    relative to standard ISM abundance; 
+    Dust abundance = 1.    relative to standard ISM abundance; 
                            when not 0, dust absorption effects are included 
                            The following two input parameters are in effect 
                            only when the dust abundance is not 0
@@ -76,7 +76,7 @@ above
     Solution strategy (increasing/decreasing)            = increasing 
     start with every tau smaller/greater than tau_m      =  0.1
     stop when molecular column density reaches Nmol_m    = 1.E19 cm-2/kms
-    Number of printings per decade                       = 9
+    Number of printings per decade                       = 4
     Max # of dimension steps allowed per decade          = 20
     Total number of steps allowed to reach Nmol_m        = 100
 	  Accuracy in solution of the equations                = 1.0e-4
@@ -117,6 +117,7 @@ above
          When any of these transitions is inverted, list its
          maser pump parameters (off or on) = off
          (this option is ignored in CEP calculations)
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

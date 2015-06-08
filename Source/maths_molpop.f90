@@ -538,36 +538,6 @@ contains
       end function vsum
 
 
-
-      logical function empty(line)
-!     checks whether the "line" array contains '%'
-      implicit none
-      character*(*) line
-      empty=.false.
-      if(line(inmin(line):inmin(line)) .eq. '%' .or. inmin(line) .ge. inmax(line)) empty=.true.
-      return
-      end function empty
-
-
-
-      subroutine attach2(s1, s2, s)
-!     concatenates meaningful strings s1 and s2 into s
-      character*(*) s1, s2, s
-      s(1:)=s1(inmin(s1):inmax(s1))
-      s(inmax(s1)-inmin(s1)+2:)=s2(inmin(s2):inmax(s2))
-      end subroutine attach2
-
-
-
-      subroutine attach3(s1, s2, s3, s)
-!     concatenates meaningful strings s1, s2 and s3 into s
-      character*(*) s1, s2, s3, s
-      s(1:)=s1(inmin(s1):inmax(s1))
-      s(inmax(s1)-inmin(s1)+2:)=s2(inmin(s2):inmax(s2))
-      s(inmax(s1)-inmin(s1)+inmax(s2)-inmin(s2)+3:)= s3(inmin(s3):inmax(s3))
-      end subroutine attach3
-
-
 !ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
 
@@ -794,6 +764,7 @@ contains
 
 
 
+
       integer function inmin(string)
 !     returns the minimum element of the character array different from ' '
       implicit none
@@ -832,6 +803,34 @@ contains
       end do
       return
       end subroutine clear_string
+
+
+      logical function empty(line)
+!     checks whether the "line" array contains '%'
+      implicit none
+      character*(*) line
+      empty=.false.
+      if(line(inmin(line):inmin(line)) .eq. '%' .or. inmin(line) .ge. inmax(line)) empty=.true.
+      return
+      end function empty
+
+
+      subroutine attach2(s1, s2, s)
+!     concatenates meaningful strings s1 and s2 into s
+      character*(*) s1, s2, s
+      s(1:)=s1(inmin(s1):inmax(s1))
+      s(inmax(s1)-inmin(s1)+2:)=s2(inmin(s2):inmax(s2))
+      end subroutine attach2
+
+
+
+      subroutine attach3(s1, s2, s3, s)
+!     concatenates meaningful strings s1, s2 and s3 into s
+      character*(*) s1, s2, s3, s
+      s(1:)=s1(inmin(s1):inmax(s1))
+      s(inmax(s1)-inmin(s1)+2:)=s2(inmin(s2):inmax(s2))
+      s(inmax(s1)-inmin(s1)+inmax(s2)-inmin(s2)+3:)= s3(inmin(s3):inmax(s3))
+      end subroutine attach3
 
 
       subroutine file_name(str1,str2,str3)

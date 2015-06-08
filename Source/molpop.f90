@@ -92,7 +92,7 @@ implicit none
     real(kind=8) :: NHarray
     character*60 T_tag
     character*80 ver
-    ver = '*** MOLPOP-CEP; version of June 1, 2015 ***'
+    ver = '*** MOLPOP-CEP; version of June 8, 2015 ***'
 
 
 !        code uses the input method of DUSTY
@@ -239,6 +239,7 @@ implicit none
           if (allocated(final)) deallocate(final)
           if (allocated(itr)) deallocate(itr)
           if (allocated(jtr)) deallocate(jtr)
+          if (allocated(a_maser)) deallocate(a_maser)
           if (allocated(in_tr)) deallocate(in_tr)
           if (allocated(f_tr)) deallocate(f_tr)
           if (allocated(fin_tr)) deallocate(fin_tr)

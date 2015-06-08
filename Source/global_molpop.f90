@@ -44,6 +44,7 @@ implicit none
    integer, allocatable :: itr(:), jtr(:), in_tr(:)
    character*168, allocatable :: f_tr(:)
    real(kind=8), allocatable :: fin_tr(:,:,:)
+   logical, allocatable :: a_maser(:)
 
 
    logical l_mol_part,l_mol_ROT 
@@ -95,5 +96,5 @@ implicit none
    real(kind=8), allocatable :: qdust(:,:), Xd(:,:)
    logical dustAbsorption
    integer :: Idust, n_prt_cols
-     
+  
 end module global_molpop

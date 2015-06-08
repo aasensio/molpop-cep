@@ -1,10 +1,12 @@
 module io_molpop
 use global_molpop
 use maths_molpop, only: Pass_Header, error_message, inmin, inmax, attach2, ordera, &
-                        optdep, Tbr4Tx, BB, simpson
+                        optdep, Tbr4Tx, BB, simpson, clear_string
 use cep_molpop_interface
 implicit none
 double precision Xdust
+integer basic_cols, maser_cols
+logical maser_prt
 
 contains
 
@@ -15,7 +17,7 @@ contains
   use coll_molpop
 
   integer i,j, npr, iunit, L, L2, L3
-  integer k, npoints_local, prt_cols0
+  integer k, npoints_local
   integer :: j_max, vib_max
   integer unit,unit2,mol_maxlev
   double precision aux, w,Tbb,tau_d, T_d, Lbol,dist, temp
@@ -32,7 +34,9 @@ contains
 !     to UCASE to trap possible keyboard entry problems
       iequal = .true.
       iunit = -15
-      prt_cols0 = 14  ! # of columns for detailed printing, no dust absorption
+!     # of columns for detailed summary tabulations
+      basic_cols = 8  ! this will increase by 1 when there is dust absorption
+      maser_cols = 6  ! tabulation of maser pump parameters, when needed
 
 !   Keep this option for possible future uses:
 !     Decide whether to output PLOTTING file
@@ -227,7 +231,8 @@ contains
          Idust = 0   ! no dust effects, so final printing has fewer columns
          write(16,"(6x,'No considerations of dust absorption')")
       end if
-      n_prt_cols = prt_cols0 + Idust
+      basic_cols = basic_cols + Idust 
+      n_prt_cols = basic_cols + maser_cols
       nmol  = xmol*nh2
 
 ! Test whether we want line overlap
@@ -496,8 +501,9 @@ contains
 
       cep_precision = rdinp(iequal,15,16)
       nInitialZones = rdinp(iequal,15,16)
-! Output value of mu
+! Output value of mu; applicable only for slab
       mu_output = rdinp(iequal,15,16)
+      if (kbeta .lt. 2) mu_output = 1
 !__________________________________________________________
 
 
@@ -604,10 +610,29 @@ contains
 !     input parameters for selected transitions to output
 !
       n_tr = rdinp(iequal,15,16)
+
+!     determine whether to tabulate pump parameters for masers
+      if (n_tr .ne. 0) then
+          call rdinps2(iequal,15,str,L,UCASE)
+          if(str(1:L) .eq. 'OFF') then
+             maser_prt = .false.
+          else if(str(1:L) .eq. 'ON') then
+             maser_prt = .true.
+          else
+             OPT = 'maser pump printout'
+             error = error_message(opt,str)
+             return
+          end if   
+      end if
+      !irrespective of input, ignore in CEP:
+      if (kbeta .ge. 3) maser_prt = .false.
+
+!     Now get the actual transitions 
       if (n_tr .gt. 0) then
           allocate(itr(n_tr))
           allocate(jtr(n_tr))
           allocate(in_tr(n_tr))
+          allocate(a_maser(n_tr)); a_maser = .false.
           allocate(f_tr(n_tr))
           allocate(fin_tr(n_tr,n_prt_cols,nmax))
           do i=1, n_tr
@@ -616,7 +641,7 @@ contains
           end do
       end if
 
-! ANDRES: if n_tr=-1, output for all the lines
+! ANDRES: if n_tr=-1, output all the lines
       if (n_tr .eq. -1) then
           nradiat = 0
           do i = 1, n
@@ -631,6 +656,7 @@ contains
           allocate(itr(n_tr))
           allocate(jtr(n_tr))
           allocate(in_tr(n_tr))
+          allocate(a_maser(n_tr)); a_maser = .false.
           allocate(f_tr(n_tr))
           allocate(fin_tr(n_tr,n_prt_cols,1000))
           
@@ -645,6 +671,7 @@ contains
             enddo
           enddo
       endif
+      
 
       write(16,'(78(''-'')/,/,6x,"*** All optical depths are listed at line center ***",/)')
 !__________________________________________________________
@@ -1009,117 +1036,6 @@ contains
   end subroutine data
 
 
-   subroutine finish(ier)
-!     Output summary of the run
-      integer ier,i,j,k,unit,unit2,n1,n2,dn
-      character*190 header, header2
-
-      if(ier .eq.-1) write(16,"(/6x,'Terminated. Step size was ',1pe10.3/)") step
-      if(ier .eq. 0) write(16,"(/6x,'Terminated. Number of steps reached',I5/)") Nmax
-      if(ier .eq. 1) write(16,"(/6x,'Normal completion. Dimension is ',1pe10.2,' cm'/)") r
-      if(ier .eq. 2) write(16,"(/6x,'Normal completion. H2 column is',1pe10.2,' cm-2')") Hcol
-      if(ier .eq. 3) write(16,"(/6x,'Normal completion. Molecular column is',1pe10.2,' cm-2/kms')") mcol
-
-      IF (KTHICK.EQ.0) THEN
-         n1 = 1
-         n2 = nprint
-         dn = 1
-      ELSE
-!     print in revesrse order when KTHICK = 1
-         n1 = nprint
-         n2 = 1
-         dn = -1
-      END IF
-
-!     Attach original Summary to Output file
-      unit = 16
-      if (dustAbsorption) then
-         write(unit,"(/T21,'*** SUMMARY ***')")
-         write(unit,"(/8x,'mol column',5x,'emission',9x,'dust'&
-                   /9x,'cm-2/kms',6x,'erg/s/mol',8x,'tau_V')")
-      else
-         write(unit,"(/T14,'*** SUMMARY ***')")
-         write(unit,"(/8x,'mol column',5x,'emission',&
-                   /9x,'cm-2/kms',6x,'erg/s/mol')")
-      end if
-      do i = n1, n2, dn
-!         write(unit,'(6(1pe12.3))') (final(k,i), k = 1,4)
-         write(unit,'(5x,6(1pe12.3,3x))') (final(k,i), k = 3,4 + idust)
-      end do
-      if(n_tr .eq. 0) return
-
-!=====  Detailed Printing of Individual Transitions  =====
-
-      write (unit,"(/,' *** Parameters for selected transitions; Io is line-center intensity')",advance='no')
-      if (kbeta > 0) then
-         write (unit, "(' at mu =',f6.2,' to slab face')") mu_output
-      else
-         write (unit,"( )")
-      end if
-
-!     Prepare header lines common to all transitions
-
-      header  = "(/,T5,'Nmol',T15,'Tex',T25,'tau',T35,'Flux',T42,'int(Tb dv)',T55,'Io',&
-                    T63,'delta(Tb)',T74,'del(TRJ)',T85,&
-                    'eta',T95,'p1',T105,'p2',T114,'Gamma1',T124,'Gamma2',T134,'Gamma')"
-        
-      header2 = "(T3,'cm-2/kms',T16,'K',T36,'Jy',T43,'K km/s',T52,'W/m2/Hz/st',T66,'K',T76,'K',&
-        T93,'cm-3s-1',T103,'cm-3s-1',3(6x,'s-1 '))"
-                
-      if (dustAbsorption) then
-         header  = "(/,T5,'Nmol',T15,'Tex',T25,'tau',T35,'Flux',T42,'int(Tb dv)',T55,'Io',&
-                    T62,'delta(Tb)',T72,'del(TRJ)',T84,'Xdust',T95,&
-                    'eta',T106,'p1',T116,'p2',T124,'Gamma1',T134,'Gamma2',T144,'Gamma')"                     
-         header2 = "(T3,'cm-2/kms',T16,'K',T36,'Jy',T43,'K km/s',T51,'W/m2/Hz/st',T65,'K',T75,'K',&
-           T103,'cm-3s-1',T113,'cm-3s-1',3(6x,'s-1 '))"
-      end if
-
-
-      do j = 1, n_tr
-         if (1.0e-4*wl(itr(j),jtr(j)) .ge. 1) then
-            write(unit,'(/5x,f8.3,'' cm ('',f7.3,'' GHz) transition between levels '',&
-             &i2,'' and '', i2)') &
-             1.0e-4*wl(itr(j),jtr(j)),1.e-9*freq(itr(j),jtr(j)),itr(j), jtr(j)
-         else
-           write(unit,'(/5x,f8.2,'' mic ('',f8.3,'' GHz) transition between levels '',&
-              &i2,'' and '', i2)') &
-           wl(itr(j),jtr(j)),1.e-9*freq(itr(j),jtr(j)),itr(j), jtr(j)
-         end if
-         write(unit,"(5x,'Upper Level: ',a)")ledet(itr(j))
-         write(unit,"(5x,'Lower Level: ',a)")ledet(jtr(j))
-         write(unit,FMT=header)
-         write(unit,FMT=header2)
-         do i = n1, n2, dn
-           write(unit,'(18(ES10.2))') (fin_tr(j,k,i), k = 1,n_prt_cols)
-         end do
-      end do
-
-!     Now Output Plotting Summary
-      if(i_sum .eq. 1) then
-         do j = 1, n_tr
-           write(17,'(60(''*''))')
-           if (1.0e-4*wl(itr(j),jtr(j)) .ge. 1) then
-             write(17,'(''*'',f8.3,'' cm ('',f7.3,'' GHz) transition between levels '',i2,&
-               &'' and '', i2)') &
-               1.0e-4*wl(itr(j),jtr(j)),1.e-9*freq(itr(j),jtr(j)),itr(j), jtr(j)
-           else
-             write(17,'(''*'',f8.2,'' mic ('',f7.3,'' GHz) transition between levels '',i2,&
-               &'' and '', i2)') &
-               wl(itr(j),jtr(j)),1.e-9*freq(itr(j),jtr(j)),itr(j), jtr(j)
-           end if
-           write(17,"('*',5x,'Upper Level',a33)")ledet(itr(j))
-           write(17,"('*',5x,'Lower Level',a33)")ledet(jtr(j))
-           write(17,"(7x,'R',8x,'nmol*R/V',8x,'Tex',8x,'tau')")
-           do i = n1, n2, dn
-               write(17,'(4(1pe12.2))')fin_tr(j,1,i),fin_tr(j,1,i)*nmol/V*1.e5,fin_tr(j,2,i),&
-                 fin_tr(j,3,i)
-           end do
-         end do
-      end if
-    return
-  end subroutine finish
-
-
   subroutine output(x,cool,kpr)
 !              kpr  = 0 - print only summary
 !                     1 - print each step; info on the nbig strongest
@@ -1190,17 +1106,17 @@ contains
 !        nmaser - # of inverted transitions;
 !               imaser and jmaser are the (i,j) of these lines.
          if (nmaser .gt. 0) then
-!        print basic maser output for inverted transitions:
+!          print basic maser output for inverted transitions:
            write(16,'(/2x,''Inverted lines:''/)')
            write(16,'(8x,''i'',4x,''j'',2x,''wavelength'',4x,''tau'',5x,''Tex'',8x,''eta'')')
            write(16,"(18x,'micron',15x,'K',/)")
            do k = 1, nmaser
-             i = imaser(k)
-             j = jmaser(k)
-             TEX  = TIJ(I,J)/DLOG(POP(J)/POP(I))
-             eta = (pop(i) - pop(j))/(pop(i) + pop(j))
-!           IF (KBETA.EQ.0) TAU(I,J) = TAU(I,J)/EPS
-             WRITE (16,"(6X,I3,2X,I3,1PE11.3,6(1PE10.2))")I,J,WL(I,J),TAU(I,J),TEX,eta
+              i = imaser(k)
+              j = jmaser(k)
+              TEX  = TIJ(I,J)/DLOG(POP(J)/POP(I))
+              eta = (pop(i) - pop(j))/(pop(i) + pop(j))
+!             IF (KBETA.EQ.0) TAU(I,J) = TAU(I,J)/EPS
+              WRITE (16,"(6X,I3,2X,I3,1PE11.3,6(1PE10.2))")I,J,WL(I,J),TAU(I,J),TEX,eta
            end do
          else
            write(16,'(/2x,''No inversions'')')
@@ -1242,6 +1158,105 @@ contains
     write(16,'()')
     return
   end subroutine printx
+
+
+   subroutine finish(ier)
+!     Output summary of the run
+      integer ier,i,j,k,unit,unit2,n1,n2,dn, n_cols
+      character*190 hdr, hdr2, hdrm, hdr2m, spc
+
+      if(ier .eq.-1) write(16,"(/6x,'Terminated. Step size was ',1pe10.3/)") step
+      if(ier .eq. 0) write(16,"(/6x,'Terminated. Number of steps reached',I5/)") Nmax
+      if(ier .eq. 1) write(16,"(/6x,'Normal completion. Dimension is ',1pe10.2,' cm'/)") r
+      if(ier .eq. 2) write(16,"(/6x,'Normal completion. H2 column is',1pe10.2,' cm-2')") Hcol
+      if(ier .eq. 3) write(16,"(/6x,'Normal completion. Molecular column is',1pe10.2,' cm-2/kms')") mcol
+
+      IF (KTHICK.EQ.0) THEN
+         n1 = 1
+         n2 = nprint
+         dn = 1
+      ELSE
+!     print in revesrse order when KTHICK = 1
+         n1 = nprint
+         n2 = 1
+         dn = -1
+      END IF
+
+      !prepare a string of blanks for spacing in header lines
+      call clear_string(30,spc)
+      unit = 16          
+
+!     Tabulation by column density of total emission and, when relevant, dust optical depth      
+      hdr = 'mol column     emission'
+      hdr2=  'cm-2/kms      erg/s/mol'
+      if (dustAbsorption) then
+         hdr = hdr(1:inmax(hdr))//spc(1:9)//'dust'    
+         hdr2= hdr2(1:inmax(hdr2))//spc(1:8)//'tau_V'
+      end if
+      write(unit,"(/T9,'*** SUMMARY ***')")
+      write(unit,'(/T9,a,/T10,a)') hdr(1:inmax(hdr)), hdr2(1:inmax(hdr2))
+      do i = n1, n2, dn
+         write(unit,'(5x,6(1pe12.3,3x))') (final(k,i), k = 3, 4+idust)
+      end do
+      if(n_tr .eq. 0) return
+
+!     Detailed Printing of Individual Transitions
+!     Start with some instructions for the detailed output:
+      write (unit,"(/,' *** Parameters for selected transitions')")
+      write (unit,"(T6,'Io is the source line-center intensity')", advance='no')
+      if (kbeta .ge. 2) then
+         write (unit, "(' at mu =',f6.2,' to slab face')") mu_output
+      else
+         write (unit,"( )")
+      end if
+      write (unit,"(T6, 'del(Tb) is obtained from (B is the Planck function):')")
+      write (unit,"(T17,'B(del(Tb)) = I(observed) - B(Tcmb)')")
+      write (unit,"(T6, 'del(TRJ) is obtained from the same with the RJ approximation for B')")
+      if (DustAbsorption) write (unit,"(T6, &
+                        'Xdust is the fractional dust contribution to the line optical depth')")
+      if (maser_prt) then
+         write (unit,"(T6,'Maser pumping parameters are tabulated for inverted transitions;')")
+         write (unit,"(T6,'for definitions, see Elitzur ''Astronomical Masers'' secs. 4.2 and 7.1')")
+      end if
+      write(unit,"(' ***')")
+
+     !Headres for the Tabulation:
+      hdr =  'Nmol      Tex       tau       Flux   int(Tb dv)   Io      del(Tb)   del(TRJ)'
+      hdr2='cm-2/kms     K                   Jy      K km/s  W/m2/Hz/st    K         K'
+      if (dustAbsorption) hdr = hdr(1:inmax(hdr))//spc(1:4)//'Xdust'    
+      !additional headers for maser pump parameters 
+      hdrm = 'eta       p1        p2      Gamma1    Gamma2    Gamma'
+      hdr2m =       'cm-3s-1   cm-3s-1     s-1       s-1       s-1'
+
+      do j = 1, n_tr
+        !ID properties of the transition:
+         if (1.0e-4*wl(itr(j),jtr(j)) .ge. 1) then
+            write(unit,'(/5x,f8.3,'' cm ('',f7.3,'' GHz) transition between levels '',&
+                i2,'' and '', i2)') &
+                1.0e-4*wl(itr(j),jtr(j)),1.e-9*freq(itr(j),jtr(j)),itr(j), jtr(j)
+         else
+           write(unit,'(/5x,f8.2,'' mic ('',f8.3,'' GHz) transition between levels '',&
+               i2,'' and '', i2)') &
+               wl(itr(j),jtr(j)),1.e-9*freq(itr(j),jtr(j)),itr(j), jtr(j)
+         end if
+         write(unit,"(5x,'Upper Level: ',a)")ledet(itr(j))
+         write(unit,"(5x,'Lower Level: ',a)")ledet(jtr(j))
+         
+        !Tabulation:
+         n_cols  = basic_cols
+         !additional tabulations, when desired, for inverted transitions:
+         if (maser_prt .and. a_maser(j)) then
+            n_cols  = basic_cols + maser_cols
+            hdr  = hdr(1:inmax(hdr))//spc(1:5+idust)//hdrm(1:inmax(hdrm))
+            hdr2 = hdr2(1:inmax(hdr2))//spc(1:16+10*idust)//hdr2m(1:inmax(hdr2m))
+         end if          
+         write(unit,'(/T5,a,/T3,a)') hdr(1:inmax(hdr)), hdr2(1:inmax(hdr2))
+         do i = n1, n2, dn
+            write(unit,'(15(ES10.2))') (fin_tr(j,k,i), k = 1, n_cols)
+         end do
+      end do
+      return
+   end subroutine finish
 
 
    subroutine lines(x,cool)
@@ -1286,13 +1301,12 @@ contains
 !     for final summary printing
       nprint = nprint + 1
       aux = 1.D18*mcol*CL
-      final( 1,nprint) = r
-      final( 2,nprint) = hcol
-      final( 3,nprint) = mcol
-      final( 4,nprint) = tcool
-      final( 5,nprint) = Xdust*hcol
+      final(1,nprint) = r
+      final(2,nprint) = hcol
+      final(3,nprint) = mcol
+      final(4,nprint) = tcool
+      final(5,nprint) = Xdust*hcol
       if(n_tr .eq. 0) return
-
 
 !  Printing elements for every selected transition:
 !     1 - Molecular column per velocity bandwidth
@@ -1303,16 +1317,9 @@ contains
 !     6 - line intensity (at angle mu for slab)
 !     7 - line brightness temperature against CMB, Tbr
 !     8 - RJ equivalent of Tbr
-!  When dust absorption is on, next element is
+!     When dust absorption is on, next element is
 !     9 - fractional contribution of dust to tau when there's dust absorption
-!  For masers only; all elements are pushed by 1 when dust absorption is on:
-!     9 - inversion efficiency
-!    10 - pump rate of lower level; obtained from loss through p_i = n_i*Gamma_i
-!    11 - pump rate of upper level; obtained from loss through p_i = n_i*Gamma_i
-!    12 - loss rate of lower level
-!    13 - loss rate of upper level
-!    14 - mean loss rate from average with statistical weights
-
+!
       do k = 1, n_tr
          m(2) = itr(k)
          m(1) = jtr(k)
@@ -1324,30 +1331,42 @@ contains
          call simpson(100,1,100,freq_axis,1.0 - dexp(-(depth/mu_output)*exp(-freq_axis**2)),integral)
          call Tbr4Tx(Tl,Tex,depth,Tbr,TRJ)
 
-         fin_tr(k, 1,nprint) = mcol
-         fin_tr(k, 2,nprint) = Tex
-         fin_tr(k, 3,nprint) = depth
-         fin_tr(k, 4,nprint) = aux*cool(m(2),m(1))/freq(m(2),m(1))
-         fin_tr(k, 5,nprint) = Tex*(vt/1.d5)*integral
-         fin_tr(k, 6,nprint) = BB(nu,Tex)*(1. - dexp(-depth/mu_output))
-         fin_tr(k, 7,nprint) = Tbr
-         fin_tr(k, 8,nprint) = TRJ
+         fin_tr(k,1,nprint) = mcol
+         fin_tr(k,2,nprint) = Tex
+         fin_tr(k,3,nprint) = depth
+         fin_tr(k,4,nprint) = aux*cool(m(2),m(1))/freq(m(2),m(1))
+         fin_tr(k,5,nprint) = Tex*(vt/1.d5)*integral
+         fin_tr(k,6,nprint) = BB(nu,Tex)*(1. - dexp(-depth/mu_output))
+         fin_tr(k,7,nprint) = Tbr
+         fin_tr(k,8,nprint) = TRJ
          if (dustAbsorption) fin_tr(k,9,nprint) = Xd(m(2),m(1))
+         if (.not.maser_prt) cycle
+!        When not interested in maser pump rates, we're done 
+!
+!        For masers only, tabulate additional elements:
+!        1 - inversion efficiency
+!        2 - pump rate of lower level; obtained from loss through p_i = n_i*Gamma_i
+!        3 - pump rate of upper level; obtained from loss through p_i = n_i*Gamma_i
+!        4 - loss rate of lower level
+!        5 - loss rate of upper level
+!        6 - mean loss rate from average with statistical weights
+!
          If (tau(m(2),m(1)) .lt. 0.0) then
+            a_maser(k) = .true.
             eta = (pop(m(2)) - pop(m(1)))/(pop(m(2)) + pop(m(1)))
             call loss(m,Gamma)
             Gamma_av = (Gamma(1)*g(m(1)) + Gamma(2)*g(m(2)))/(g(m(1))+g(m(2)))
             p2 = nmol*x(m(2))*we(m(2))*Gamma(2)
             p1 = nmol*x(m(1))*we(m(1))*Gamma(1)
-            fin_tr(k, 9+Idust,nprint) = eta
-            fin_tr(k,10+Idust,nprint) = p1
-            fin_tr(k,11+Idust,nprint) = p2
-            fin_tr(k,12+Idust,nprint) = Gamma(1)
-            fin_tr(k,13+Idust,nprint) = Gamma(2)
-            fin_tr(k,14+Idust,nprint) = Gamma_av
+            fin_tr(k,basic_cols+1,nprint) = eta
+            fin_tr(k,basic_cols+2,nprint) = p1
+            fin_tr(k,basic_cols+3,nprint) = p2
+            fin_tr(k,basic_cols+4,nprint) = Gamma(1)
+            fin_tr(k,basic_cols+5,nprint) = Gamma(2)
+            fin_tr(k,basic_cols+6,nprint) = Gamma_av
          else
-            do i = 9+Idust, n_prt_cols   ! n_prt_cols = 14+Idust
-               fin_tr(k,i,nprint) = 0.0
+            do i = 1, maser_cols
+               fin_tr(k,basic_cols+i,nprint) = 0.0
             end do
          end if
       end do
