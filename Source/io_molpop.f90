@@ -1190,11 +1190,11 @@ contains
       hdr = 'mol column     emission'
       hdr2=  'cm-2/kms      erg/s/mol'
       if (dustAbsorption) then
-         hdr = hdr(1:inmax(hdr))//spc(1:9)//'dust'    
-         hdr2= hdr2(1:inmax(hdr2))//spc(1:8)//'tau_V'
+         hdr = trim(hdr)//spc(1:9)//'dust'    
+         hdr2= trim(hdr2)//spc(1:8)//'tau_V'
       end if
       write(unit,"(/T9,'*** SUMMARY ***')")
-      write(unit,'(/T9,a,/T10,a)') hdr(1:inmax(hdr)), hdr2(1:inmax(hdr2))
+      write(unit,'(/T9,a,/T10,a)') trim(hdr), trim(hdr2)
       do i = n1, n2, dn
          write(unit,'(5x,6(1pe12.3,3x))') (final(k,i), k = 3, 4+idust)
       end do
@@ -1223,7 +1223,7 @@ contains
      !Headres for the Tabulation:
       hdr =  'Nmol      Tex       tau       Flux   int(Tb dv)   Io      del(Tb)   del(TRJ)'
       hdr2='cm-2/kms     K                   Jy      K km/s  W/m2/Hz/st    K         K'
-      if (dustAbsorption) hdr = hdr(1:inmax(hdr))//spc(1:4)//'Xdust'    
+      if (dustAbsorption) hdr = trim(hdr)//spc(1:4)//'Xdust'    
       !additional headers for maser pump parameters 
       hdrm = 'eta       p1        p2      Gamma1    Gamma2    Gamma'
       hdr2m =       'cm-3s-1   cm-3s-1     s-1       s-1       s-1'
@@ -1247,10 +1247,10 @@ contains
          !additional tabulations, when desired, for inverted transitions:
          if (maser_prt .and. a_maser(j)) then
             n_cols  = basic_cols + maser_cols
-            hdr  = hdr(1:inmax(hdr))//spc(1:5+idust)//hdrm(1:inmax(hdrm))
-            hdr2 = hdr2(1:inmax(hdr2))//spc(1:16+10*idust)//hdr2m(1:inmax(hdr2m))
+            hdr  = trim(hdr)//spc(1:5+idust)//trim(hdrm)
+            hdr2 = trim(hdr2)//spc(1:16+10*idust)//trim(hdr2m)
          end if          
-         write(unit,'(/T5,a,/T3,a)') hdr(1:inmax(hdr)), hdr2(1:inmax(hdr2))
+         write(unit,'(/T5,a,/T3,a)') trim(hdr), trim(hdr2)
          do i = n1, n2, dn
             write(unit,'(15(ES10.2))') (fin_tr(j,k,i), k = 1, n_cols)
          end do
