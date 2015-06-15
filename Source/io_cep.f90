@@ -1,6 +1,6 @@
 module io_cep
 use global_cep
-use global_molpop, only : freq_axis
+use global_molpop, only : freq_axis, fin_tr, nprint
 use maths_cep
 use maths_molpop, only : Tbr4I
 implicit none
@@ -582,6 +582,128 @@ contains
 		deallocate(Slte)
 		deallocate(total_flux)
 		
-	end subroutine write_intermediate_results				
+	end subroutine write_intermediate_results	
+
+!-----------------------------------------------------------------	
+! Write the results
+!-----------------------------------------------------------------
+	subroutine calculate_intermediate_results(x,xlte,colIndex)
+	real(kind=8) :: x(:), xlte(:), column_density, total_radius
+	integer :: ii, ip, ipl, i, j, up, low, it, k, colIndex
+	real(kind=8) :: sig, glu, acon, chim, chip, tau0, deltaz, chilp, col_up, col_low
+	real(kind=8) :: sum, intensity, e1, e2, freq_max, deltaTBR, deltaTBRJ
+	real(kind=8), allocatable :: flux_out(:,:), Slte(:), total_flux(:), total_intensity(:)
+	
+		column_density = sum(dz * factor_abundance * abundance * nh)
+		total_radius = sum(dz)
+
+! Write output flux		
+		allocate(flux_out(3,100))
+		allocate(total_flux(ntran_output))
+		allocate(total_intensity(ntran_output))
+						
+		do i = 1, ntran_output			
+			it = output_transition(i)
+			
+! Generate a frequency axis for this transition so that it can accomodate at least
+! four Doppler widths for the zone with the largest Doppler width
+! 			freq_max = 4.d0 * maxval(dopplerw(it,:))
+! 			do ip = 1, 100
+! 				freq_axis(ip) = (ip-1.d0) / 99.d0 * 2.d0 * freq_max - freq_max
+! 			enddo
+			
+			call calcflux_cep(pop, flux_out, it)
+			
+			total_flux(i) = int_tabulated(freq_axis * maxval(dopplerw(it,:)), flux_out(1,:))
+			total_intensity(i) = int_tabulated(freq_axis * maxval(dopplerw(it,:)), flux_out(2,:))
+			
+! Output in velocity [km/s] and emergent flux
+			write(32,FMT='(A,I3,A,I3)') 'Transition : ', itran(1,it), ' -> ', itran(2,it)
+			write(32,*) '    v (km/s)       flux          I(mu=1)   I(selected mu)'
+			do j = 1, 100
+				write(32,FMT='(5(2X,1PE12.5))') freq_axis(j) / dtran(2,it) * PC / 1.d5, (flux_out(k,j),k=1,3)
+			enddo
+			write(32,*)
+		enddo
+				
+! 		deallocate(freq_axis)
+		deallocate(flux_out)
+ 	
+		allocate(Slte(nz))		
+		
+		do i = 1, ntran_output
+			it = output_transition(i)
+			up = itran(1,it)
+			low = itran(2,it)
+
+			sig = dtran(1,it) !sig=(h*nu*Blu)/(4*pi)
+			glu = dlevel(2,low) / dlevel(2,up)
+			acon = TWOHC2 * dtran(2,it)**3  !acon = (2*h*nu**3)/c**2			
+
+			tau0 = 0.d0
+			chip = 0.d0
+			chim = 0.d0
+
+			tau(it,0) = 0.d0
+			col_up = 0.d0
+			col_low = 0.d0
+			do ip = 1, nz
+				ipl = nl * (ip-1)
+
+				chil(ip) = sig / dopplerw(i,ip) * (x(low+ipl) - glu * x(up+ipl))
+				col_up = col_up + x(up+ipl) * dz(ip)
+				col_low = col_low + x(low+ipl) * dz(ip)
+				Sl(ip) = acon * glu * x(up+ipl) / (x(low+ipl) - glu * x(up+ipl))
+				Slte(ip) = acon * glu * xlte(up+ipl) / (xlte(low+ipl) - glu * xlte(up+ipl))
+
+         	if (ip == 1) then
+					tau(it,ip) = chil(ip) * dz(ip)					
+         	else
+					tau(it,ip) = tau(it,ip-1) + chil(ip) * dz(ip)
+         	endif
+
+			enddo
+			
+			intensity = 0.d0
+			do ip = 1, nz
+				e1 = exp(-(tau(it,nz)-tau(it,ip)) / (sqrt(PI)*mu_output))
+				e2 = exp(-(tau(it,nz)-tau(it,ip-1)) / (sqrt(PI)*mu_output))
+				intensity = intensity + Sl(ip) * (e1-e2)				
+			enddo
+						
+! 			deltaTBR = Tbr_I(dtran(2,it),intensity,tau(it,nz)/sqrt(PI))
+			call Tbr4I(dtran(2,it),intensity,tau(it,nz)/sqrt(PI),deltaTBR,deltaTBRJ)
+
+			fin_tr(i,1,colIndex) = column_density
+			fin_tr(i,2,colIndex) = 0.0
+			fin_tr(i,3,colIndex) = tau(it,nz)/sqrt(PI)
+			fin_tr(i,4,colIndex) = flux_total(it+nr*(nz-1)) * 4.d0*PI
+			fin_tr(i,5,colIndex) = (PC/dtran(2,i))**3 / (2.d0*PK*1d5) * total_intensity(i)
+			fin_tr(i,6,colIndex) = 1e-3*intensity
+			fin_tr(i,7,colIndex) = deltaTBR
+			fin_tr(i,8,colIndex) = deltaTBRJ
+
+			nprint = colIndex
+
+		enddo
+
+! Write populations
+		write(31,*) '**********************************************************'
+		write(31,FMT='(A,1PE12.5,A,I4)') ' N(mol) [cm^-2]: ', column_density, '    -  nzones: ', nz 
+		write(31,*) '**********************************************************'
+		write(31,FMT='(A)') 'Level   n [cm^-3]        n/n*       n* [cm^-3]'
+		do ip = 1, nz
+			ipl = nl * (ip-1)
+			write(31,FMT='(A,I4)') 'Zone ', ip			
+			do ii = 1, nl
+				write(31,FMT='(I4, 3(2X,1PE12.5))') ii, pop(ii+ipl), pop(ii+ipl)/popl(ii+ipl),&
+					popl(ii+ipl)
+			enddo
+		enddo
+				
+		deallocate(Slte)
+		deallocate(total_flux)
+		
+	end subroutine calculate_intermediate_results	
 
 end module io_cep

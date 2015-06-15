@@ -1,10 +1,12 @@
 module io_molpop
 use global_molpop
 use maths_molpop, only: Pass_Header, error_message, inmin, inmax, attach2, ordera, &
-                        optdep, Tbr4Tx, BB, simpson
+                        optdep, Tbr4Tx, BB, simpson, clear_string
 use cep_molpop_interface
 implicit none
 double precision Xdust
+integer basic_cols, maser_cols
+logical maser_prt
 
 contains
 
@@ -15,10 +17,9 @@ contains
   use coll_molpop
 
   integer i,j, npr, iunit, L, L2, L3
-  integer k, npoints_local, prt_cols0
+  integer k, npoints_local
   integer :: j_max, vib_max
   integer unit,unit2,mol_maxlev
-!  double precision aux, w,Tbb,tau_d, T_d, Lbol,dist, temp, Xdust
   double precision aux, w,Tbb,tau_d, T_d, Lbol,dist, temp
   double precision mol_const, temp1, temp2, temp3, temp4, Jbol
   character*168 str, Method, Option, OPT, header
@@ -26,15 +27,16 @@ contains
   logical iequal, error, UCASE,NoCase, stat, norm
   integer LMeth, LOpt, nradiat, ComingFrom, n_modified
   character*72 TableName, TableInfo
-  data UCASE/.TRUE./, NoCase/.FALSE./
+  data UCASE/.TRUE./, NoCase/.FALSE./   
 
-!      start reading with negative unit to clean residual info in rdinps
-!      UCASE and NoCase signal whether to convert input strings
-!      to UCASE to trap possible keyboard entry problems
+!     start reading with negative unit to clean residual info in rdinps
+!     UCASE and NoCase signal whether to convert input strings
+!     to UCASE to trap possible keyboard entry problems
       iequal = .true.
       iunit = -15
-      norm = .FALSE.
-      prt_cols0 = 14  ! # of columns for detailed printing when no dust absorption
+!     # of columns for detailed summary tabulations
+      basic_cols = 8  ! this will increase by 1 when there is dust absorption
+      maser_cols = 6  ! tabulation of maser pump parameters, when needed
 
 !   Keep this option for possible future uses:
 !     Decide whether to output PLOTTING file
@@ -53,7 +55,6 @@ contains
       i_sum = 0
       unit2 = 16 + i_sum
 
-
 !     read solution method for radiative transfer
       call rdinps2(iequal,iunit,str,L,UCASE)
       eps  = rdinp(iequal,iunit,16)
@@ -64,6 +65,9 @@ contains
          ELSE IF(str(1:L) .eq. 'LVGPP') THEN
              kbeta = -1
              WRITE(unit,"(6x,'Solution method is LVG-pp escape probability; dlogV/dlogr = ', F5.2)") eps
+         ELSE IF(str(1:L) .eq. 'SPHERE') THEN
+             kbeta = 1
+             WRITE(unit,"(6x,'Solution method is Static Sphere escape probability')")
          ELSE IF(str(1:L) .eq. 'SLAB') THEN
              kbeta = 2
              WRITE (unit,"(6x,'Solution method is Slab (Capriotti) escape probability ')")
@@ -154,9 +158,10 @@ contains
          endif
       else
 !
-! ME 2013/11/27: We now use only molecular column density per bandwidth in I/O
-!                Behind the scenes, leave the old structure of R with the values
-!                for xmol and v entered with the dust absorption input
+!     ME 2013/11/27: 
+!           We now use only molecular column density per bandwidth in I/O
+!           Behind the scenes, leave the old structure of R with the values
+!           for xmol and v entered with the dust absorption input
 !
          T    = rdinp(iequal,15,16)
          nh2  = rdinp(iequal,15,16)
@@ -176,17 +181,17 @@ contains
 !     Test whether the desired number of levels is larger than the number of tabulated levels
       if (n .gt. N_max) then
         WRITE (16,"(/,' *** Cannot specify N_levels = ', I3,/,&
-                &' *** Maximum allowed for ',a,' is ',I3)") n, s_mol(1:fsize(s_mol)), N_max
+                ' *** Maximum allowed for ',a,' is ',I3)") n, s_mol(1:fsize(s_mol)), N_max
         OPT = 'number of levels of'
         str = s_mol(1:fsize(s_mol))
         error = error_message(opt,str)
         return
       endif
 
-!     Check whether number of levels is too large for the temperature: 
+!     Check whether number of levels is too large for the temperature (do it here only for non-CEP calculations)
       if (kbeta < 3) then
-		     call check_num_levels(n,T)
-	    endif
+        call check_num_levels(n,T)
+      endif
 !_______________________________________________________________
 
 
@@ -208,6 +213,8 @@ contains
          header = 'using thermal doppler width = '
       end if
       dustAbsorption = .false.
+!     Leave absorption coefficient tabulation as is; no renormalization:
+      norm = .FALSE.
       if (Xdust > 0.) then
          if (kbeta == 3) then
             write(16,"(6x,'No dust absorption effects when using CEP')")
@@ -226,9 +233,10 @@ contains
          Idust = 0   ! no dust effects, so final printing has fewer columns
          write(16,"(6x,'No considerations of dust absorption')")
       end if
-      n_prt_cols = prt_cols0 + Idust     
+      basic_cols = basic_cols + Idust 
+      n_prt_cols = basic_cols + maser_cols
       nmol  = xmol*nh2
-      
+
 ! Test whether we want line overlap
       overlaptest = .false.
       call rdinps2(iequal,15,str,L,UCASE)
@@ -330,7 +338,7 @@ contains
             rad_tauT(i,j)  = plexp(tij(i,j)/Tcmb)
          end do
       end do
-           
+
 !     optionally add diluted black bodies with temperature
 !     Tbb and constant dilution coefficient W:
 !
@@ -372,7 +380,7 @@ contains
             end do
          end if
       end do
-      
+
 !     optionally add dust radiation; approximation of uniform T
 !     Lockett & Elitzur 2008, ApJ 677, 985 (eq. 1 of that paper)
       tau_d = 1.
@@ -392,12 +400,11 @@ contains
                call interpolateExternalFile(dustFile, wl, qdust, norm, error)
                write (16,"(10x,'Dust properties from file ',a)") trim(adjustl(dustFile))
             end if
-					
-            call dust_rad(T_d,tau_d,str,L)            
+
+            call dust_rad(T_d,tau_d,str,L)
          end if
       end do
-      
-      
+
 !     Radiation from DUSTY or any other similar SED file
       call rdinps2(iequal,15,fn_DUSTY,L,Nocase)
       if (to_upper(fn_DUSTY(1:L)) /= 'NONE') then
@@ -412,8 +419,8 @@ contains
             dist = rdinp(iequal,iunit,16)          ! at distance in cm
             Jbol = Lbol*SolarL/(fourpi*dist**2)    ! in erg/cm^2/sec
             write(16,"(10x,'Normalized to bolometric energy density',ES9.2,' W/m^2',/&
-             &10x,'for luminosity',ES9.2,' Lo at distance',ES9.2,' cm')")&
-             & Jbol*1.E-3, Lbol, dist
+             10x,'for luminosity',ES9.2,' Lo at distance',ES9.2,' cm')")&
+             Jbol*1.E-3, Lbol, dist
          else
             OPT   = 'entry type for radiative energy density'
             error = error_message(opt,str)
@@ -424,7 +431,6 @@ contains
          call rad_file(fn_DUSTY(1:L),Jbol,str,L2,error)
          if (error) return
       end if
-      
 !__________________________________________________________
 
 
@@ -449,26 +455,16 @@ contains
          KTHICK = 1
          write(16,*) 'Using DECREASING strategy'
       else if (trim(adjustl(to_upper(file_physical_conditions))) == 'NONE') then
-			OPT = 'solution strategy'
+			   OPT = 'solution strategy'
          error = error_message(opt,str)
          return
       endif
 
       if (trim(adjustl(to_upper(file_physical_conditions))) /= 'NONE') then
-			KTHICK = 2
-			write(16,*) 'Working with fixed physical conditions'
-		endif
+			   KTHICK = 2
+			   write(16,*) 'Working with fixed physical conditions'
+		  endif
 		
-!       else if(str(1:L) .eq. 'FIXED') then
-!          KTHICK = 2
-! ! Since no physical dimensions are given in the case of constant physical conditions
-! ! in needs to be done in the increasing/decreasing mode
-!          if (trim(adjustl(to_upper(file_physical_conditions))) == 'NONE') then
-!             OPT = 'FIXED mode. It needs a file with physical conditions'
-!             error = error_message(opt,str)
-!             return
-!          endif
-
       TAUM  = rdinp(iequal,iunit,16)
       COLM  = rdinp(iequal,iunit,16)
 
@@ -506,18 +502,16 @@ contains
       endif
 
       cep_precision = rdinp(iequal,15,16)
-
       nInitialZones = rdinp(iequal,15,16)
-
-! Output value of mu
+! Output value of mu; applicable only for slab
       mu_output = rdinp(iequal,15,16)
+      if (kbeta .lt. 2) mu_output = 1
 !__________________________________________________________
 
 
 !     PRINT CONTROL
 !
-!     Printing molecular data
-!
+
       do i=1,6
           call rdinps2(iequal,15,str,L,UCASE)
           if(str(1:L) .eq. 'ON') then
@@ -528,12 +522,12 @@ contains
       end do
 
       do i=1,6
-        call rdinps2(iequal,15,str,L,UCASE)
-        if(str(1:L) .eq. 'ON') then
-          ipr_tran(i)=.true.
-        else
-          ipr_tran(i)=.false.
-        end if
+          call rdinps2(iequal,15,str,L,UCASE)
+          if(str(1:L) .eq. 'ON') then
+            ipr_tran(i)=.true.
+          else
+            ipr_tran(i)=.false.
+          end if
       end do
 
       if(ipr_lev(1) .or. ipr_tran(1)) call print_mol_data
@@ -542,10 +536,10 @@ contains
 !
       call rdinps2(iequal,15,str,L,UCASE)
       if(str(1:L) .eq. 'ON') then
-!        That's it, so:
-         write(16,"(/6x,'Done with printing molecular data')")
-         error = .true.
-         return
+!         That's it, so:
+          write(16,"(/6x,'Done with printing molecular data')")
+          error = .true.
+          return
       end if
 
 !     print messages
@@ -618,47 +612,68 @@ contains
 !     input parameters for selected transitions to output
 !
       n_tr = rdinp(iequal,15,16)
+
+!     determine whether to tabulate pump parameters for masers
+      if (n_tr .ne. 0) then
+          call rdinps2(iequal,15,str,L,UCASE)
+          if(str(1:L) .eq. 'OFF') then
+             maser_prt = .false.
+          else if(str(1:L) .eq. 'ON') then
+             maser_prt = .true.
+          else
+             OPT = 'maser pump printout'
+             error = error_message(opt,str)
+             return
+          end if   
+      end if
+      !irrespective of input, ignore in CEP:
+      if (kbeta .ge. 3) maser_prt = .false.
+
+!     Now get the actual transitions 
       if (n_tr .gt. 0) then
-        allocate(itr(n_tr))
-        allocate(jtr(n_tr))
-        allocate(in_tr(n_tr))
-        allocate(f_tr(n_tr))
-        allocate(fin_tr(n_tr,n_prt_cols,nmax))
-        do i=1, n_tr
-           itr(i) = rdinp(iequal,15,16)
-           jtr(i) = rdinp(iequal,15,16)
-         end do
+          allocate(itr(n_tr))
+          allocate(jtr(n_tr))
+          allocate(in_tr(n_tr))
+          allocate(a_maser(n_tr)); a_maser = .false.
+          allocate(f_tr(n_tr))
+          allocate(fin_tr(n_tr,n_prt_cols,nmax))
+          do i=1, n_tr
+             itr(i) = rdinp(iequal,15,16)
+             jtr(i) = rdinp(iequal,15,16)
+          end do
       end if
 
-! ANDRES: if n_tr=-1, output for all the lines
+! ANDRES: if n_tr=-1, output all the lines
       if (n_tr .eq. -1) then
-         nradiat = 0
-         do i = 1, n
-           do j = 1, i-1
-             if (a(i,j) .ne. 0.d0) then
-               nradiat = nradiat + 1
-             endif
-           enddo
-         enddo
-         n_tr = nradiat
-
-         allocate(itr(n_tr))
-         allocate(jtr(n_tr))
-         allocate(in_tr(n_tr))
-         allocate(f_tr(n_tr))
-         allocate(fin_tr(n_tr,n_prt_cols,1000))
-
-         nradiat = 0
-         do i = 1, n
-           do j = 1, i-1
-             if (a(i,j) .ne. 0.d0) then
-               nradiat = nradiat + 1
-               itr(nradiat) = i
-               jtr(nradiat) = j
-             endif
-           enddo
-         enddo
+          nradiat = 0
+          do i = 1, n
+            do j = 1, i-1
+              if (a(i,j) .ne. 0.d0) then
+                nradiat = nradiat + 1
+              endif
+            enddo
+          enddo
+          n_tr = nradiat
+          
+          allocate(itr(n_tr))
+          allocate(jtr(n_tr))
+          allocate(in_tr(n_tr))
+          allocate(a_maser(n_tr)); a_maser = .false.
+          allocate(f_tr(n_tr))
+          allocate(fin_tr(n_tr,n_prt_cols,1000))
+          
+          nradiat = 0
+          do i = 1, n
+            do j = 1, i-1
+              if (a(i,j) .ne. 0.d0) then
+                nradiat = nradiat + 1
+                itr(nradiat) = i
+                jtr(nradiat) = j
+              endif
+            enddo
+          enddo
       endif
+      
 
       write(16,'(78(''-'')/,/,6x,"*** All optical depths are listed at line center ***",/)')
 !__________________________________________________________
@@ -684,6 +699,9 @@ contains
 
 !
 !     SCALE RATES WITH WEIGHT FACTORS AND DEFINE THE REST OF CONSTANTS
+!        A and C are scaled by WE; note -
+!          n(i) A(i,j) = nmol x(i) (we(i) A(i,j))
+!          n(i) C(i,j) = nmol x(i) (we(i) C(i,j))
 !
 !     The code uses line center optical depth
       AUX    = (NMOL/V)*CL**3/EITPI/ROOTPI
@@ -698,7 +716,6 @@ contains
 
 !     Dust absorption coefficients when needed:
       If (dustAbsorption) qdust = Xdust*nH2*qdust
-!      stop
       return
 
   end SUBROUTINE INPUT
@@ -715,7 +732,7 @@ contains
   double precision, intent(in) :: T
   double precision, parameter  :: bar=15
 
-      if (Ti(n)/T < bar) return ! No problems; n does not seems excessive 
+      if (Ti(n)/T < bar) return ! No problems; n does not seem excessive 
 
 !     Potentially, too many levels
 !     devise suggestion for a smaller number
@@ -925,7 +942,7 @@ contains
     end if
       return
   end subroutine print_mol_data
-
+  
 
   subroutine data(error)
 !     Get molecular data: level properties and Einstein A-coefficients
@@ -956,47 +973,21 @@ contains
 !     ems   -  multipliers for line emissivities
 !     rad   -  external radiation intensity in the lines
 !
-!     inprt - printing index:
-!
-!             0 - no print;
-!             1 - print level assignments;
-!             2 - print also einstein a and collision rates;
-!            <0 - terminate execution after printing
-
-!      do i = 1,n
-!          g(i)  = 0
-!          fr(i) = 0.
-!          ti(i) = 0.
-!          do j = 1,n
-!            freq(i,j) = 0.
-!            wl(i,j)   = 0.
-!            tij(i,j)  = 0.
-!            a(i,j)    = 0.
-!            c(i,j)    = 0.
-!            ems(i,j)  = 0.
-!            taux(i,j) = 0.
-!            rad(i,j)  = 0.
-!            rad_tau0(i,j)  = 0.
-!            rad_tauT(i,j)  = 0.
-!            qdust(i,j) = 0.
-!            Xd(i,j)    = 0.
-!          end do
-!      end do
 !
 !         read atomic data (energy levels and Einstein coefficients)
 !
       call attach2(mol_name, '.molecule', fn_lev)
       inquire(file=fn_lev,exist=stat)
       if (.not.stat) then
-        print *, 'Error when opening file ', fn_lev
-        stop
+         print *, 'Error when opening file ', fn_lev
+         stop
       endif
     open(4, err=800, file=fn_lev, status='unknown')
     call Pass_Header(4)
     read(4,*) N_max, mol_mass
     call Pass_Header(4)
     do i=1,n
-      read(4,*,end=5) in,g(i),fr(i),ledet(i)
+       read(4,*,end=5) in,g(i),fr(i),ledet(i)
     end do
 
       do i=1,n
@@ -1012,12 +1003,12 @@ contains
     read(4,*)
       call Pass_Header(4)
       do while(.true.)
-        read(4,*,end=5)  i,j,temp
+          read(4,*,end=5)  i,j,temp
 
 ! Only read the transitions between levels included in the model
-        if (i <= n .and. j <= n) then
-          a(i,j) = temp
-        endif
+          if (i <= n .and. j <= n) then
+            a(i,j) = temp
+          endif
       end do
 5     close(4)
 !
@@ -1047,12 +1038,136 @@ contains
   end subroutine data
 
 
+  subroutine output(x,cool,kpr)
+!              kpr  = 0 - print only summary
+!                     1 - print each step; info on the nbig strongest
+!                         cooling lines
+!                     2 - also level populations
+!
+      integer kpr,i,j,k,kool
+      integer, allocatable :: index(:),jndex(:)
+      double precision x(n),bright,cool(:,:)
+      double precision arg,rprev,test,tex,eta,Tbr
+      character*168 str
+
+      kool(arg) = 100.0*arg/tcool + 0.5
+
+      allocate(index(nbig+1))
+      allocate(jndex(nbig+1))
+
+!     First check whether R changed enough for printing:
+      if(nprint .gt. 1) then
+          test = r/rprev
+          IF (KTHICK.EQ.1) TEST = 1./TEST
+          if(test .lt. prstep) return
+      end if
+
+!     OK, this is a printing step. Prepare output in LINES
+!     and proceed with printing if detailed printout is requested by kpr
+      rprev = r
+      call lines(x,cool)
+      if(kpr .eq. 0) return
+
+!     kpr > 0;  more detailed printing
+
+      write(16,"(/2X,'Molecular column =',1pe9.2,' cm-2/kms', T45,&
+                       'Total emission =',1pe9.2,' erg/s/mol')") MCOL, TCOOL
+      if (dustAbsorption)  &
+         write(16,"(2X,'H-nuclei column  =',1pe9.2,' cm-2', T45,'tau(dust) at V =',1pe9.2)") &
+                 Hcol, Xdust*Hcol
+      write(16,*)
+
+!     print populations, if required:
+      if (kpr .ge. 2) call printx(x)
+      if (kpr .eq. 1 .or. kpr .eq. 3) then
+!        find the main cooling lines and print:
+         call ordera(cool,n,index,jndex,nbig)
+         write(16,'(2x,''The top emitting lines are:''/)')
+         str = "(8x,'i',4x,'j',2x,'wavelength',4x,'tau',4x,'beta',7x,'Tex',6x,'emission',3x,'%')"
+         if(dustAbsorption) str =&
+           "(8x,'i',4x,'j',2x,'wavelength',4x,'tau',6x,'Xdust',3x,'beta',7x,'Tex',6x,'emission',3x,'%')"
+         write(16,FMT=str)
+         str = "(18x,'micron',25x,'K',7x,'erg/s/mol')"
+         if(dustAbsorption) str = "(18x,'micron',35x,'K',7x,'erg/s/mol')"
+         write(16,FMT=str)
+         do k = 1, nbig
+           i = index(k)
+           j = jndex(k)
+           tex  = tij(i,j)/dlog(pop(j)/pop(i))
+           if(kool(cool(i,j)) .gt. 0) then
+             if(dustAbsorption) then
+               write(16,'(6x,i3,2x,i3,ES11.3,5(ES10.2),i4)')i,j,wl(i,j),tau(i,j),&
+               Xd(i,j),esc(i,j),tex,cool(i,j),kool(cool(i,j))
+             else
+               write(16,'(6x,i3,2x,i3,ES11.3,4(ES10.2),i4)')i,j,wl(i,j),tau(i,j),&
+               esc(i,j),tex,cool(i,j),kool(cool(i,j))
+             end if
+           end if
+         end do
+
+!        nmaser - # of inverted transitions;
+!               imaser and jmaser are the (i,j) of these lines.
+         if (nmaser .gt. 0) then
+!          print basic maser output for inverted transitions:
+           write(16,'(/2x,''Inverted lines:''/)')
+           write(16,'(8x,''i'',4x,''j'',2x,''wavelength'',4x,''tau'',5x,''Tex'',8x,''eta'')')
+           write(16,"(18x,'micron',15x,'K',/)")
+           do k = 1, nmaser
+              i = imaser(k)
+              j = jmaser(k)
+              TEX  = TIJ(I,J)/DLOG(POP(J)/POP(I))
+              eta = (pop(i) - pop(j))/(pop(i) + pop(j))
+!             IF (KBETA.EQ.0) TAU(I,J) = TAU(I,J)/EPS
+              WRITE (16,"(6X,I3,2X,I3,1PE11.3,6(1PE10.2))")I,J,WL(I,J),TAU(I,J),TEX,eta
+           end do
+         else
+           write(16,'(/2x,''No inversions'')')
+         end if
+      end if
+      write(16,'(78(''-'')/)')
+
+      deallocate(index)
+      deallocate(jndex)
+
+      return
+  end subroutine output
+
+
+  subroutine printx(x)
+! print populations:
+  integer kool,i
+  double precision x(:),tex,xni,bi
+
+    write(16,"(2x,'Populations:',/T6,'level',T13,'n_i/g_i/nmol',   &
+                  T28,'n(i)/n*',T40,'T_ex(i,1)',T53,'emission',T66,'%',/, &
+                  T44,'K',T53,'erg/s/mol')")
+
+    do i=1,n
+        if(i .eq. 1) then
+           tex = 0.0
+        else
+           tex  = tij(i,1)/dlog(pop(1)/pop(i))
+        end if
+        xni = x(i)*we(i)/g(i)
+        bi  = x(i)*sumw
+        if(tcool .ne. 0.0) then
+           kool = 100.0*coolev(i)/tcool +0.5
+        else
+           kool=0
+        end if
+        write(16,'(i9,4(1pe13.3),i5)') i,xni,bi,tex,coolev(i), kool
+    end do
+    write(16,'()')
+    return
+  end subroutine printx
+
+
    subroutine finish(ier)
 !     Output summary of the run
-      integer ier,i,j,k,unit,unit2,n1,n2,dn
-      character*190 header, header2
+      integer ier,i,j,k,unit,unit2,n1,n2,dn, n_cols
+      character*190 hdr, hdr2, hdrm, hdr2m, spc, hdrFinal, hdr2Final
 
-      if(ier .eq. -1) write(16,"(/6x,'Terminated. Step size was ',1pe10.3/)") step
+      if(ier .eq.-1) write(16,"(/6x,'Terminated. Step size was ',1pe10.3/)") step
       if(ier .eq. 0) write(16,"(/6x,'Terminated. Number of steps reached',I5/)") Nmax
       if(ier .eq. 1) write(16,"(/6x,'Normal completion. Dimension is ',1pe10.2,' cm'/)") r
       if(ier .eq. 2) write(16,"(/6x,'Normal completion. H2 column is',1pe10.2,' cm-2')") Hcol
@@ -1069,226 +1184,83 @@ contains
          dn = -1
       END IF
 
-!     Attach original Summary to Output file
-      unit = 16
-!      write(unit,"(/T35,'SUMMARY')")
-!      write(unit,FMT='(/6x,A,8x,A,3x,A,2x,A,/6x,A,10x,A,8x,A,5x,A)') &
-!           &'R','H2 column','mol column','emission',&
-!           &'cm','cm-2','cm-2','erg/s/mol'
+      !prepare a string of blanks for spacing in header lines
+      call clear_string(30,spc)
+      unit = 16          
+
+!     Tabulation by column density of total emission and, when relevant, dust optical depth      
+      hdr = 'mol column     emission'
+      hdr2=  'cm-2/kms      erg/s/mol'
       if (dustAbsorption) then
-         write(unit,"(/T21,'*** SUMMARY ***')")
-         write(unit,"(/8x,'mol column',5x,'emission',9x,'dust'&
-                   /9x,'cm-2/kms',6x,'erg/s/mol',8x,'tau_V')")
-      else
-         write(unit,"(/T14,'*** SUMMARY ***')")
-         write(unit,"(/8x,'mol column',5x,'emission',&
-                   /9x,'cm-2/kms',6x,'erg/s/mol')")
+         hdr = trim(hdr)//spc(1:9)//'dust'    
+         hdr2= trim(hdr2)//spc(1:8)//'tau_V'
       end if
+      write(unit,"(/T9,'*** SUMMARY ***')")
+      write(unit,'(/T9,a,/T10,a)') trim(hdr), trim(hdr2)
       do i = n1, n2, dn
-!         write(unit,'(6(1pe12.3))') (final(k,i), k = 1,4)
-         write(unit,'(5x,6(1pe12.3,3x))') (final(k,i), k = 3,4 + idust)
+         write(unit,'(5x,6(1pe12.3,3x))') (final(k,i), k = 3, 4+idust)
       end do
       if(n_tr .eq. 0) return
 
-!=====  Detailed Printing of Individual Transitions  =====
-
-      write (unit,"(/,' *** Parameters for selected transitions; Io is line-center intensity')",advance='no')
-      if (kbeta > 0) then
+!     Detailed Printing of Individual Transitions
+!     Start with some instructions for the detailed output:
+      write (unit,"(/,' *** Parameters for selected transitions')")
+      write (unit,"(T6,'Io is the source line-center intensity')", advance='no')
+      if (kbeta .ge. 2) then
          write (unit, "(' at mu =',f6.2,' to slab face')") mu_output
       else
          write (unit,"( )")
       end if
-
-!     Prepare header lines common to all transitions
-
-      header  = "(/,T5,'Nmol',T15,'Tex',T25,'tau',T35,'Flux',T42,'int(Tb dv)',T55,'Io',&
-                    T62,'delta(Tb)',T72,'del(TRJ)',T85,&
-                    'eta',T95,'p1',T105,'p2',T114,'Gamma1',T124,'Gamma2',T134,'Gamma')"
-        
-       header2 = "(T3,'cm-2/kms',T16,'K',T36,'Jy',T43,'K km/s',T52,'W/m2/Hz/st',T65,'K',T75,'K',&
-        T95,'cm-3s-1',T103,'cm-3s-1',3(6x,'s-1 '))"
-                
-      if (dustAbsorption) then
-         header  = "(/,T5,'Nmol',T15,'Tex',T25,'tau',T35,'Flux',T42,'int(Tb dv)',T55,'Io',&
-                    T62,'delta(Tb)',T72,'del(TRJ)',T84,'Xdust',T95,&
-                    'eta',T106,'p1',T116,'p2',T124,'Gamma1',T134,'Gamma2',T144,'Gamma')"                     
-         header2 = "(T3,'cm-2/kms',T16,'K',T36,'Jy',T43,'K km/s',T51,'W/m2/Hz/st',T65,'K',T75,'K',&
-           T103,'cm-3s-1',T113,'cm-3s-1',3(6x,'s-1 '))"
+      write (unit,"(T6, 'del(Tb) is obtained from (B is the Planck function):')")
+      write (unit,"(T17,'B(del(Tb)) = I(observed) - B(Tcmb)')")
+      write (unit,"(T6, 'del(TRJ) is obtained from the same with the RJ approximation for B')")
+      if (DustAbsorption) write (unit,"(T6, &
+                        'Xdust is the fractional dust contribution to the line optical depth')")
+      if (maser_prt) then
+         write (unit,"(T6,'Maser pumping parameters are tabulated for inverted transitions;')")
+         write (unit,"(T6,'for definitions, see Elitzur ''Astronomical Masers'' secs. 4.2 and 7.1')")
       end if
+      write(unit,"(' ***')")
 
+     !Headres for the Tabulation:
+      hdr =  'Nmol      Tex       tau       Flux   int(Tb dv)   Io      del(Tb)   del(TRJ)'
+      hdr2='cm-2/kms     K                   Jy      K km/s  W/m2/Hz/st    K         K'
+      if (dustAbsorption) hdr = trim(hdr)//spc(1:4)//'Xdust'    
+      !additional headers for maser pump parameters 
+      hdrm = 'eta       p1        p2      Gamma1    Gamma2    Gamma'
+      hdr2m =       'cm-3s-1   cm-3s-1     s-1       s-1       s-1'
 
       do j = 1, n_tr
+        !ID properties of the transition:
          if (1.0e-4*wl(itr(j),jtr(j)) .ge. 1) then
             write(unit,'(/5x,f8.3,'' cm ('',f7.3,'' GHz) transition between levels '',&
-             &i2,'' and '', i2)') &
-             1.0e-4*wl(itr(j),jtr(j)),1.e-9*freq(itr(j),jtr(j)),itr(j), jtr(j)
+                i2,'' and '', i2)') &
+                1.0e-4*wl(itr(j),jtr(j)),1.e-9*freq(itr(j),jtr(j)),itr(j), jtr(j)
          else
            write(unit,'(/5x,f8.2,'' mic ('',f8.3,'' GHz) transition between levels '',&
-              &i2,'' and '', i2)') &
-           wl(itr(j),jtr(j)),1.e-9*freq(itr(j),jtr(j)),itr(j), jtr(j)
+               i2,'' and '', i2)') &
+               wl(itr(j),jtr(j)),1.e-9*freq(itr(j),jtr(j)),itr(j), jtr(j)
          end if
          write(unit,"(5x,'Upper Level: ',a)")ledet(itr(j))
          write(unit,"(5x,'Lower Level: ',a)")ledet(jtr(j))
-         write(unit,FMT=header)
-         write(unit,FMT=header2)
+         
+        !Tabulation:
+         n_cols  = basic_cols
+         hdrFinal = hdr
+         hdr2Final = hdr2
+         !additional tabulations, when desired, for inverted transitions:
+         if (maser_prt .and. a_maser(j)) then
+            n_cols  = basic_cols + maser_cols
+            hdrFinal  = trim(hdr)//spc(1:5+idust)//trim(hdrm)
+            hdr2Final = trim(hdr2)//spc(1:16+10*idust)//trim(hdr2m)
+         end if          
+         write(unit,'(/T5,a,/T3,a)') trim(hdrFinal), trim(hdr2Final)
          do i = n1, n2, dn
-           write(unit,'(15(ES10.2))') (fin_tr(j,k,i), k = 1,n_prt_cols)
+            write(unit,'(15(ES10.2))') (fin_tr(j,k,i), k = 1, n_cols)
          end do
       end do
-
-!     Now Output Plotting Summary
-      if(i_sum .eq. 1) then
-         do j = 1, n_tr
-           write(17,'(60(''*''))')
-           if (1.0e-4*wl(itr(j),jtr(j)) .ge. 1) then
-             write(17,'(''*'',f8.3,'' cm ('',f7.3,'' GHz) transition between levels '',i2,&
-               &'' and '', i2)') &
-               1.0e-4*wl(itr(j),jtr(j)),1.e-9*freq(itr(j),jtr(j)),itr(j), jtr(j)
-           else
-             write(17,'(''*'',f8.2,'' mic ('',f7.3,'' GHz) transition between levels '',i2,&
-               &'' and '', i2)') &
-               wl(itr(j),jtr(j)),1.e-9*freq(itr(j),jtr(j)),itr(j), jtr(j)
-           end if
-           write(17,"('*',5x,'Upper Level',a33)")ledet(itr(j))
-           write(17,"('*',5x,'Lower Level',a33)")ledet(jtr(j))
-           write(17,"(7x,'R',8x,'nmol*R/V',8x,'Tex',8x,'tau')")
-           do i = n1, n2, dn
-               write(17,'(4(1pe12.2))')fin_tr(j,1,i),fin_tr(j,1,i)*nmol/V*1.e5,fin_tr(j,2,i),&
-                 fin_tr(j,3,i)
-           end do
-         end do
-      end if
-    return
-  end subroutine finish
-
-
-  subroutine output(x,cool,kpr)
-!              kpr  = 0 - print only summary
-!                     1 - print each step; info on the nbig strongest
-!                         cooling lines
-!                     2 - also level populations
-!
-  integer kpr,i,j,k,kool
-  integer, allocatable :: index(:),jndex(:)
-  double precision x(n),bright,cool(:,:)
-  double precision arg,rprev,test,tex,eta,Tbr
-  character*168 str
-
-      kool(arg) = 100.0*arg/tcool + 0.5
-
-      allocate(index(nbig+1))
-      allocate(jndex(nbig+1))
-
-!     First check whether R changed enough for printing:
-      if(nprint .gt. 1) then
-          test = r/rprev
-          IF (KTHICK.EQ.1) TEST = 1./TEST
-!           if(test .lt. prstep) return
-      end if
-
-!     OK, this is a printing step. Prepare output in LINES
-!     and proceed with printing if detailed printout is requested by kpr
-      rprev = r
-      call lines(x,cool)
-      if(kpr .eq. 0) return
-
-!     kpr > 0;  more detailed printing
-!      write(16,FMT='(/2X,A,1pe9.2,A,5X,A,1pe9.2,A,5X,A,1pe9.2,A,/2X,A,1pe9.2,A)') &
-!        &'R = ',R,'cm', 'H2 column = ',HCOL,'cm-2','mol column = ',MCOL,&
-!        &' cm-2/kms','Total emission = ',TCOOL,' erg/s/mol '
-
-      write(16,"(/2X,'Molecular column =',1pe9.2,' cm-2/kms', T45,&
-                       'Total emission =',1pe9.2,' erg/s/mol')") MCOL, TCOOL
-      if (dustAbsorption)  &
-         write(16,"(2X,'H-nuclei column  =',1pe9.2,' cm-2', T45,'tau(dust) at V =',1pe9.2)") &
-                 Hcol, Xdust*Hcol
-      write(16,*)
-
-!     print populations, if required:
-      if (kpr .ge. 2) call printx(x)
-      if (kpr .eq. 1 .or. kpr .eq. 3) then
-!     if(nbig .gt. 0) then :  No longer needed;
-!                             print all lines contributiong more the 1% to total
-!     find the main cooling lines and print:
-      call ordera(cool,n,index,jndex,nbig)
-      write(16,'(2x,''The top emitting lines are:''/)')
-      str = "(8x,'i',4x,'j',2x,'wavelength',4x,'tau',4x,'beta',7x,'Tex',6x,'emission',3x,'%')"
-      if(dustAbsorption) str =&
-        "(8x,'i',4x,'j',2x,'wavelength',4x,'tau',6x,'Xdust',3x,'beta',7x,'Tex',6x,'emission',3x,'%')"
-      write(16,FMT=str)
-      str = "(18x,'micron',25x,'K',7x,'erg/s/mol')"
-      if(dustAbsorption) str = "(18x,'micron',35x,'K',7x,'erg/s/mol')"
-      write(16,FMT=str)
-      do k = 1, nbig
-        i = index(k)
-        j = jndex(k)
-        tex  = tij(i,j)/dlog(pop(j)/pop(i))
-        if(kool(cool(i,j)) .gt. 0) then
-          if(dustAbsorption) then
-            write(16,'(6x,i3,2x,i3,ES11.3,5(ES10.2),i4)')i,j,wl(i,j),tau(i,j),&
-            Xd(i,j),esc(i,j),tex,cool(i,j),kool(cool(i,j))
-          else
-            write(16,'(6x,i3,2x,i3,ES11.3,4(ES10.2),i4)')i,j,wl(i,j),tau(i,j),&
-            esc(i,j),tex,cool(i,j),kool(cool(i,j))
-          end if
-        end if
-      end do
-!     end if
-!       nmaser - # of inverted transitions;
-!                imaser and jmaser are the (i,j) of these lines.
-          if (nmaser .gt. 0) then
-!         print basic maser output for inverted transitions:
-            write(16,'(/2x,''Inverted lines:''/)')
-            write(16,'(8x,''i'',4x,''j'',2x,''wavelength'',4x,''tau'',5x,''Tex'',8x,''eta'')')
-            write(16,"(18x,'micron',15x,'K',/)")
-            do k = 1, nmaser
-              i = imaser(k)
-              j = jmaser(k)
-              TEX  = TIJ(I,J)/DLOG(POP(J)/POP(I))
-              eta = (pop(i) - pop(j))/(pop(i) + pop(j))
-!            IF (KBETA.EQ.0) TAU(I,J) = TAU(I,J)/EPS
-              WRITE (16,"(6X,I3,2X,I3,1PE11.3,6(1PE10.2))")I,J,WL(I,J),TAU(I,J),TEX,eta
-            end do
-          else
-            write(16,'(/2x,''No inversions'')')
-          end if
-      end if
-      write(16,'(78(''-'')/)')
-
-      deallocate(index)
-      deallocate(jndex)
-
       return
-  end subroutine output
-
-
-  subroutine printx(x)
-!     print populations:
-  integer kool,i
-  double precision x(:),tex,xni,bi
-
-    write(16,"(2x,'Populations:',/T6,'level',T13,'n_i/g_i/nmol',   &
-                  T28,'n(i)/n*',T40,'T_ex(i,1)',T53,'emission',T66,'%',/, &
-                  T44,'K',T53,'erg/s/mol')")
-
-      do i=1,n
-          if(i .eq. 1) then
-            tex = 0.0
-          else
-            tex  = tij(i,1)/dlog(pop(1)/pop(i))
-          end if
-          xni = x(i)*we(i)/g(i)
-          bi  = x(i)*sumw
-          if(tcool .ne. 0.0) then
-            kool = 100.0*coolev(i)/tcool +0.5
-          else
-            kool=0
-          end if
-          write(16,'(i9,4(1pe13.3),i5)') i,xni,bi,tex,coolev(i), kool
-      end do
-      write(16,'()')
-      return
-  end subroutine printx
+   end subroutine finish
 
 
    subroutine lines(x,cool)
@@ -1297,12 +1269,10 @@ contains
 !     cool(i,j) is the cooling of the (i,j) transition; coolev(i) the
 !     overall cooling of the i-th level;
 !
-!   use sol_molpop, only: optdep
-   integer m(2),i,j,k,i_m
-   double precision x(n),cool(:,:),taumaser,pop1,pop2,eta
-!   double precision Gamma_av,Gamma(2),p1,p2,depth,aux,flux,Tex,Tl
-   double precision Gamma_av,Gamma(2),p1,p2,depth,aux
-   double precision flux,Tex,Tl,Tbr,TRJ, nu, integral
+      integer m(2),i,j,k,i_m
+      double precision x(n),cool(:,:),taumaser,pop1,pop2,eta
+      double precision Gamma_av,Gamma(2),p1,p2,depth,aux
+      double precision flux,Tex,Tl,Tbr,TRJ, nu, integral
 
       call optdep(x)
       nmaser  = 0
@@ -1319,31 +1289,28 @@ contains
                   nmaser = nmaser + 1
                   imaser(nmaser) = i
                   jmaser(nmaser) = j
-!             forget the emission from maser transitions
-                cool(i,j) = 0.
+!                 forget the emission from maser transitions
+                  cool(i,j) = 0.
               end if
               coolev(i) = coolev(i) + cool(i,j)
               tcool = tcool + cool(i,j)
             end if
           end do
       end do
-    if (R.eq.0.0) return
+      hcol = nh2*r
+!     Molecular column per bandwith in kms:
+      mcol = nmol*r*1.d5/V
+      if (R.eq.0.0) return
 
 !     for final summary printing
       nprint = nprint + 1
-      hcol = nh2*r
-!      mcol = nmol*r
-!      AUX = 1.D23*MCOL*CL/V
-!     Molecular column is now intrinsically per bandwith in kms:
-      mcol = nmol*r*1.d5/V
       aux = 1.D18*mcol*CL
-      final( 1,nprint) = r
-      final( 2,nprint) = hcol
-      final( 3,nprint) = mcol
-      final( 4,nprint) = tcool
-      final( 5,nprint) = Xdust*hcol
+      final(1,nprint) = r
+      final(2,nprint) = hcol
+      final(3,nprint) = mcol
+      final(4,nprint) = tcool
+      final(5,nprint) = Xdust*hcol
       if(n_tr .eq. 0) return
-
 
 !  Printing elements for every selected transition:
 !     1 - Molecular column per velocity bandwidth
@@ -1354,16 +1321,9 @@ contains
 !     6 - line intensity (at angle mu for slab)
 !     7 - line brightness temperature against CMB, Tbr
 !     8 - RJ equivalent of Tbr
-!  When dust absorption is on, next element is
+!     When dust absorption is on, next element is
 !     9 - fractional contribution of dust to tau when there's dust absorption
-!  For masers only; all elements are pushed by 1 when dust absorption is on:
-!     9 - inversion efficiency
-!    10 - pump rate of lower level; obtained from loss through p_i = n_i*Gamma_i
-!    11 - pump rate of upper level; obtained from loss through p_i = n_i*Gamma_i
-!    12 - loss rate of lower level
-!    13 - loss rate of upper level
-!    14 - mean loss rate from average with statistical weights
-
+!
       do k = 1, n_tr
          m(2) = itr(k)
          m(1) = jtr(k)
@@ -1375,30 +1335,42 @@ contains
          call simpson(100,1,100,freq_axis,1.0 - dexp(-(depth/mu_output)*exp(-freq_axis**2)),integral)
          call Tbr4Tx(Tl,Tex,depth,Tbr,TRJ)
 
-         fin_tr(k, 1,nprint) = mcol
-         fin_tr(k, 2,nprint) = Tex
-         fin_tr(k, 3,nprint) = depth
-         fin_tr(k, 4,nprint) = aux*cool(m(2),m(1))/freq(m(2),m(1))
-         fin_tr(k, 5,nprint) = Tex*(vt/1.d5)*integral
-         fin_tr(k, 6,nprint) = BB(nu,Tex)*(1. - dexp(-depth/mu_output))
-         fin_tr(k, 7,nprint) = Tbr
-         fin_tr(k, 8,nprint) = TRJ
+         fin_tr(k,1,nprint) = mcol
+         fin_tr(k,2,nprint) = Tex
+         fin_tr(k,3,nprint) = depth
+         fin_tr(k,4,nprint) = aux*cool(m(2),m(1))/freq(m(2),m(1))
+         fin_tr(k,5,nprint) = Tex*(vt/1.d5)*integral
+         fin_tr(k,6,nprint) = BB(nu,Tex)*(1. - dexp(-depth/mu_output))
+         fin_tr(k,7,nprint) = Tbr
+         fin_tr(k,8,nprint) = TRJ
          if (dustAbsorption) fin_tr(k,9,nprint) = Xd(m(2),m(1))
+         if (.not.maser_prt) cycle
+!        When not interested in maser pump rates, we're done 
+!
+!        For masers only, tabulate additional elements:
+!        1 - inversion efficiency
+!        2 - pump rate of lower level; obtained from loss through p_i = n_i*Gamma_i
+!        3 - pump rate of upper level; obtained from loss through p_i = n_i*Gamma_i
+!        4 - loss rate of lower level
+!        5 - loss rate of upper level
+!        6 - mean loss rate from average with statistical weights
+!
          If (tau(m(2),m(1)) .lt. 0.0) then
+            a_maser(k) = .true.
             eta = (pop(m(2)) - pop(m(1)))/(pop(m(2)) + pop(m(1)))
             call loss(m,Gamma)
             Gamma_av = (Gamma(1)*g(m(1)) + Gamma(2)*g(m(2)))/(g(m(1))+g(m(2)))
             p2 = nmol*x(m(2))*we(m(2))*Gamma(2)
             p1 = nmol*x(m(1))*we(m(1))*Gamma(1)
-            fin_tr(k, 9+Idust,nprint) = eta
-            fin_tr(k,10+Idust,nprint) = p1
-            fin_tr(k,11+Idust,nprint) = p2
-            fin_tr(k,12+Idust,nprint) = Gamma(1)
-            fin_tr(k,13+Idust,nprint) = Gamma(2)
-            fin_tr(k,14+Idust,nprint) = Gamma_av
+            fin_tr(k,basic_cols+1,nprint) = eta
+            fin_tr(k,basic_cols+2,nprint) = p1
+            fin_tr(k,basic_cols+3,nprint) = p2
+            fin_tr(k,basic_cols+4,nprint) = Gamma(1)
+            fin_tr(k,basic_cols+5,nprint) = Gamma(2)
+            fin_tr(k,basic_cols+6,nprint) = Gamma_av
          else
-            do i = 9+Idust, n_prt_cols   ! n_prt_cols = 14+Idust
-               fin_tr(k,i,nprint) = 0.0
+            do i = 1, maser_cols
+               fin_tr(k,basic_cols+i,nprint) = 0.0
             end do
          end if
       end do
@@ -1414,35 +1386,35 @@ contains
    double precision Gamma(2)
 
     DO i = 1, 2
-        l = m(i)
-         Gamma(i) = 0.
-         do j = 1, m(1) - 1
+       l = m(i)
+       Gamma(i) = 0.
+       do j = 1, m(1) - 1
           Gamma(i) = Gamma(i) + (A(l,j)*ESC(l,j)*(1 + RAD(l,j)) + C(l,j))/WE(l)
-         end do
-         do j = m(2) + 1, N
+       end do
+       do j = m(2) + 1, N
             Gamma(i) = Gamma(i) + (A(j,l)*ESC(j,l)*RAD(j,l) + C(j,l)/GAP(j,l))*G(j)/(G(l)*WE(j))
-         end do
-      End DO
-      return
-   end subroutine loss
+       end do
+    End DO
+    return
+    end subroutine loss
 
 
 
    double precision function bright(flux,i,j)
 !     calculates brightness temperature
 !     enter with flux density in ERG/CM**2/SEC/HZ
-   integer i,j
-   double precision intensity,flux,arg,lambda
+      integer i,j
+      double precision intensity,flux,arg,lambda
 
 !     DIVIDE BY SOLID ANGLE OMEGA TO GET THE INTENSITY; FORGET FILAMENTS:
 !     IF (TAU(I,J).LT.0.) FLUX = FLUX/OMEGA
-    intensity = FLUX/fourpi
-    lambda = 1.d4*wl(i,j)
+      intensity = FLUX/fourpi
+      lambda = 1.d4*wl(i,j)
       BRIGHT = intensity*lambda**2/(2.*BK)
       IF (BRIGHT.GE.TIJ(I,J) .OR. BRIGHT.EQ.0.) RETURN
 !     Can't use the Rayleigh Jeans limit, so use full expression:
       ARG    = 2.*HPL*CL/(INTENSITY*LAMBDA**3)
-    BRIGHT = TIJ(I,J)/DLOG(1. + ARG)
+      BRIGHT = TIJ(I,J)/DLOG(1. + ARG)
       RETURN
    END function bright
 end module io_molpop

@@ -133,6 +133,7 @@ use constants_cep
 	integer :: ntran_output
 	integer, allocatable :: upper_output(:), lower_output(:), output_transition(:)
 	real(kind=8) :: mu_output
+	real(kind=8), allocatable :: infoOut(:,:,:)
 
 	integer :: n_columns_colliders
 	integer, allocatable :: collider_column(:)

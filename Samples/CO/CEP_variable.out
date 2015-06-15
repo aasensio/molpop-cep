@@ -1,4 +1,4 @@
-          *** MOLPOP-CEP; version of June 23, 2014 ***
+          *** MOLPOP-CEP; version of June 8, 2015 ***
 
 * CO with collision rates from Yang et al 2010
 * CEP solution for variable physical conditions
@@ -16,6 +16,9 @@
         Collision rates from data file DataBase/Coll/Yang_CO_H2p.kij
 
       Using file with physical conditions: Samples/CO/variable_conditions.dat
+ ******* WARNING: Energy levels go to 1049K while T is only    0K.
+         If you encounter numerical difficulties, consider
+         reducing the number of levels from  20 to around   1
       No considerations of dust absorption
       No considerations of Line Overlap
       No maser saturation effects

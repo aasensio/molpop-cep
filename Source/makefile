@@ -51,7 +51,7 @@ sol_molpop.o : sol_molpop.f90 maths_molpop.o global_molpop.o
 	$(COMPILER) $(OPTIONS) sol_molpop.f90
 cep_molpop_interface.o : cep_molpop_interface.f90 global_molpop.o
 	$(COMPILER) $(OPTIONS) cep_molpop_interface.f90
-sol_cep.o : sol_cep.f90 io_cep.o escape_cep.o functions_cep.o global_cep.o constants_cep.o
+sol_cep.o : sol_cep.f90 io_cep.o escape_cep.o functions_cep.o global_cep.o constants_cep.o io_molpop.o
 	$(COMPILER) $(OPTIONS) sol_cep.f90
 constants_cep.o : constants_cep.f90
 	$(COMPILER) $(OPTIONS) constants_cep.f90

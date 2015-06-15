@@ -82,9 +82,13 @@ PRINT CONTROL PARAMATERS
 
       information on each step (off or on)= on
       print detailed populations (off or on) = off
-%      Number of cooling lines to print = 0
     
+      Select transitions for detailed output:
       the number of transitions = 2
+      When any of these transitions is inverted, list its
+         maser pump parameters (off or on) = on
+         (this option is ignored in CEP calculations)
+         The transitions are: 
          
       i =  22      j =  21   (v eq 1, J eq 1 to 0)
       i =  23      j =  22   (v eq 2, J eq 1 to 1)                                       

@@ -11,30 +11,26 @@ __________________________________________________________________
 
 
 
-* CO with collision rates from Yang et al 2010
-* CEP solution for variable physical conditions
+* Sample run for ortho H2O 
 * These lines are echoed in the output because they start with a '*'
 *
 
-		Solution Method of Radiative Transfer (LVG / LVGPP / slab / CEP) = CEP
+		Solution Method of Radiative Transfer (LVG / LVGPP / slab / CEP) = sphere
       dlogV/dlogr = 1.0 (in effect only for LVG and LVGPP)
 
 		Data directory = DataBase      
-		Molecule = CO
-    Number of energy levels = 20
+		Molecule = H2O_ortho
+    Number of energy levels = 45
     vib_max =  0
 
-    Number of collision partners = 2
-         weight / column for CEP = 3
-                       data file = Yang_CO_H2o.kij
-            extrapolation option = sqrt(T)
+    Number of collision partners = 1
          weight / column for CEP = 1
-                       data file = Yang_CO_H2p.kij
+                       data file = H2Oo_H2.kij
             extrapolation option = sqrt(T)
 
-    File listing physical conditions = Samples/CO/variable_conditions.dat
-%    Gas Temperature = 100 K      
-%    n = 1.0e4 cm-3
+    File listing physical conditions = none
+    Gas Temperature = 500 K      
+    n = 5.0e8 cm-3
 
   Some special radiative transfer effects that are only implemented
   in escape probability calculations:
@@ -43,7 +39,7 @@ __________________________________________________________________
                            when not 0, dust absorption effects are included 
                            The following two input parameters are in effect 
                            only when the dust abundance is not 0
-    Molecular abundance = 1.d-4     
+    Molecular abundance = 2.d-4     
     linewidth = 1 km/sec 
 
     Line overlap (on/off) = off ;when ON, will use above linweidth
@@ -78,12 +74,12 @@ __________________________________________________________________
     Number of printings per decade                       = 4
     Max # of dimension steps allowed per decade          = 20
     Total number of steps allowed to reach Nmol_m        = 100
-	  Accuracy in solution of the equations                = 1.0e-2
+	  Accuracy in solution of the equations                = 1.0e-4
     Max # of iterations allowed to reach solution        = 50
    
   NUMERICS CONTROLS RELEVANT ONLY FOR CEP:
     CEP solution method (NEWTON/ALI) = NEWTON
-    Precision in grid CEP convergence (0 to ignore convergence) = 0.2
+    Precision in grid CEP convergence (0 to ignore convergence) = 1.d-1     
     Initial # of zones (relevant only if no file with phys. conditions) = 5   
     Angle of output intensity mu = 0.5
     
@@ -109,19 +105,17 @@ __________________________________________________________________
       Printing output for initial guess (off or on) = off
 
       information on each step (off or on)   = on
-      print detailed populations (off or on) = off
+      print detailed populations (off or on) = on
     
       Select transitions for detailed output:
-      the number of transitions (-1 for all transitions) = 5
-      When any of these transitions is inverted, list its
-         maser pump parameters (off or on) = on
+      the number of transitions (-1 for all transitions) = 3
+         When any of these transitions is inverted, list its
+         maser pump parameters (off or on) = off
          (this option is ignored in CEP calculations)
-         The transitions are: 
-       i =  2      j = 1
-		   i =  3      j = 2
-		   i =  4      j = 3
-		   i =  5      j = 4
-       i =  8      j = 7
+      The transitions are: 
+       i =  2      j =  1
+       i =  8      j =  7
+       i = 15      j = 14
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

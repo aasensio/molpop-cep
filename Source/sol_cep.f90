@@ -4,6 +4,7 @@ use global_cep
 use functions_cep
 use escape_cep
 use io_cep
+use io_molpop, only : finish
 implicit none
 contains
 
@@ -11,11 +12,13 @@ contains
 ! This routine calls the necessary routines to solve a problem with CEP
 !-----------------------------------------------
 	subroutine solve_with_cep(algorithm)
-	integer :: algorithm
+	integer :: algorithm, colIndex
 	real(kind=8) :: factor, previous_factor_abundance, step_factor_abundance, step_log, successful
 	real(kind=8) :: col_density_now
 	integer :: error
 	logical :: finished
+
+		colIndex = 1
 	
 ! CEP with Newton
 		if (algorithm == 3) then
@@ -45,6 +48,7 @@ contains
 		
 ! Initialization
    	call init
+
 		
 ! Precalculation of the beta and alpha functions
    	call precalculate_beta
@@ -107,7 +111,8 @@ contains
 		
 		call write_results		
 		
-		call write_intermediate_results(pop,popl)
+		! call write_intermediate_results(pop,popl)
+		call calculate_intermediate_results(pop,popl,colIndex)
 				
 ! Do the regridding to the original
 		call regrid(.TRUE.,.FALSE.)
@@ -174,7 +179,8 @@ contains
 					endif
 					successful = successful + 1
 					
-					call write_intermediate_results(pop,popl)
+					! call write_intermediate_results(pop,popl)
+					call calculate_intermediate_results(pop,popl,colIndex)
 				endif
 				
 ! If more than 5 successful steps, try to increase the column density step
@@ -189,10 +195,14 @@ contains
 				
 ! We have finished this problem. Regrid to the original grid
 				call regrid(.TRUE.,.TRUE.)
+
+				colIndex = colIndex + 1
 				
 			enddo
 		
 		endif
+
+		call finish(0)
 				
 		close(31)
 		close(32)

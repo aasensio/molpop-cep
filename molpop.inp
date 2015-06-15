@@ -19,17 +19,19 @@
 
 % CO with variable conditions. Grid refinement. Takes long time
 % Samples/CO/CEP_variable_convergence
+Samples/CO/CEP_const
 
 % CO with constant physical conditions, increasing strategy and grid convergence. Takes long time
 % Samples/CO/CEP_const
 
+%Samples/ME_tests/ortho_sphere
 
 %Samples/C+/C+_CEP
  
 %Samples/H2O/para
 %Samples/H2O/ortho
  
-Samples/OH/OH_overlap
+%Samples/OH/OH_overlap
 % Samples/OH/OH_old_dust
 
 
