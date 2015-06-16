@@ -59,11 +59,11 @@ above
 %           W = 0
 
     Dust radiation:
-           Dust tau at visual = 0.
-%           Dust tau at visual = 3.
-%           Dust temperature = 100 K
-%           Illumination from (left/right/both/internal) = internal
 %           Dust tau at visual = 0.
+           Dust tau at visual = 3.
+           Dust temperature = 100 K
+           Illumination from (left/right/both/internal) = internal
+           Dust tau at visual = 0.
 
      Radiation from file = none
 %           Type of entry for the bolometric scale (ENERGY_DEN/L&R) = L&R
