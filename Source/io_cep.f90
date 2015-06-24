@@ -705,7 +705,8 @@ contains
 ! 			deltaTBR = Tbr_I(dtran(2,it),intensity,tau(it,nz)/sqrt(PI))
 			call Tbr4I(dtran(2,it),intensity,tau(it,nz)/sqrt(PI),deltaTBR,deltaTBRJ)
 
-
+			final(1,colIndex) = radius
+			final(2,colIndex) = sum(dz * factor_abundance * nh)
 			final(3,colIndex) = column_density
 			final(4,colIndex) = sum(total_flux) / 1d23 / (column_density / maxval(dopplerw))
 			fin_tr(i,1,colIndex) = column_density
