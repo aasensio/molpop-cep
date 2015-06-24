@@ -1,8 +1,8 @@
 module io_cep
 use global_cep
-use global_molpop, only : freq_axis, fin_tr, nprint
+use global_molpop, only : freq_axis, fin_tr, nprint, final
 use maths_cep
-use maths_molpop, only : Tbr4I
+use maths_molpop, only : Tbr4I, Inv_plexp
 implicit none
 contains
 
@@ -213,26 +213,48 @@ contains
 		enddo
 
 ! Calculate the flux at each wavelength (Eq. (77) in the notes)			
-		do i = 1, size(freq_axis)
-			do ip = 1, nz
+! 		do i = 1, size(freq_axis)
+! 			do ip = 1, nz
+! 				f = freq_axis(i) * maxval(dopplerw(it,:)) / dopplerw(it,ip)				
+! ! 				line_profile = exp(-(freq_axis(i)/dopplerw(it,ip))**2) / sqrt(PI)
+! 				line_profile = exp(-f**2) / sqrt(PI)
+
+! ! Flux in the line
+! 				flux_out(1,i) = flux_out(1,i) + 2.d0 * PI / dopplerw(it,ip)	* abs(Sl(ip)) * &
+! 					(expint(3,abs(tau(it,nz)-tau(it,ip))*line_profile) - &
+! 					expint(3,abs(tau(it,ip)-tau(it,0))*line_profile) + &
+! 					expint(3,abs(tau(it,ip-1)-tau(it,0))*line_profile) - &
+! 					expint(3,abs(tau(it,nz)-tau(it,ip-1))*line_profile))									
+
+! ! Intensity at mu=1
+! 				flux_out(2,i) = flux_out(2,i) + Sl(ip) * ( exp(-(tau(it,nz)-tau(it,ip))*line_profile / (1.d0)) - &
+! 					exp(-(tau(it,nz)-tau(it,ip-1))*line_profile / (1.d0)) )
+! ! Intensity at the desired mu
+! 				flux_out(3,i) = flux_out(3,i) + Sl(ip) * ( exp(-(tau(it,nz)-tau(it,ip))*line_profile / (mu_output)) - &
+! 					exp(-(tau(it,nz)-tau(it,ip-1))*line_profile / (mu_output)) )
+! 			enddo
+! 		enddo
+
+		do ip = 1, nz
+			do i = 1, size(freq_axis)			
 				f = freq_axis(i) * maxval(dopplerw(it,:)) / dopplerw(it,ip)
-! 				line_profile = exp(-(freq_axis(i)/dopplerw(it,ip))**2) / sqrt(PI)
 				line_profile = exp(-f**2) / sqrt(PI)
 
-! Flux in the line
-				flux_out(1,i) = flux_out(1,i) + 2.d0 * PI * abs(Sl(ip)) * &
+! Flux in the line times the Doppler width so that we can later integrate over the reduced wavelength axis
+				flux_out(1,i) = flux_out(1,i) + 2.d0 * PI	* dopplerw(it,ip) * abs(Sl(ip)) * &
 					(expint(3,abs(tau(it,nz)-tau(it,ip))*line_profile) - &
 					expint(3,abs(tau(it,ip)-tau(it,0))*line_profile) + &
 					expint(3,abs(tau(it,ip-1)-tau(it,0))*line_profile) - &
-					expint(3,abs(tau(it,nz)-tau(it,ip-1))*line_profile))									
+					expint(3,abs(tau(it,nz)-tau(it,ip-1))*line_profile))
 
 ! Intensity at mu=1
 				flux_out(2,i) = flux_out(2,i) + Sl(ip) * ( exp(-(tau(it,nz)-tau(it,ip))*line_profile / (1.d0)) - &
-					exp(-(tau(it,nz)-tau(it,ip-1))*line_profile / (1.d0)) )
+					exp(-(tau(it,nz)-tau(it,ip-1))*line_profile / (1.d0)) ) * dopplerw(it,ip)
 ! Intensity at the desired mu
 				flux_out(3,i) = flux_out(3,i) + Sl(ip) * ( exp(-(tau(it,nz)-tau(it,ip))*line_profile / (mu_output)) - &
-					exp(-(tau(it,nz)-tau(it,ip-1))*line_profile / (mu_output)) )
+					exp(-(tau(it,nz)-tau(it,ip-1))*line_profile / (mu_output)) ) * dopplerw(it,ip)
 			enddo
+
 		enddo
 		
 		if (tau(it,nz) < 0.d0) then
@@ -465,7 +487,7 @@ contains
 ! 				freq_axis(ip) = (ip-1.d0) / 99.d0 * 2.d0 * freq_max - freq_max
 ! 			enddo
 			
-			call calcflux_cep(pop, flux_out, it)
+			! call calcflux_cep(pop, flux_out, it)
 			
 			total_flux(i) = int_tabulated(freq_axis * maxval(dopplerw(it,:)), flux_out(1,:))
 			total_intensity(i) = int_tabulated(freq_axis * maxval(dopplerw(it,:)), flux_out(2,:))
@@ -613,9 +635,18 @@ contains
 ! 			enddo
 			
 			call calcflux_cep(pop, flux_out, it)
-			
-			total_flux(i) = int_tabulated(freq_axis * maxval(dopplerw(it,:)), flux_out(1,:))
-			total_intensity(i) = int_tabulated(freq_axis * maxval(dopplerw(it,:)), flux_out(2,:))
+
+			! total_flux(i) = totFlux
+
+			total_flux(i) = 1.d23 * int_tabulated(freq_axis, flux_out(1,:)) / maxval(dopplerw(it,:))
+			total_intensity(i) = int_tabulated(freq_axis, flux_out(2,:)) / maxval(dopplerw(it,:))
+
+! Now
+! 1.d23 * int_tabulated(freq_axis, flux_out(1,:)) == 4.0*PI*1d23*flux_total(it+nr*(nz-1))
+! where flux_out(1,:) contains dopplerw so that we can just integrate over the reduced wavelength axix
+			! print *, total_flux(i), (4.0*PI*1d23*flux_total(it+nr*(nz-1))), total_flux(i) / (4.0*PI*1d23*flux_total(it+nr*(nz-1)))
+			! stop
+
 			
 ! Output in velocity [km/s] and emergent flux
 			write(32,FMT='(A,I3,A,I3)') 'Transition : ', itran(1,it), ' -> ', itran(2,it)
@@ -674,11 +705,14 @@ contains
 ! 			deltaTBR = Tbr_I(dtran(2,it),intensity,tau(it,nz)/sqrt(PI))
 			call Tbr4I(dtran(2,it),intensity,tau(it,nz)/sqrt(PI),deltaTBR,deltaTBRJ)
 
+
+			final(3,colIndex) = column_density
+			final(4,colIndex) = sum(total_flux) / 1d23 / (column_density / maxval(dopplerw))
 			fin_tr(i,1,colIndex) = column_density
 			fin_tr(i,2,colIndex) = 0.0
 			fin_tr(i,3,colIndex) = tau(it,nz)/sqrt(PI)
-			fin_tr(i,4,colIndex) = flux_total(it+nr*(nz-1)) * 4.d0*PI
-			fin_tr(i,5,colIndex) = (PC/dtran(2,i))**3 / (2.d0*PK*1d5) * total_intensity(i)
+			fin_tr(i,4,colIndex) = total_flux(i) !flux_total(it+nr*(nz-1)) * 4.d0*PI * 1.d23
+			fin_tr(i,5,colIndex) = PH * dtran(2,i) / (PK*Inv_plexp(PC**2 * total_intensity(i) / (2.d0*PH*dtran(2,i)**3)))!(PC/dtran(2,i))**3 / (2.d0*PK*1d5) * total_intensity(i)
 			fin_tr(i,6,colIndex) = 1e-3*intensity
 			fin_tr(i,7,colIndex) = deltaTBR
 			fin_tr(i,8,colIndex) = deltaTBRJ

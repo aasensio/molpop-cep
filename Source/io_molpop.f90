@@ -188,15 +188,10 @@ contains
         return
       endif
 
-<<<<<<< HEAD
 !     Check whether number of levels is too large for the temperature (do it here only for non-CEP calculations)
       if (kbeta < 3) then
         call check_num_levels(n,T)
       endif
-=======
-!     Check whether number of levels is too large for the temperature: 
-      call check_num_levels(n,T)
->>>>>>> fcf388e1a8ffa20271ce0a959ff4c138b8e346ee
 !_______________________________________________________________
 
 
@@ -1170,11 +1165,7 @@ contains
    subroutine finish(ier)
 !     Output summary of the run
       integer ier,i,j,k,unit,unit2,n1,n2,dn, n_cols
-<<<<<<< HEAD
       character*190 hdr, hdr2, hdrm, hdr2m, spc, hdrFinal, hdr2Final
-=======
-      character*190 hdr, hdr2, hdrm, hdr2m, spc
->>>>>>> fcf388e1a8ffa20271ce0a959ff4c138b8e346ee
 
       if(ier .eq.-1) write(16,"(/6x,'Terminated. Step size was ',1pe10.3/)") step
       if(ier .eq. 0) write(16,"(/6x,'Terminated. Number of steps reached',I5/)") Nmax
@@ -1255,7 +1246,6 @@ contains
          
         !Tabulation:
          n_cols  = basic_cols
-<<<<<<< HEAD
          hdrFinal = hdr
          hdr2Final = hdr2
          !additional tabulations, when desired, for inverted transitions:
@@ -1265,15 +1255,6 @@ contains
             hdr2Final = trim(hdr2)//spc(1:16+10*idust)//trim(hdr2m)
          end if          
          write(unit,'(/T5,a,/T3,a)') trim(hdrFinal), trim(hdr2Final)
-=======
-         !additional tabulations, when desired, for inverted transitions:
-         if (maser_prt .and. a_maser(j)) then
-            n_cols  = basic_cols + maser_cols
-            hdr  = trim(hdr)//spc(1:5+idust)//trim(hdrm)
-            hdr2 = trim(hdr2)//spc(1:16+10*idust)//trim(hdr2m)
-         end if          
-         write(unit,'(/T5,a,/T3,a)') trim(hdr), trim(hdr2)
->>>>>>> fcf388e1a8ffa20271ce0a959ff4c138b8e346ee
          do i = n1, n2, dn
             write(unit,'(15(ES10.2))') (fin_tr(j,k,i), k = 1, n_cols)
          end do
