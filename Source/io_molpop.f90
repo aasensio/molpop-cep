@@ -1214,6 +1214,9 @@ contains
       write (unit,"(T6, 'del(Tb) is obtained from (B is the Planck function):')")
       write (unit,"(T17,'B(del(Tb)) = I(observed) - B(Tcmb)')")
       write (unit,"(T6, 'del(TRJ) is obtained from the same with the RJ approximation for B')")
+      write (unit,"(T6, 'Excitation temperature is not part of the output in CEP')")
+      write (unit,"(T17, 'because it changes with position in the slab. The excitation temperature')")
+      write (unit,"(T17, 'will be placed in the file with extension CEP.texc for all column densities')")
       if (DustAbsorption) write (unit,"(T6, &
                         'Xdust is the fractional dust contribution to the line optical depth')")
       if (maser_prt) then
@@ -1223,8 +1226,13 @@ contains
       write(unit,"(' ***')")
 
      !Headres for the Tabulation:
-      hdr =  'Nmol      Tex       tau       Flux   int(Tb dv)   Io      del(Tb)   del(TRJ)'
-      hdr2='cm-2/kms     K                   Jy      K km/s  W/m2/Hz/st    K         K'
+      if (kbeta < 3) then
+        hdr =  'Nmol      tau       Flux   int(Tb dv)   Io      del(Tb)   del(TRJ)     Tex'
+        hdr2='cm-2/kms               Jy      K km/s  W/m2/Hz/st    K         K          K '
+      else
+        hdr =  'Nmol      tau       Flux   int(Tb dv)   Io      del(Tb)   del(TRJ)'
+        hdr2='cm-2/kms               Jy      K km/s  W/m2/Hz/st    K         K'
+      endif
       if (dustAbsorption) hdr = trim(hdr)//spc(1:4)//'Xdust'    
       !additional headers for maser pump parameters 
       hdrm = 'eta       p1        p2      Gamma1    Gamma2    Gamma'
@@ -1245,7 +1253,11 @@ contains
          write(unit,"(5x,'Lower Level: ',a)")ledet(jtr(j))
          
         !Tabulation:
-         n_cols  = basic_cols
+         if (kbeta < 3) then
+          n_cols  = basic_cols
+         else
+          n_cols = basic_cols - 1 
+         endif
          hdrFinal = hdr
          hdr2Final = hdr2
          !additional tabulations, when desired, for inverted transitions:
@@ -1335,14 +1347,14 @@ contains
          call simpson(100,1,100,freq_axis,1.0 - dexp(-(depth/mu_output)*exp(-freq_axis**2)),integral)
          call Tbr4Tx(Tl,Tex,depth,Tbr,TRJ)
 
-         fin_tr(k,1,nprint) = mcol
-         fin_tr(k,2,nprint) = Tex
-         fin_tr(k,3,nprint) = depth
-         fin_tr(k,4,nprint) = aux*cool(m(2),m(1))/freq(m(2),m(1))
-         fin_tr(k,5,nprint) = Tex*(vt/1.d5)*integral
-         fin_tr(k,6,nprint) = BB(nu,Tex)*(1. - dexp(-depth/mu_output))
-         fin_tr(k,7,nprint) = Tbr
-         fin_tr(k,8,nprint) = TRJ
+         fin_tr(k,1,nprint) = mcol         
+         fin_tr(k,2,nprint) = depth
+         fin_tr(k,3,nprint) = aux*cool(m(2),m(1))/freq(m(2),m(1))
+         fin_tr(k,4,nprint) = Tex*(vt/1.d5)*integral
+         fin_tr(k,5,nprint) = BB(nu,Tex)*(1. - dexp(-depth/mu_output))
+         fin_tr(k,6,nprint) = Tbr
+         fin_tr(k,7,nprint) = TRJ
+         fin_tr(k,8,nprint) = Tex
          if (dustAbsorption) fin_tr(k,9,nprint) = Xd(m(2),m(1))
          if (.not.maser_prt) cycle
 !        When not interested in maser pump rates, we're done 

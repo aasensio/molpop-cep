@@ -59,8 +59,10 @@ contains
 			STATUS='replace',ACTION='write')
 		open (UNIT=34,FILE=trim(adjustl(output_file))//'.CEP.slab',&
 			STATUS='replace',ACTION='write')
-		open (UNIT=35,FILE=trim(adjustl(output_file))//'.CEP.trad',&
+		open (UNIT=35,FILE=trim(adjustl(output_file))//'.CEP.texc',&
 			STATUS='replace',ACTION='write')
+
+		write(35,"(/T9,'*** SUMMARY ***')")
 
 ! If we start from optically thin, the system is linear. Solve it once	
 		if (start_mode == 1 .and. read_previous_flag /= 1) then
@@ -110,9 +112,10 @@ contains
 		successful = 0
 		
 		call write_results		
-		
-		! call write_intermediate_results(pop,popl)
+				
 		call calculate_intermediate_results(pop,popl,colIndex)
+
+		! call write_intermediate_results(pop,popl)
 				
 ! Do the regridding to the original
 		call regrid(.TRUE.,.FALSE.)

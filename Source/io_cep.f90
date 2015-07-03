@@ -1,6 +1,6 @@
 module io_cep
 use global_cep
-use global_molpop, only : freq_axis, fin_tr, nprint, final
+use global_molpop, only : freq_axis, fin_tr, nprint, final, itr, jtr, wl, freq, ledet
 use maths_cep
 use maths_molpop, only : Tbr4I, Inv_plexp
 implicit none
@@ -487,7 +487,7 @@ contains
 ! 				freq_axis(ip) = (ip-1.d0) / 99.d0 * 2.d0 * freq_max - freq_max
 ! 			enddo
 			
-			! call calcflux_cep(pop, flux_out, it)
+			call calcflux_cep(pop, flux_out, it)
 			
 			total_flux(i) = int_tabulated(freq_axis * maxval(dopplerw(it,:)), flux_out(1,:))
 			total_intensity(i) = int_tabulated(freq_axis * maxval(dopplerw(it,:)), flux_out(2,:))
@@ -613,7 +613,7 @@ contains
 	real(kind=8) :: x(:), xlte(:), column_density, total_radius
 	integer :: ii, ip, ipl, i, j, up, low, it, k, colIndex
 	real(kind=8) :: sig, glu, acon, chim, chip, tau0, deltaz, chilp, col_up, col_low
-	real(kind=8) :: sum, intensity, e1, e2, freq_max, deltaTBR, deltaTBRJ
+	real(kind=8) :: z, intensity, e1, e2, freq_max, deltaTBR, deltaTBRJ, columnH2, column
 	real(kind=8), allocatable :: flux_out(:,:), Slte(:), total_flux(:), total_intensity(:)
 	
 		column_density = sum(dz * factor_abundance * abundance * nh)
@@ -623,6 +623,17 @@ contains
 		allocate(flux_out(3,100))
 		allocate(total_flux(ntran_output))
 		allocate(total_intensity(ntran_output))
+
+! Write line fluxes
+		write(32,*)
+		write(32,*) '*******************************************************************************'
+		write(32,FMT='(A,1PE12.5,A,I4)') ' N(mol) [cm^-2]: ', column_density, '   -  nzones: ', nz
+		write(32,*) '*******************************************************************************'
+
+! Write excitation temperature
+		write(35,*) '**********************************************************'
+		write(35,FMT='(A,1PE12.5,A,I4)') ' N(mol) [cm^-2]: ', column_density, '    -  nzones: ', nz 
+		write(35,*) '**********************************************************'		
 						
 		do i = 1, ntran_output			
 			it = output_transition(i)
@@ -709,18 +720,45 @@ contains
 			final(2,colIndex) = sum(dz * factor_abundance * nh)
 			final(3,colIndex) = column_density
 			final(4,colIndex) = sum(total_flux) / 1d23 / (column_density / maxval(dopplerw))
-			fin_tr(i,1,colIndex) = column_density
-			fin_tr(i,2,colIndex) = 0.0
-			fin_tr(i,3,colIndex) = tau(it,nz)/sqrt(PI)
-			fin_tr(i,4,colIndex) = total_flux(i) !flux_total(it+nr*(nz-1)) * 4.d0*PI * 1.d23
-			fin_tr(i,5,colIndex) = PH * dtran(2,i) / (PK*Inv_plexp(PC**2 * total_intensity(i) / (2.d0*PH*dtran(2,i)**3)))!(PC/dtran(2,i))**3 / (2.d0*PK*1d5) * total_intensity(i)
-			fin_tr(i,6,colIndex) = 1e-3*intensity
-			fin_tr(i,7,colIndex) = deltaTBR
-			fin_tr(i,8,colIndex) = deltaTBRJ
+			fin_tr(i,1,colIndex) = column_density			
+			fin_tr(i,2,colIndex) = tau(it,nz)/sqrt(PI)
+			fin_tr(i,3,colIndex) = total_flux(i) !flux_total(it+nr*(nz-1)) * 4.d0*PI * 1.d23
+			fin_tr(i,4,colIndex) = PH * dtran(2,i) / (PK*Inv_plexp(PC**2 * total_intensity(i) / (2.d0*PH*dtran(2,i)**3)))!(PC/dtran(2,i))**3 / (2.d0*PK*1d5) * total_intensity(i)
+			fin_tr(i,5,colIndex) = 1e-3*intensity
+			fin_tr(i,6,colIndex) = deltaTBR
+			fin_tr(i,7,colIndex) = deltaTBRJ
+			fin_tr(i,8,colIndex) = 0.0
 
 			nprint = colIndex
 
+			if (1.0e-4*wl(itr(i),jtr(i)) .ge. 1) then
+            write(35,'(/5x,f8.3,'' cm ('',f7.3,'' GHz) transition between levels '',&
+                i2,'' and '', i2)') &
+                1.0e-4*wl(itr(i),jtr(i)),1.e-9*freq(itr(i),jtr(i)),itr(i), jtr(i)
+         else
+           write(35,'(/5x,f8.2,'' mic ('',f8.3,'' GHz) transition between levels '',&
+               i2,'' and '', i2)') &
+               wl(itr(i),jtr(i)),1.e-9*freq(itr(i),jtr(i)),itr(i), jtr(i)
+         end if
+         write(35,"(5x,'Upper Level: ',a)")ledet(itr(i))
+         write(35,"(5x,'Lower Level: ',a)")ledet(jtr(i))
+
+         write(35,FMT='(A)') '       z          N(H2)        N(mol)        T          Texc '
+         write(35,FMT='(A)') '       km         cm^-3        cm^-3         K            K '
+
+			z = 0.d00
+			columnH2 = 0.d0
+			column = 0.d0
+			do j = 1, nz
+				z = z + dz(j)
+				columnH2 = columnH2 + nh(j) * dz(j) * factor_abundance
+				column = column + nh(j) * dz(j) * abundance(i) * factor_abundance
+				write(35,FMT='(5(1P8E13.5))') z, columnH2, column, temperature(i), PHK*dtran(2,i)/log(1.d0+acon/Sl(j))
+			enddo
+
 		enddo
+
+		write(35,*)
 
 ! Write populations
 		write(31,*) '**********************************************************'

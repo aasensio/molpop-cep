@@ -16,9 +16,6 @@
         Collision rates from data file DataBase/Coll/Yang_CO_H2p.kij
 
       Using file with physical conditions: Samples/CO/variable_conditions.dat
- ******* WARNING: Energy levels go to 1049K while T is only    0K.
-         If you encounter numerical difficulties, consider
-         reducing the number of levels from  20 to around   1
       No considerations of dust absorption
       No considerations of Line Overlap
       No maser saturation effects
@@ -39,7 +36,7 @@
           19
  N. levels
           20
-
+ 
  ***********************
   Level information   
   index  g    Energy [cm^-1]  
@@ -64,7 +61,7 @@
  18   35.0    587.7209
  19   37.0    656.7892
  20   39.0    729.6774
-
+ 
  ***********************
   Transition information
   up  low  freq [GHz]  Aul [s^-1]  detailed (y/n)
@@ -88,17 +85,78 @@
  18   17   1956.019876   4.829000E-04    no                 
  19   18   2070.615543   5.695000E-04    no                 
  20   19   2185.133264   6.650000E-04    no                 
+ 
+
+      Terminated. Number of steps reached  100
 
 
- *******************************************************************************
- N(mol) [cm^-2]:  1.00000E+16   -  nzones:    5
- *******************************************************************************
-  up    low     tau (line center)     cooling         N(up)/N(low)    I_lc(mu= 0.500)   delta(Tb) [K]      del(TRJ) [K]    Int(Tb dv)    % emission
-                                                                        [W/m2/Hz/sr]        [K]               [K]           [K km/s]              
-   2     1      -2.20846E-02       0.00000E+00       3.14205E+00       2.25584E-17       7.99411E+00       5.54457E+00        4.8274            0.0000    
-   3     2       1.17647E-01       2.27929E-06       1.46583E+00       2.76415E-16       2.19759E+01       1.69060E+01        16.160            4.2933    
-   4     3       3.97398E-01       9.59291E-06       9.67793E-01       7.47480E-16       2.78115E+01       2.03341E+01        22.858            18.052    
-   5     4       5.62695E-01       1.91031E-05       6.74840E-01       1.07525E-15       2.59733E+01       1.64622E+01        20.181            35.928    
-   8     7       1.24726E-01       1.24789E-05       2.93385E-01       5.82527E-16       1.45578E+01       2.91388E+00        5.5418            23.447    
-   9     8       3.44919E-02       6.60809E-06       2.86243E-01       2.60144E-16       1.15949E+01       9.96473E-01        1.6094            12.413    
-  10     9       9.37855E-03       3.12319E-06       2.85723E-01       1.04913E-16       9.83352E+00       3.17595E-01       0.46825            5.8662    
+        *** SUMMARY ***
+
+        mol column     emission
+         cm-2/kms      erg/s/mol
+        1.000E+16      2.294E-19
+
+ *** Parameters for selected transitions
+     Io is the source line-center intensity at mu =  0.50 to slab face
+     del(Tb) is obtained from (B is the Planck function):
+                B(del(Tb)) = I(observed) - B(Tcmb)
+     del(TRJ) is obtained from the same with the RJ approximation for B
+     Excitation temperature is not part of the output in CEP
+                because it changes with position in the slab
+ ***
+
+      2600.78 mic ( 115.270 GHz) transition between levels  2 and  1
+     Upper Level: J =   1                                                                         
+     Lower Level: J =   0                                                                         
+
+    Nmol      tau       Flux   int(Tb dv)   Io      del(Tb)   del(TRJ)
+  cm-2/kms               Jy      K km/s  W/m2/Hz/st    K         K
+  1.00E+16 -2.21E-02  0.00E+00  7.24E+00  2.26E-17  7.99E+00  5.54E+00
+
+      1300.39 mic ( 230.540 GHz) transition between levels  3 and  2
+     Upper Level: J =   2                                                                         
+     Lower Level: J =   1                                                                         
+
+    Nmol      tau       Flux   int(Tb dv)   Io      del(Tb)   del(TRJ)
+  cm-2/kms               Jy      K km/s  W/m2/Hz/st    K         K
+  1.00E+16  1.18E-01  2.97E+11  2.12E+01  2.76E-16  2.20E+01  1.69E+01
+
+       866.96 mic ( 345.796 GHz) transition between levels  4 and  3
+     Upper Level: J =   3                                                                         
+     Lower Level: J =   2                                                                         
+
+    Nmol      tau       Flux   int(Tb dv)   Io      del(Tb)   del(TRJ)
+  cm-2/kms               Jy      K km/s  W/m2/Hz/st    K         K
+  1.00E+16  3.97E-01  8.33E+11  3.04E+01  7.47E-16  2.78E+01  2.03E+01
+
+       650.25 mic ( 461.039 GHz) transition between levels  5 and  4
+     Upper Level: J =   4                                                                         
+     Lower Level: J =   3                                                                         
+
+    Nmol      tau       Flux   int(Tb dv)   Io      del(Tb)   del(TRJ)
+  cm-2/kms               Jy      K km/s  W/m2/Hz/st    K         K
+  1.00E+16  5.63E-01  1.24E+12  2.99E+01  1.08E-15  2.60E+01  1.65E+01
+
+       371.65 mic ( 806.652 GHz) transition between levels  8 and  7
+     Upper Level: J =   7                                                                         
+     Lower Level: J =   6                                                                         
+
+    Nmol      tau       Flux   int(Tb dv)   Io      del(Tb)   del(TRJ)
+  cm-2/kms               Jy      K km/s  W/m2/Hz/st    K         K
+  1.00E+16  1.25E-01  4.64E+11  1.33E+01  5.83E-16  1.46E+01  2.91E+00
+
+       325.22 mic ( 921.802 GHz) transition between levels  9 and  8
+     Upper Level: J =   8                                                                         
+     Lower Level: J =   7                                                                         
+
+    Nmol      tau       Flux   int(Tb dv)   Io      del(Tb)   del(TRJ)
+  cm-2/kms               Jy      K km/s  W/m2/Hz/st    K         K
+  1.00E+16  3.45E-02  2.15E+11  9.91E+00  2.60E-16  1.16E+01  9.96E-01
+
+       289.12 mic (1036.910 GHz) transition between levels 10 and  9
+     Upper Level: J =   9                                                                         
+     Lower Level: J =   8                                                                         
+
+    Nmol      tau       Flux   int(Tb dv)   Io      del(Tb)   del(TRJ)
+  cm-2/kms               Jy      K km/s  W/m2/Hz/st    K         K
+  1.00E+16  9.38E-03  9.03E+10  8.28E+00  1.05E-16  9.83E+00  3.18E-01
