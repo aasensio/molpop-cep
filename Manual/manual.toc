@@ -7,14 +7,12 @@
 \contentsline {subsection}{\numberline {4.1}Solution Method}{6}{subsection.4.1}
 \contentsline {subsection}{\numberline {4.2}Molecular Database}{7}{subsection.4.2}
 \contentsline {subsection}{\numberline {4.3}The Molecule}{7}{subsection.4.3}
-\contentsline {subsection}{\numberline {4.4}Physical Conditions}{7}{subsection.4.4}
-\contentsline {subsection}{\numberline {4.5}Line Overlap}{9}{subsection.4.5}
-\contentsline {subsection}{\numberline {4.6}Maser Lines}{9}{subsection.4.6}
-\contentsline {subsection}{\numberline {4.7}Collision Rates}{9}{subsection.4.7}
-\contentsline {subsubsection}{\numberline {4.7.1}Tabulated Cross Sections}{9}{subsubsection.4.7.1}
-\contentsline {subsubsection}{\numberline {4.7.2}Hard-Sphere Collisions}{10}{subsubsection.4.7.2}
-\contentsline {subsubsection}{\numberline {4.7.3}SiO Rotation-Vibrations}{10}{subsubsection.4.7.3}
-\contentsline {subsection}{\numberline {4.8}External Radiation}{11}{subsection.4.8}
+\contentsline {subsection}{\numberline {4.4}Collision Rates}{8}{subsection.4.4}
+\contentsline {subsubsection}{\numberline {4.4.1}Tabulated Cross Sections}{8}{subsubsection.4.4.1}
+\contentsline {subsection}{\numberline {4.5}Physical Conditions}{8}{subsection.4.5}
+\contentsline {subsection}{\numberline {4.6}Line Overlap}{10}{subsection.4.6}
+\contentsline {subsection}{\numberline {4.7}Maser Lines}{10}{subsection.4.7}
+\contentsline {subsection}{\numberline {4.8}External Radiation}{10}{subsection.4.8}
 \contentsline {subsubsection}{\numberline {4.8.1}Diluted Blackbody}{11}{subsubsection.4.8.1}
 \contentsline {subsubsection}{\numberline {4.8.2}Single-Temperature Dust}{11}{subsubsection.4.8.2}
 \contentsline {subsubsection}{\numberline {4.8.3}Radiation Field from a File}{11}{subsubsection.4.8.3}

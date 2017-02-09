@@ -139,7 +139,12 @@ git clone https://github.com/aasensio/molpop-cep
 \end{verbatim}
 and the code will be downloaded on the \texttt{molpop-cep} directory in the
 current directory. An alternative way is by pressing the button ``Download ZIP''
-on the repository webpage and uncompress it. In any case, the MOLPOP-CEP directory
+on the repository webpage and uncompress it. If you clone it, you can always
+pull new changes that we make to the code by typing
+\begin{verbatim}
+git pull.
+\end{verbatim}
+In any case, the MOLPOP-CEP directory
 will contain the master input file \texttt{molpop.inp} (see below) and the
 following subdirectories:
 
@@ -278,6 +283,16 @@ from the calculation of the radiation field at each zone with the aid of eqs.\
 (\ref{eq:pi}) and the solution of the preconditioned linearized statistical
 equilibrium eqs.\ (\ref{eq:statis_equil_eq}).
 
+In the case of LVG calculations, you need to provide the expansion velocity
+instead of the local linewidth and one must specify an additional entry, the
+logarithmic velocity gradient:
+%
+\smallskip
+\begin{verbatim}
+     dlogV/dlogr = 1.0 (in effect only for LVG)
+\end{verbatim}
+
+
 \subsection{Molecular Database}
 
 Enter the path to the directory {\tt DataBase}, containing all the molecular
@@ -301,7 +316,8 @@ this number should not exceed the maximum listed in
 
 \vspace{\separation}
 \begin{verbatim}
-        Molecule = CO     Number of energy levels = 11
+        Molecule data file = CO     
+        Number of energy levels = 11
 \end{verbatim}
 Most listed molecules do not include vib-rot transitions, and the next entry in
 this case should be
@@ -321,6 +337,52 @@ described in \cite{lockett_elitzur92}.  The input is then
 \end{verbatim}
 where the third input parameter is the rotational constant in temperature
 units.
+
+\subsection{Collision Rates}
+\label{sec:collisions}
+
+As noted above (\ref{sec:physical}), the collision rate between any two levels
+is $nK_{ij}$, where $K_{ij}$ (cm$^3$\,s$^{-1}$) is the rate coefficient for the
+transition and $n$ is the overall density. \M\ can handle an arbitrary number
+of collisional parters. The contribution of each one to the overall collision
+rate is $fnK_{ij}$, where $f$ is the fractional contribution of the particular
+collider, i.e., $fn$ is the collider density (in cm$^{-3}$). These fractional
+abundances are entered as weight factors with arbitrary scale, and \M\ takes
+care that the normalizations add up to 1. It is also possible to scale each
+collisional rate independently by a factor so that it is possible to experiment
+what happens when one of the collisional partners is neglected or its
+collisional efficiency is increased by an arbitrary factor. There are a number
+of options for entering the individual rate coefficients $K_{ij}$ themselves.
+
+
+\subsubsection{Tabulated Cross Sections}
+
+Collision rates are input from tabulations in files. You need to specify
+the name of the data file listing the collisional rate between each pair of
+levels at a set of different temperatures; a file with this name must exist in
+subdirectory {\tt Coll} of the database directory specified in the second input
+entry (see \S\ref{sec:basecol} below). \M\ interpolates between these temperatures if the
+input value falls between two tabulated ones. If the prescribed temperature is
+outside the tabulated range, \M\ will extrapolate according to the selection
+made with the next keyword. When \texttt{CONST} is selected, \M\ will use the
+same value as the largest or smallest tabulated temperature, as appropriate.
+Selecting \texttt{SQRT(T)} invokes an extrapolation proportional to $\sqrt{T}$
+from the appropriate border. Example:
+
+\vspace{\separation}
+\begin{verbatim}
+            Number of collision partners = 2
+               weight / columns for CEP = 1
+                               data file = CO_H2o.kij
+        extrapolation (SQRT(T) or CONST) = sqrt(T)
+                weight / columns for CEP = 1
+                               data file = CO_H2p.kij
+        extrapolation (SQRT(T) or CONST) = sqrt(T)
+\end{verbatim}
+This input will produce collisions with an equal mix of ortho- and para-H$_2$,
+with collision rates from \cite{flower01}. The option \texttt{weight / columns for CEP}
+indicates the weighting applied to each individual collider. In case of CEP, you can
+select the column of the collider from the file.
 
 \subsection{Physical Conditions}
 \label{sec:physical}
@@ -384,14 +446,6 @@ and enter the physical conditions directly in the input file as follows:
      Molecular abundance (n_mol/n) = 1.0e-4
      Velocity = 1 km/sec (linewidth for slab)
 \end{verbatim}
-In the case of LVG calculations, the last entry becomes the expansion velocity
-instead of the local linewidth and one must specify an additional entry, the
-logarithmic velocity gradient:
-%
-\smallskip
-\begin{verbatim}
-     dlogV/dlogr = 1.0 (in effect only for LVG)
-\end{verbatim}
 You can use this input method for physical conditions also in the case of CEP
 calculations if the physical conditions in the slab are uniform.
 
@@ -400,6 +454,24 @@ calculations if the physical conditions in the slab are uniform.
 input {\em DOES NOT} contain the last four (or five) entries. You can leave
 them in the input file and just comment them out with the symbol {\tt \%}.
 \end{quote}
+
+There are some special radiative transfer effects that are only implemented
+in escape probability calculations:
+\begin{verbatim}
+    Dust properties file = DataBase/Standard_ISM.dat
+    Dust abundance = 0.    relative to standard ISM abundance; 
+                           when not 0, dust absorption effects are included 
+                           The following two input parameters are in effect 
+                           only when the dust abundance is not 0
+\end{verbatim}
+
+Then, you need to provide the molecular abundance and the linewidth:
+\begin{verbatim}
+     Molecular abundance (n_mol/n) = 1.0e-4
+     Velocity = 1 km/sec (linewidth for slab)
+\end{verbatim}
+You can use this input method for physical conditions also in the case of CEP
+calculations if the physical conditions in the slab are uniform.
 
 \subsection{Line Overlap}
 Photons generated in a certain transition can be sometimes absorbed in another
@@ -410,7 +482,7 @@ can handle this effect only when invoked in the escape probability mode (\LVG\
 or \slab). The method of calculation is described in \cite{lockett_elitzur89}.
 To invoke this calculation use \vspace{\separation}
 \begin{verbatim}
-        overlap = on
+        Line overlap (on/off) = on
 \end{verbatim}
 For example, the input file \texttt{Samples/OH/Offer\_rates.inp} carries out a
 calculation taking into account the effect of line overlap. Otherwise, enter
@@ -425,7 +497,7 @@ determines whether the effect of the maser radiation on the level populations
 
 \vspace{\separation}
 \begin{verbatim}
-        Include maser saturation (yes/no) = no
+        Maser saturation (on/off) = no
 \end{verbatim}
 Selecting {\tt yes} invokes an escape probability calculation for the
 saturation effect \citep[see \S 5.3 in][]{elitzur92}. This calculation can be
@@ -436,89 +508,38 @@ emission from the standard phenomenological maser model (see \S\ref{sec:output} 
 
 
 
-\subsection{Collision Rates}
-\label{sec:collisions}
 
-As noted above (\ref{sec:physical}), the collision rate between any two levels
-is $nK_{ij}$, where $K_{ij}$ (cm$^3$\,s$^{-1}$) is the rate coefficient for the
-transition and $n$ is the overall density. \M\ can handle an arbitrary number
-of collisional parters. The contribution of each one to the overall collision
-rate is $fnK_{ij}$, where $f$ is the fractional contribution of the particular
-collider, i.e., $fn$ is the collider density (in cm$^{-3}$). These fractional
-abundances are entered as weight factors with arbitrary scale, and \M\ takes
-care that the normalizations add up to 1. It is also possible to scale each
-collisional rate independently by a factor so that it is possible to experiment
-what happens when one of the collisional partners is neglected or its
-collisional efficiency is increased by an arbitrary factor. There are a number
-of options for entering the individual rate coefficients $K_{ij}$ themselves.
+% \subsubsection{Hard-Sphere Collisions}
 
+% This collision law, invoked with the keyword \texttt{HARD\_SPHERE} is available
+% for all molecules. In this analytic approximation, all downward collision rate
+% per sub-level are equal to the the same value $\sigma v_{\rm T}$, where
+% $\sigma$ is a common input cross section and $v_{\rm T}$ is the local thermal
+% speed. The sample input file \texttt{OH/Hard\_Sphere.inp} is an example:
 
-\subsubsection{Tabulated Cross Sections}
+% \vspace{\separation}
+% \begin{verbatim}
+%             Number of collision partners = 1
+%                                   weight = 1
+%                   collision rates option = hard_sphere
+%                                x-section = 1.e-15 cm^2
+%                           scaling factor = 1.0
+% \end{verbatim}
 
-The most common entry of collision rates is from tabulations in files; this
-option is selected with the keyword \texttt{TABLE}. The next entry specifies
-the name of the data file listing the collisional rate between each pair of
-levels at a set of different temperatures; a file with this name must exist in
-subdirectory {\tt Coll} of the database directory specified in the second input
-entry (see \S\ref{sec:basecol} below). \M\ interpolates between these temperatures if the
-input value falls between two tabulated ones. If the prescribed temperature is
-outside the tabulated range, \M\ will extrapolate according to the selection
-made with the next keyword. When \texttt{CONST} is selected, \M\ will use the
-same value as the largest or smallest tabulated temperature, as appropriate.
-Selecting \texttt{SQRT(T)} invokes an extrapolation proportional to $\sqrt{T}$
-from the appropriate border. Example:
+% \subsubsection{SiO Rotation-Vibrations}
 
-\vspace{\separation}
-\begin{verbatim}
-            Number of collision partners = 2
-               weight / columns for CEP = 1
-                  collision rates option = table
-                               data file = CO_H2o.kij
-        extrapolation (SQRT(T) or CONST) = sqrt(T)
-                          scaling factor = 1.0
-                weight / columns for CEP = 1
-                  collision rates option = table
-                               data file = CO_H2p.kij
-        extrapolation (SQRT(T) or CONST) = sqrt(T)
-                          scaling factor = 1.0
-\end{verbatim}
-This input will produce collisions with an equal mix of ortho- and para-H$_2$,
-with collision rates from \cite{flower01}. The option \texttt{weight / columns for CEP}
-indicates the weighting applied to each individual collider. In case of CEP, you can
-select the column of the collider from the file.
+% This collision law, invoked with the keyword \texttt{SiO\_ROVIB} is available
+% only for SiO. It involves SiO excitations in collisions with H$_2$, using the
+% approximate theory of \cite{bieniek_green83}. This option is utilized in the sample
+% input file \texttt{SiO/SiO.inp}:
 
-
-\subsubsection{Hard-Sphere Collisions}
-
-This collision law, invoked with the keyword \texttt{HARD\_SPHERE} is available
-for all molecules. In this analytic approximation, all downward collision rate
-per sub-level are equal to the the same value $\sigma v_{\rm T}$, where
-$\sigma$ is a common input cross section and $v_{\rm T}$ is the local thermal
-speed. The sample input file \texttt{OH/Hard\_Sphere.inp} is an example:
-
-\vspace{\separation}
-\begin{verbatim}
-            Number of collision partners = 1
-                                  weight = 1
-                  collision rates option = hard_sphere
-                               x-section = 1.e-15 cm^2
-                          scaling factor = 1.0
-\end{verbatim}
-
-\subsubsection{SiO Rotation-Vibrations}
-
-This collision law, invoked with the keyword \texttt{SiO\_ROVIB} is available
-only for SiO. It involves SiO excitations in collisions with H$_2$, using the
-approximate theory of \cite{bieniek_green83}. This option is utilized in the sample
-input file \texttt{SiO/SiO.inp}:
-
-\vspace{\separation}
-\begin{verbatim}
-            Number of collision partners = 1
-                                  weight = 1
-                  collision rates option = SiO_ROVIB
-                          scaling factor = 1.0
-\end{verbatim}
+% \vspace{\separation}
+% \begin{verbatim}
+%             Number of collision partners = 1
+%                                   weight = 1
+%                   collision rates option = SiO_ROVIB
+%                           scaling factor = 1.0
+% \end{verbatim}
 
 
 
