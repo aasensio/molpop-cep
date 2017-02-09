@@ -19,7 +19,7 @@ __________________________________________________________________
       dlogV/dlogr = 1.0 (in effect only for LVG and LVGPP)
 
 		Data directory = DataBase      
-		Molecule = CO
+		Molecule data file = CO
     Number of energy levels = 20
     vib_max =  0
 

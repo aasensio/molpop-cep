@@ -27,6 +27,7 @@ contains
   logical iequal, error, UCASE,NoCase, stat, norm
   integer LMeth, LOpt, nradiat, ComingFrom, n_modified
   character*72 TableName, TableInfo
+  character*128 fn_lev
   data UCASE/.TRUE./, NoCase/.FALSE./   
 
 !     start reading with negative unit to clean residual info in rdinps
@@ -133,14 +134,15 @@ contains
          mol_const = rdinp(iequal,15,16)
       endif
 
+      call attach2(mol_name, '.molecule', fn_lev)
+
       do unit = 16, unit2
-         write(unit,"(6x,'Molecule --- ',a)")s_mol(1:L)
+         write(unit,"(6x,'Molecule data file --- ',a)")fn_lev !s_mol(1:L)         
          write(unit,"(6x,'Number of levels = ',I2)")n
          write(unit,"(/,8x,'Collision information:')")
       end do
 !     Read collisional partners
       call read_collisions(iequal)
-
 
 ! Read the filename with the spatial variation of the physical conditions
 ! If "none", then use the standard inputs given by nH2 and T
@@ -177,6 +179,10 @@ contains
 !     Load molecular data:
       call data(error)
       if (error) return
+
+      do unit = 16, unit2
+        write(unit,"(6x,'Molecule --- ',a)") trim(adjustl(molecular_species))
+      enddo
 
 !     Test whether the desired number of levels is larger than the number of tabulated levels
       if (n .gt. N_max) then
@@ -946,11 +952,13 @@ contains
 
   subroutine data(error)
 !     Get molecular data: level properties and Einstein A-coefficients
+  use global_molpop
   character*80 line
-  character*128 fn_lev,fn_aij
+  character*128 fn_lev,fn_aij  
   integer i,j,in,k,l,ii,i1,j1,i2,j2
   double precision aux, temp
   logical error, stat
+
 
 !     molecular data
 !
@@ -983,6 +991,8 @@ contains
          stop
       endif
     open(4, err=800, file=fn_lev, status='unknown')
+    call Pass_Header(4)
+    read(4,*) molecular_species
     call Pass_Header(4)
     read(4,*) N_max, mol_mass
     call Pass_Header(4)

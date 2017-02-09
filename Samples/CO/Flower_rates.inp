@@ -2,7 +2,7 @@
 * These lines are echoed in the output because they start with a '*'
 * Instructions for data input are found at the end of the input file		
 		Method (LVG, slab, LVGPP, CEP) = CEP
-		Molecule = CO
+		Molecule data file = CO
 		Data directory = DataBase      
       Number of energy levels = 11
       vib_max =  0

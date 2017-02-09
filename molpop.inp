@@ -15,12 +15,12 @@
 %Samples/CO/Rad3
 
 % CO with variable conditions. No grid refinement
-Samples/CO/CEP_variable
+%Samples/CO/CEP_variable
 
 % CO with variable conditions. Grid refinement. Takes long time
 % Samples/CO/CEP_variable_convergence
-Samples/CO/CEP_const
-Samples/CO/SLED_nE4_T100
+%Samples/CO/CEP_const
+%Samples/CO/SLED_nE4_T100
 
 % CO with constant physical conditions, increasing strategy and grid convergence. Takes long time
 % Samples/CO/CEP_const
@@ -29,12 +29,11 @@ Samples/CO/SLED_nE4_T100
 
 %Samples/C+/C+_CEP
  
-%Samples/H2O/para
-%Samples/H2O/ortho
+Samples/H2O/para
+Samples/H2O/ortho
  
 %Samples/OH/OH_overlap
 % Samples/OH/OH_old_dust
-
 
 
 

@@ -48,7 +48,7 @@ implicit none
 
 
    logical l_mol_part,l_mol_ROT 
-   character*32  mol_name,s_mol
+   character*32  mol_name,s_mol, molecular_species
    integer i_mol, N_max
    real(kind=8) mol_mass,mol_d
 

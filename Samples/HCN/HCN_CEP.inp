@@ -20,7 +20,7 @@ __________________________________________________________________
 %     The file "name.molecule" has the energy levels and A-coefficients
 %
       Data directory = DataBase      
-      Molecule = HCN
+      Molecule data file = HCN
       Number of energy levels = 15
       vib_max =  0
 %

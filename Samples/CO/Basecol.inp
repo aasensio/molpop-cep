@@ -2,7 +2,7 @@
 * These lines are echoed in the output because they start with a '*'
 * Instructions for data input are found at the end of the input file		
 		Method (LVG, slab, LVGPP, CEP) = slab
-		Molecule = CO_rotation
+		Molecule data file = CO_rotation
 		Data directory = DataBase_Basecol      
       Number of energy levels = 11
       vib_max =  0

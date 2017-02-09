@@ -19,7 +19,7 @@ __________________________________________________________________
       dlogV/dlogr = 1.0 (in effect only for LVG and LVGPP)
 
 		Data directory = DataBase      
-		Molecule = H2O_para
+		Molecule data file = H2O_para
     Number of energy levels = 45
     vib_max =  0
 
