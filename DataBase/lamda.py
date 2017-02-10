@@ -10,8 +10,6 @@ try:
 except:
 	from urllib import urlopen
 
-from ipdb import set_trace as stop
-
 class AnchorParser(HTMLParser):
 	def __init__(self, verbose, datafiles):
 		HTMLParser.__init__(self)		
