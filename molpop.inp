@@ -7,12 +7,13 @@
 %   the same name in subdireectory OutpuTest
 %
 
+%Samples/HCN/HCNvib_LVGradiationtest
 
-%Samples/CO/no_dust
-%Samples/CO/dust_absorption
-%Samples/CO/Rad1
-%Samples/CO/Rad2
-%Samples/CO/Rad3
+Samples/CO/no_dust
+Samples/CO/dust_absorption
+Samples/CO/Rad1
+Samples/CO/Rad2
+Samples/CO/Rad3
 
 % CO with variable conditions. No grid refinement
 %Samples/CO/CEP_variable
@@ -29,11 +30,13 @@
 
 %Samples/C+/C+_CEP
  
-Samples/H2O/para
-Samples/H2O/ortho
+%Samples/H2O/para
+%Samples/H2O/ortho
  
 %Samples/OH/OH_overlap
 % Samples/OH/OH_old_dust
+
+Samples/SiO/SiO
 
 
 

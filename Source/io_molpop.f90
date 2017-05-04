@@ -128,11 +128,20 @@ contains
       allocate(Xd(n,n))           ; Xd           = 0.
 
 !     Is there a correction for finite number of rotation levels in ground vib state?
-      vib_max = rdinp(iequal,15,16)
-      if (vib_max .gt. 0) then
-         j_max     = rdinp(iequal,15,16)
-         mol_const = rdinp(iequal,15,16)
+      call rdinps2(iequal,15,str,L,UCASE)
+      if(str(1:L) .eq. 'OFF') then
+          j_max = -1          
       endif
+      if(str(1:L) .eq. 'ON') then
+        j_max     = rdinp(iequal,15,16)
+      endif
+
+
+      ! vib_max = rdinp(iequal,15,16)
+      ! if (vib_max .gt. 0) then
+      !    j_max     = rdinp(iequal,15,16)
+      !    mol_const = rdinp(iequal,15,16)
+      ! endif
 
       call attach2(mol_name, '.molecule', fn_lev)
 
@@ -148,6 +157,8 @@ contains
 ! If "none", then use the standard inputs given by nH2 and T
       auxiliary_functions = 'KROLIK-MCKEE'
       call rdinps2(iequal,15,file_physical_conditions,L2,Nocase)
+
+      print *, file_physical_conditions
       if (trim(adjustl(to_upper(file_physical_conditions))) /= 'NONE') then
          if (kbeta < 3) then
             WRITE (16,*)' *** Cannot use varying physical conditions with escape probability'
@@ -177,7 +188,7 @@ contains
 !_______________________________________________________________
 
 !     Load molecular data:
-      call data(error)
+      call data(error, mol_const)
       if (error) return
 
       do unit = 16, unit2
@@ -686,7 +697,7 @@ contains
 
 !     Finish up: renormalize density with the partition function when needed
 !
-      if(vib_max .gt. 0) then
+      if(j_max .ne. -1) then
           write(16,*)'Correct for Finite Number of Rotational Levels'
           write(16,*)'Using Method of Lockett & Elitzur,ApJ,399,704'
           write(16,"(' Original Molecular Density = ',1pe9.2)") nmol
@@ -950,13 +961,13 @@ contains
   end subroutine print_mol_data
   
 
-  subroutine data(error)
+  subroutine data(error, mol_const)
 !     Get molecular data: level properties and Einstein A-coefficients
   use global_molpop
   character*80 line
   character*128 fn_lev,fn_aij  
   integer i,j,in,k,l,ii,i1,j1,i2,j2
-  double precision aux, temp
+  double precision aux, temp, mol_const
   logical error, stat
 
 
@@ -999,6 +1010,9 @@ contains
     do i=1,n
        read(4,*,end=5) in,g(i),fr(i),ledet(i)
     end do
+
+! Rotational constant in K, used for Lockett correction
+    mol_const = 0.5 * (fr(2) - fr(1)) * 1.4388    
 
       do i=1,n
           if(i .gt. 1) then

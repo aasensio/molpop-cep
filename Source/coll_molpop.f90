@@ -51,6 +51,8 @@ contains
 !        	call rdinps2(iequal,15,Method,LMeth,UCASE)
 			
 !        	if (Method(1:LMeth) .eq. 'TABLE') then
+
+        print *, Method(1:LMeth)
         	if (.true.) then
         		call rdinps(iequal,15,fn_kij(i))
         		call rdinps2(iequal,15,Option,LOpt,UCASE) 
@@ -196,7 +198,8 @@ contains
       end do
 		
       do l=1,n_col			
-      	select case (i_col_src(l))
+        print *, l, i_col_src(l)
+      	select case (i_col_src(l))          
       		case(1)
       			call loadcij_norm_table(fn_kij(l),fr_col(l),i_col_exsub(l),gxsec(l))
       		case(2)

@@ -22,7 +22,7 @@ __________________________________________________________________
 		Data directory = DataBase      
 		Molecule data file = CO
     Number of energy levels = 20
-    vib_max =  0
+    rot_correction =  off
 
     Number of collision partners = 2
          weight / column for CEP = 3

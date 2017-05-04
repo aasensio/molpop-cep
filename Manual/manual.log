@@ -1,14 +1,14 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=latex 2015.9.23)  9 FEB 2017 10:26
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=latex 2016.4.12)  4 MAY 2017 11:40
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **manual
 (./manual.tex
-LaTeX2e <2015/01/01> patch level 2
-Babel <3.9m> and hyphenation patterns for 79 languages loaded.
-(/usr/local/texlive/2015/texmf-dist/tex/latex/base/article.cls
+LaTeX2e <2016/03/31>
+Babel <3.9q> and hyphenation patterns for 52 language(s) loaded.
+(/usr/pkg/teTeX/texlive/2015/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
-(/usr/local/texlive/2015/texmf-dist/tex/latex/base/size12.clo
+(/usr/pkg/teTeX/texlive/2015/texmf-dist/tex/latex/base/size12.clo
 File: size12.clo 2014/09/29 v1.4h Standard LaTeX file (size option)
 )
 \c@part=\count79
@@ -23,21 +23,22 @@ File: size12.clo 2014/09/29 v1.4h Standard LaTeX file (size option)
 \belowcaptionskip=\skip42
 \bibindent=\dimen102
 )
-(/usr/local/texlive/2015/texmf-dist/tex/latex/natbib/natbib.sty
+(/usr/pkg/teTeX/texlive/2015/texmf-dist/tex/latex/natbib/natbib.sty
 Package: natbib 2010/09/13 8.31b (PWD, AO)
 \bibhang=\skip43
 \bibsep=\skip44
 LaTeX Info: Redefining \cite on input line 694.
 \c@NAT@ctr=\count87
 )
-(/usr/local/texlive/2015/texmf-dist/tex/latex/hyperref/hyperref.sty
+(/usr/pkg/teTeX/texlive/2015/texmf-dist/tex/latex/hyperref/hyperref.sty
 Package: hyperref 2012/11/06 v6.83m Hypertext links for LaTeX
 
-(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/hobsub-hyperref.sty
+(/usr/pkg/teTeX/texlive/2015/texmf-dist/tex/generic/oberdiek/hobsub-hyperref.st
+y
 Package: hobsub-hyperref 2012/05/28 v1.13 Bundle oberdiek, subset hyperref (HO)
 
 
-(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/hobsub-generic.sty
+(/usr/pkg/teTeX/texlive/2015/texmf-dist/tex/generic/oberdiek/hobsub-generic.sty
 Package: hobsub-generic 2012/05/28 v1.13 Bundle oberdiek, subset generic (HO)
 Package: hobsub 2012/05/28 v1.13 Construct package bundles (HO)
 Package: infwarerr 2010/04/08 v1.3 Providing info/warning/error messages (HO)
@@ -77,30 +78,29 @@ Package atveryend Info: \enddocument detected (standard20110627).
 Package: atbegshi 2011/10/05 v1.16 At begin shipout hook (HO)
 Package: refcount 2011/10/16 v3.4 Data extraction from label references (HO)
 Package: hycolor 2011/01/30 v1.7 Color options for hyperref/bookmark (HO)
-)
-(/usr/local/texlive/2015/texmf-dist/tex/latex/graphics/keyval.sty
+) (/usr/pkg/teTeX/texlive/2015/texmf-dist/tex/latex/graphics/keyval.sty
 Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
 \KV@toks@=\toks14
 )
-(/usr/local/texlive/2015/texmf-dist/tex/generic/ifxetex/ifxetex.sty
+(/usr/pkg/teTeX/texlive/2015/texmf-dist/tex/generic/ifxetex/ifxetex.sty
 Package: ifxetex 2010/09/12 v0.6 Provides ifxetex conditional
 )
-(/usr/local/texlive/2015/texmf-dist/tex/latex/oberdiek/auxhook.sty
+(/usr/pkg/teTeX/texlive/2015/texmf-dist/tex/latex/oberdiek/auxhook.sty
 Package: auxhook 2011/03/04 v1.3 Hooks for auxiliary files (HO)
 )
-(/usr/local/texlive/2015/texmf-dist/tex/latex/oberdiek/kvoptions.sty
+(/usr/pkg/teTeX/texlive/2015/texmf-dist/tex/latex/oberdiek/kvoptions.sty
 Package: kvoptions 2011/06/30 v3.11 Key value format for package options (HO)
 )
 \@linkdim=\dimen103
 \Hy@linkcounter=\count88
 \Hy@pagecounter=\count89
 
-(/usr/local/texlive/2015/texmf-dist/tex/latex/hyperref/pd1enc.def
+(/usr/pkg/teTeX/texlive/2015/texmf-dist/tex/latex/hyperref/pd1enc.def
 File: pd1enc.def 2012/11/06 v6.83m Hyperref: PDFDocEncoding definition (HO)
 )
 \Hy@SavedSpaceFactor=\count90
 
-(/usr/local/texlive/2015/texmf-dist/tex/latex/latexconfig/hyperref.cfg
+(/usr/pkg/teTeX/texlive/2015/texmf-dist/tex/latex/latexconfig/hyperref.cfg
 File: hyperref.cfg 2002/06/06 v1.2 hyperref configuration of TeXLive
 )
 Package hyperref Info: Hyper figures OFF on input line 4443.
@@ -112,7 +112,7 @@ Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
 Package hyperref Info: Bookmarks ON on input line 4688.
 \c@Hy@tempcnt=\count91
 
-(/usr/local/texlive/2015/texmf-dist/tex/latex/url/url.sty
+(/usr/pkg/teTeX/texlive/2015/texmf-dist/tex/latex/url/url.sty
 \Urlmuskip=\muskip10
 Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 )
@@ -137,14 +137,14 @@ LaTeX Info: Redefining \pageref on input line 6369.
 
 Package hyperref Message: Driver: hypertex.
 
-(/usr/local/texlive/2015/texmf-dist/tex/latex/hyperref/hypertex.def
+(/usr/pkg/teTeX/texlive/2015/texmf-dist/tex/latex/hyperref/hypertex.def
 File: hypertex.def 2012/11/06 v6.83m Hyperref driver for HyperTeX specials
 \Hy@SectionHShift=\skip45
 )
-(/usr/local/texlive/2015/texmf-dist/tex/generic/dirtree/dirtree.sty
+(/usr/pkg/teTeX/texlive/2015/texmf-dist/tex/generic/dirtree/dirtree.sty
 Package: dirtree 2012/12/11 v0.32 package wrapper for dirtree
 
-(/usr/local/texlive/2015/texmf-dist/tex/generic/dirtree/dirtree.tex
+(/usr/pkg/teTeX/texlive/2015/texmf-dist/tex/generic/dirtree/dirtree.tex
 `dirtree' v0.32, 2012/12/11 (jcc)
 \DT@offset=\dimen107
 \DT@width=\dimen108
@@ -182,10 +182,10 @@ LaTeX Font Info:    ... okay on input line 61.
 \AtBeginShipoutBox=\box26
 Package hyperref Info: Link coloring OFF on input line 61.
 
-(/usr/local/texlive/2015/texmf-dist/tex/latex/hyperref/nameref.sty
+(/usr/pkg/teTeX/texlive/2015/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
 
-(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
+(/usr/pkg/teTeX/texlive/2015/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
 Package: gettitlestring 2010/12/03 v1.4 Cleanup title references (HO)
 )
 \c@section@level=\count100
@@ -197,8 +197,7 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <14.4> on input line 74.
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <7> on input line 74.
-
-(./manual.toc
+ (./manual.toc
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <12> on input line 4.
 LaTeX Font Info:    External font `cmex10' loaded for size
@@ -215,67 +214,67 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 LaTeX Font Info:    Try loading font information for OMS+cmr on input line 312.
 
 
-(/usr/local/texlive/2015/texmf-dist/tex/latex/base/omscmr.fd
+(/usr/pkg/teTeX/texlive/2015/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <12> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 312.
  [7] [8]
-Overfull \hbox (55.12027pt too wide) in paragraph at lines 422--422
+Overfull \hbox (55.12027pt too wide) in paragraph at lines 421--421
 []  \OT1/cmtt/m/n/12 Width          n          T       Abundance     Linewidth 
      n(o-H2)/n  n(p-H2)/n[] 
  []
 
 
-Overfull \hbox (30.42026pt too wide) in paragraph at lines 422--422
+Overfull \hbox (30.42026pt too wide) in paragraph at lines 421--421
 []   \OT1/cmtt/m/n/12 2.d15       1.d4       100.d0      1.d-4          1.d0   
       0.75       0.25[] 
  []
 
 
-Overfull \hbox (30.42026pt too wide) in paragraph at lines 422--422
+Overfull \hbox (30.42026pt too wide) in paragraph at lines 421--421
 []   \OT1/cmtt/m/n/12 2.d15       1.d4       110.d0      1.d-4          1.d0   
       0.75       0.25[] 
  []
 
 
-Overfull \hbox (30.42026pt too wide) in paragraph at lines 422--422
+Overfull \hbox (30.42026pt too wide) in paragraph at lines 421--421
 []   \OT1/cmtt/m/n/12 2.d15       1.d4       120.d0      1.d-4          1.d0   
       0.75       0.25[] 
  []
 
 
-Overfull \hbox (30.42026pt too wide) in paragraph at lines 422--422
+Overfull \hbox (30.42026pt too wide) in paragraph at lines 421--421
 []   \OT1/cmtt/m/n/12 2.d15       1.d4       110.d0      1.d-4          1.d0   
       0.75       0.25[] 
  []
 
 
-Overfull \hbox (30.42026pt too wide) in paragraph at lines 422--422
+Overfull \hbox (30.42026pt too wide) in paragraph at lines 421--421
 []   \OT1/cmtt/m/n/12 2.d15       1.d4       100.d0      1.d-4          1.d0   
       0.75       0.25[] 
  []
 
 [9] [10] [11]
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 653.
+(Font)              <5> on input line 659.
  [12] [13] [14] [15] [16] [17] [18] [19] [20] [21] [22] [23]
 [24]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1388.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1394.
  [25]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1388.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1394.
  (./manual.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 1388.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 1388.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1388.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 1394.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 1394.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1394.
  ) 
 Here is how much of TeX's memory you used:
- 4583 strings out of 493092
- 67781 string characters out of 6134990
- 150765 words of memory out of 5000000
- 8080 multiletter control sequences out of 15000+600000
+ 4583 strings out of 493651
+ 67965 string characters out of 6151148
+ 149536 words of memory out of 5000000
+ 8094 multiletter control sequences out of 15000+600000
  10414 words of font info for 37 fonts, out of 8000000 for 9000
- 1141 hyphenation exceptions out of 8191
- 29i,11n,22p,217b,435s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 783 hyphenation exceptions out of 8191
+ 29i,11n,22p,217b,437s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on manual.dvi (25 pages, 95812 bytes).
+Output written on manual.dvi (25 pages, 96148 bytes).

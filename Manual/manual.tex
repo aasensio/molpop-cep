@@ -319,13 +319,7 @@ this number should not exceed the maximum listed in
         Molecule data file = CO     
         Number of energy levels = 11
 \end{verbatim}
-Most listed molecules do not include vib-rot transitions, and the next entry in
-this case should be
 
-\vspace{\separation}
-\begin{verbatim}
-        vib_max =  0
-\end{verbatim}
 Currently, the database contains one species, SiO, with data for the lowest 19
 rotational levels in the first four vibration states. In this case \M\ corrects
 for the finite number of rotational levels in the ground vibrational level, as
@@ -333,10 +327,15 @@ described in \cite{lockett_elitzur92}.  The input is then
 
 \vspace{\separation}
 \begin{verbatim}
-        vib_max = 4    jmax = 19     rot_const = 1.04 K
+        vib_max = on    
+        jmax = 19
 \end{verbatim}
-where the third input parameter is the rotational constant in temperature
-units.
+Otherwise, set 
+\vspace{\separation}
+\begin{verbatim}
+        vib_max = off
+\end{verbatim}
+if you do not want to apply the correction.
 
 \subsection{Collision Rates}
 \label{sec:collisions}
@@ -593,7 +592,9 @@ terminated by an entry with zero optical depth:
 \subsubsection{Radiation Field from a File}
 
 Any spectral shape for the radiation field can be entered as a tabulation in a
-file, whose name is specified as input. The tabulation should list the
+file, whose name is specified as input. The tabulation should have a header, with
+its end marked with a line with \texttt{>} (see \texttt{Samples/ISRF.dat} for an example)
+and then list the
 normalized spectral shape $\lambda F_\lambda/F_{\rm bol}\ (= \nu F_\nu/F_{\rm
 bol})$, where $F_{\rm bol} = \int F_\lambda d\lambda$ is the bolometric flux,
 as a function of wavelength $\lambda$ in \mic. The flux level at the molecular
@@ -602,11 +603,16 @@ the distance to it:
 
 \vspace{\separation}
 \begin{verbatim}
-             Radiation from file = spectral.dat
-             Luminosity = 1.E4 Lo
-             Distance from source = 1.E15 cm
-             Illumination from (left/right/both) = left
+  Radiation from file = none
+%           Type of entry for the bolometric scale (ENERGY_DEN/L&R) = L&R
+%           Jbol = 3.E-6 W/m^2
+%           Luminosity = 1.E4 Lo  
+%           Distance from source = 1.E15 cm
+%           Illumination from (left/right/both/internal) = internal
 \end{verbatim}
+Two possible options are available for the bolometric scale. Either \texttt{ENERGY\_DEN}, so then
+a bolometric radiation density should be provided with \texttt{Jbol} or \texttt{L\&R}, i.e., luminosity
+and distance.
 To signal the end of spectral input files or that there is no input from a file
 altogether enter
 \begin{verbatim}
