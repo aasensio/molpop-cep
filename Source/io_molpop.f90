@@ -158,7 +158,6 @@ contains
       auxiliary_functions = 'KROLIK-MCKEE'
       call rdinps2(iequal,15,file_physical_conditions,L2,Nocase)
 
-      print *, file_physical_conditions
       if (trim(adjustl(to_upper(file_physical_conditions))) /= 'NONE') then
          if (kbeta < 3) then
             WRITE (16,*)' *** Cannot use varying physical conditions with escape probability'
