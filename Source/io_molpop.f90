@@ -1011,7 +1011,7 @@ contains
     end do
 
 ! Rotational constant in K, used for Lockett correction
-    mol_const = 0.5 * (fr(2) - fr(1)) * 1.4388    
+    mol_const = 0.5 * (fr(2) - fr(1)) * (hpl * cl) / bk
 
       do i=1,n
           if(i .gt. 1) then

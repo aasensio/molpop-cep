@@ -1583,7 +1583,6 @@ contains
 
   implicit none
   double precision, intent(in) :: nu, Temp
-  
       BB = 1.d-3*(2.*hpl*nu**3/cl**2)*plexp(hpl*nu/bk/Temp)
       
   end function BB
@@ -1614,6 +1613,7 @@ contains
             Tbr = 0.
             return
          end if
+
 
          B = (plexp(Tl/Tx) - plexp(Tl/Tcmb)) * (1. - dexp(-taul))
 

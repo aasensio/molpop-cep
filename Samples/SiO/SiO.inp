@@ -89,7 +89,7 @@ PRINT CONTROL PARAMATERS
 
       Messages from NEWTON (off or on) = off
       Messages from step-size selector (off or on) = on
-      Printing output for initial guess (off or on) = on
+      Printing output for initial guess (off or on) = off
 
       information on each step (off or on)= on
       print detailed populations (off or on) = off
@@ -101,7 +101,7 @@ PRINT CONTROL PARAMATERS
          (this option is ignored in CEP calculations)
          The transitions are: 
          
-      i =  22      j =  21   (v eq 1, J eq 1 to 0)
-      i =  23      j =  22   (v eq 2, J eq 1 to 1)                                       
+      i =  2      j =  1   (v eq 0, J eq 1 to 0)
+      i =  3      j =  2   (v eq 0, J eq 2 to 1)                                       
       
 

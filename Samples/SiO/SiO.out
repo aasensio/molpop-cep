@@ -34,30 +34,6 @@
  Original Molecular Density =  1.00E+05
  Renormalized Molecular Density =  2.94E+04
 
-***  INITIAL GUESS ***
-
-  Molecular column = 0.00E+00 cm-2/kms      Total emission = 3.10E-18 erg/s/mol
-
-  Populations:
-     level  n_i/g_i/nmol   n(i)/n*     T_ex(i,1)    emission     %
-                                           K        erg/s/mol
-        1    1.045E-02    1.002E+00    0.000E+00    0.000E+00    0
-        2    1.042E-02    9.999E-01    6.064E+02    2.743E-23    0
-        3    1.040E-02    1.002E+00    1.262E+03    8.763E-22    0
-        4    1.033E-02    1.000E+00    1.050E+03    6.608E-21    0
-        5    1.028E-02    1.002E+00    1.260E+03    2.772E-20    1
-        6    1.017E-02    1.000E+00    1.147E+03    8.368E-20    3
-        7    1.010E-02    1.003E+00    1.259E+03    2.067E-19    7
-        8    9.943E-03    1.000E+00    1.166E+03    4.399E-19   14
-        9    9.847E-03    1.004E+00    1.257E+03    8.494E-19   27
-       10    9.567E-03    9.912E-01    1.059E+03    1.487E-18   48
-
-------------------------------------------------------------------------------
-
-ABOUT TO CALL SOLVE. R =  1.000E+10
-      ERROR! Function plexp called with argument zero.
-      ERROR! Function plexp called with argument zero.
-
   Molecular column = 2.94E+14 cm-2/kms      Total emission = 2.34E-18 erg/s/mol
 
   The top emitting lines are:
@@ -74,8 +50,6 @@ ABOUT TO CALL SOLVE. R =  1.000E+10
   No inversions
 ------------------------------------------------------------------------------
 
-      ERROR! Function plexp called with argument zero.
-      ERROR! Function plexp called with argument zero.
 
   Molecular column = 5.22E+14 cm-2/kms      Total emission = 2.05E-18 erg/s/mol
 
@@ -93,8 +67,6 @@ ABOUT TO CALL SOLVE. R =  1.000E+10
   No inversions
 ------------------------------------------------------------------------------
 
-      ERROR! Function plexp called with argument zero.
-      ERROR! Function plexp called with argument zero.
 
   Molecular column = 9.28E+14 cm-2/kms      Total emission = 1.71E-18 erg/s/mol
 
@@ -112,8 +84,6 @@ ABOUT TO CALL SOLVE. R =  1.000E+10
   No inversions
 ------------------------------------------------------------------------------
 
-      ERROR! Function plexp called with argument zero.
-      ERROR! Function plexp called with argument zero.
 
   Molecular column = 1.65E+15 cm-2/kms      Total emission = 1.34E-18 erg/s/mol
 
@@ -131,8 +101,6 @@ ABOUT TO CALL SOLVE. R =  1.000E+10
   No inversions
 ------------------------------------------------------------------------------
 
-      ERROR! Function plexp called with argument zero.
-      ERROR! Function plexp called with argument zero.
 
   Molecular column = 2.94E+15 cm-2/kms      Total emission = 9.86E-19 erg/s/mol
 
@@ -150,8 +118,6 @@ ABOUT TO CALL SOLVE. R =  1.000E+10
   No inversions
 ------------------------------------------------------------------------------
 
-      ERROR! Function plexp called with argument zero.
-      ERROR! Function plexp called with argument zero.
 
   Molecular column = 5.22E+15 cm-2/kms      Total emission = 6.79E-19 erg/s/mol
 
@@ -170,8 +136,6 @@ ABOUT TO CALL SOLVE. R =  1.000E+10
   No inversions
 ------------------------------------------------------------------------------
 
-      ERROR! Function plexp called with argument zero.
-      ERROR! Function plexp called with argument zero.
 
   Molecular column = 9.28E+15 cm-2/kms      Total emission = 4.41E-19 erg/s/mol
 
@@ -190,8 +154,6 @@ ABOUT TO CALL SOLVE. R =  1.000E+10
   No inversions
 ------------------------------------------------------------------------------
 
-      ERROR! Function plexp called with argument zero.
-      ERROR! Function plexp called with argument zero.
 
   Molecular column = 1.65E+16 cm-2/kms      Total emission = 2.78E-19 erg/s/mol
 
@@ -201,7 +163,7 @@ ABOUT TO CALL SOLVE. R =  1.000E+10
                   micron                         K       erg/s/mol
        10    9  7.672E+02  1.61E+01  6.88E-02  1.14E+03  1.03E-19  37
         9    8  8.631E+02  1.21E+01  8.77E-02  1.22E+03  7.41E-20  27
-        8    7  9.863E+02  9.66E+00  1.06E-01  1.18E+03  4.66E-20  17
+        8    7  9.863E+02  9.65E+00  1.06E-01  1.18E+03  4.66E-20  17
         7    6  1.151E+03  6.97E+00  1.39E-01  1.22E+03  2.86E-20  10
         6    5  1.381E+03  5.02E+00  1.81E-01  1.18E+03  1.51E-20   5
         5    4  1.726E+03  3.14E+00  2.58E-01  1.22E+03  7.13E-21   3
@@ -210,8 +172,6 @@ ABOUT TO CALL SOLVE. R =  1.000E+10
   No inversions
 ------------------------------------------------------------------------------
 
-      ERROR! Function plexp called with argument zero.
-      ERROR! Function plexp called with argument zero.
 
   Molecular column = 2.94E+16 cm-2/kms      Total emission = 1.71E-19 erg/s/mol
 
@@ -230,8 +190,6 @@ ABOUT TO CALL SOLVE. R =  1.000E+10
   No inversions
 ------------------------------------------------------------------------------
 
-      ERROR! Function plexp called with argument zero.
-      ERROR! Function plexp called with argument zero.
 
   Molecular column = 5.22E+16 cm-2/kms      Total emission = 1.04E-19 erg/s/mol
 
@@ -250,8 +208,6 @@ ABOUT TO CALL SOLVE. R =  1.000E+10
   No inversions
 ------------------------------------------------------------------------------
 
-      ERROR! Function plexp called with argument zero.
-      ERROR! Function plexp called with argument zero.
 
   Molecular column = 9.28E+16 cm-2/kms      Total emission = 6.22E-20 erg/s/mol
 
@@ -270,8 +226,6 @@ ABOUT TO CALL SOLVE. R =  1.000E+10
   No inversions
 ------------------------------------------------------------------------------
 
-      ERROR! Function plexp called with argument zero.
-      ERROR! Function plexp called with argument zero.
 
   Molecular column = 1.65E+17 cm-2/kms      Total emission = 3.71E-20 erg/s/mol
 
@@ -290,8 +244,6 @@ ABOUT TO CALL SOLVE. R =  1.000E+10
   No inversions
 ------------------------------------------------------------------------------
 
-      ERROR! Function plexp called with argument zero.
-      ERROR! Function plexp called with argument zero.
 
   Molecular column = 2.94E+17 cm-2/kms      Total emission = 2.19E-20 erg/s/mol
 
@@ -310,8 +262,6 @@ ABOUT TO CALL SOLVE. R =  1.000E+10
   No inversions
 ------------------------------------------------------------------------------
 
-      ERROR! Function plexp called with argument zero.
-      ERROR! Function plexp called with argument zero.
 
   Molecular column = 5.22E+17 cm-2/kms      Total emission = 1.29E-20 erg/s/mol
 
@@ -330,8 +280,6 @@ ABOUT TO CALL SOLVE. R =  1.000E+10
   No inversions
 ------------------------------------------------------------------------------
 
-      ERROR! Function plexp called with argument zero.
-      ERROR! Function plexp called with argument zero.
 
   Molecular column = 9.28E+17 cm-2/kms      Total emission = 7.57E-21 erg/s/mol
 
@@ -350,8 +298,6 @@ ABOUT TO CALL SOLVE. R =  1.000E+10
   No inversions
 ------------------------------------------------------------------------------
 
-      ERROR! Function plexp called with argument zero.
-      ERROR! Function plexp called with argument zero.
 
   Molecular column = 1.65E+18 cm-2/kms      Total emission = 4.42E-21 erg/s/mol
 
@@ -362,7 +308,7 @@ ABOUT TO CALL SOLVE. R =  1.000E+10
        10    9  7.672E+02  1.53E+03  1.09E-03  1.20E+03  1.63E-21  37
         9    8  8.631E+02  1.22E+03  1.34E-03  1.20E+03  1.13E-21  26
         8    7  9.863E+02  9.50E+02  1.69E-03  1.20E+03  7.45E-22  17
-        7    6  1.151E+03  7.06E+02  2.24E-03  1.20E+03  4.61E-22  10
+        7    6  1.151E+03  7.05E+02  2.24E-03  1.20E+03  4.61E-22  10
         6    5  1.381E+03  4.95E+02  3.11E-03  1.20E+03  2.60E-22   6
         5    4  1.726E+03  3.19E+02  4.68E-03  1.20E+03  1.29E-22   3
         4    3  2.301E+03  1.81E+02  7.90E-03  1.20E+03  5.22E-23   1
@@ -370,8 +316,6 @@ ABOUT TO CALL SOLVE. R =  1.000E+10
   No inversions
 ------------------------------------------------------------------------------
 
-      ERROR! Function plexp called with argument zero.
-      ERROR! Function plexp called with argument zero.
 
   Molecular column = 2.94E+18 cm-2/kms      Total emission = 2.58E-21 erg/s/mol
 
@@ -381,7 +325,7 @@ ABOUT TO CALL SOLVE. R =  1.000E+10
                   micron                         K       erg/s/mol
        10    9  7.672E+02  2.72E+03  6.31E-04  1.20E+03  9.47E-22  37
         9    8  8.631E+02  2.18E+03  7.78E-04  1.20E+03  6.58E-22  26
-        8    7  9.863E+02  1.69E+03  9.88E-04  1.20E+03  4.34E-22  17
+        8    7  9.863E+02  1.69E+03  9.88E-04  1.20E+03  4.35E-22  17
         7    6  1.151E+03  1.25E+03  1.31E-03  1.20E+03  2.69E-22  10
         6    5  1.381E+03  8.80E+02  1.82E-03  1.20E+03  1.52E-22   6
         5    4  1.726E+03  5.67E+02  2.74E-03  1.20E+03  7.58E-23   3
@@ -390,8 +334,6 @@ ABOUT TO CALL SOLVE. R =  1.000E+10
   No inversions
 ------------------------------------------------------------------------------
 
-      ERROR! Function plexp called with argument zero.
-      ERROR! Function plexp called with argument zero.
 
   Molecular column = 5.22E+18 cm-2/kms      Total emission = 1.50E-21 erg/s/mol
 
@@ -410,8 +352,6 @@ ABOUT TO CALL SOLVE. R =  1.000E+10
   No inversions
 ------------------------------------------------------------------------------
 
-      ERROR! Function plexp called with argument zero.
-      ERROR! Function plexp called with argument zero.
 
   Molecular column = 9.28E+18 cm-2/kms      Total emission = 8.69E-22 erg/s/mol
 
@@ -423,15 +363,13 @@ ABOUT TO CALL SOLVE. R =  1.000E+10
         9    8  8.631E+02  6.89E+03  2.62E-04  1.20E+03  2.22E-22  25
         8    7  9.863E+02  5.34E+03  3.33E-04  1.20E+03  1.47E-22  17
         7    6  1.151E+03  3.97E+03  4.42E-04  1.20E+03  9.09E-23  10
-        6    5  1.381E+03  2.78E+03  6.17E-04  1.20E+03  5.16E-23   6
+        6    5  1.381E+03  2.78E+03  6.17E-04  1.20E+03  5.17E-23   6
         5    4  1.726E+03  1.79E+03  9.33E-04  1.20E+03  2.58E-23   3
         4    3  2.301E+03  1.02E+03  1.59E-03  1.20E+03  1.05E-23   1
 
   No inversions
 ------------------------------------------------------------------------------
 
-      ERROR! Function plexp called with argument zero.
-      ERROR! Function plexp called with argument zero.
 
   Molecular column = 1.65E+19 cm-2/kms      Total emission = 5.03E-22 erg/s/mol
 
@@ -490,56 +428,56 @@ ABOUT TO CALL SOLVE. R =  1.000E+10
      for definitions, see Elitzur 'Astronomical Masers' secs. 4.2 and 7.1
  ***
 
-         0.00 mic (   0.000 GHz) transition between levels 22 and 21
-     Upper Level:                                                                                 
-     Lower Level:                                                                                 
+      6903.86 mic (  43.424 GHz) transition between levels  2 and  1
+     Upper Level: v =  0,  J =  1                                                                 
+     Lower Level: v =  0,  J =  0                                                                 
 
     Nmol      tau       Flux   int(Tb dv)   Io      del(Tb)   del(TRJ)     Tex
   cm-2/kms               Jy      K km/s  W/m2/Hz/st    K         K          K
-  2.94E+14  0.00E+00  4.17+273  0.00E+00  0.00E+00       NaN       NaN  0.00E+00
-  5.22E+14  0.00E+00  7.42+273  0.00E+00  0.00E+00       NaN       NaN  0.00E+00
-  9.28E+14  0.00E+00  1.32+274  0.00E+00  0.00E+00       NaN       NaN  0.00E+00
-  1.65E+15  0.00E+00  2.35+274  0.00E+00  0.00E+00       NaN       NaN  0.00E+00
-  2.94E+15  0.00E+00  4.17+274  0.00E+00  0.00E+00       NaN       NaN  0.00E+00
-  5.22E+15  0.00E+00  7.42+274  0.00E+00  0.00E+00       NaN       NaN  0.00E+00
-  9.28E+15  0.00E+00  1.32+275  0.00E+00  0.00E+00       NaN       NaN  0.00E+00
-  1.65E+16  0.00E+00  2.35+275  0.00E+00  0.00E+00       NaN       NaN  0.00E+00
-  2.94E+16  0.00E+00  4.17+275  0.00E+00  0.00E+00       NaN       NaN  0.00E+00
-  5.22E+16  0.00E+00  7.42+275  0.00E+00  0.00E+00       NaN       NaN  0.00E+00
-  9.28E+16  0.00E+00  1.32+276  0.00E+00  0.00E+00       NaN       NaN  0.00E+00
-  1.65E+17  0.00E+00  2.35+276  0.00E+00  0.00E+00       NaN       NaN  0.00E+00
-  2.94E+17  0.00E+00  4.17+276  0.00E+00  0.00E+00       NaN       NaN  0.00E+00
-  5.22E+17  0.00E+00  7.42+276  0.00E+00  0.00E+00       NaN       NaN  0.00E+00
-  9.28E+17  0.00E+00  1.32+277  0.00E+00  0.00E+00       NaN       NaN  0.00E+00
-  1.65E+18  0.00E+00  2.35+277  0.00E+00  0.00E+00       NaN       NaN  0.00E+00
-  2.94E+18  0.00E+00  4.17+277  0.00E+00  0.00E+00       NaN       NaN  0.00E+00
-  5.22E+18  0.00E+00  7.42+277  0.00E+00  0.00E+00       NaN       NaN  0.00E+00
-  9.28E+18  0.00E+00  1.32+278  0.00E+00  0.00E+00       NaN       NaN  0.00E+00
-  1.65E+19  0.00E+00  2.35+278  0.00E+00  0.00E+00       NaN       NaN  0.00E+00
+  2.94E+14  5.54E-03  5.49E+09  1.02E+01  4.96E-18  5.26E+00  4.29E+00  7.79E+02
+  5.22E+14  9.15E-03  9.70E+09  1.81E+01  8.80E-18  8.61E+00  7.61E+00  8.39E+02
+  9.28E+14  1.51E-02  1.71E+10  3.21E+01  1.56E-17  1.45E+01  1.35E+01  9.05E+02
+  1.65E+15  2.50E-02  2.99E+10  5.67E+01  2.74E-17  2.49E+01  2.39E+01  9.71E+02
+  2.94E+15  4.19E-02  5.20E+10  9.96E+01  4.79E-17  4.32E+01  4.21E+01  1.03E+03
+  5.22E+15  7.08E-02  8.93E+10  1.74E+02  8.28E-17  7.49E+01  7.38E+01  1.08E+03
+  9.28E+15  1.22E-01  1.51E+11  2.98E+02  1.40E-16  1.29E+02  1.28E+02  1.12E+03
+  1.65E+16  2.11E-01  2.47E+11  5.00E+02  2.29E-16  2.19E+02  2.18E+02  1.15E+03
+  2.94E+16  3.69E-01  3.91E+11  8.04E+02  3.53E-16  3.61E+02  3.60E+02  1.17E+03
+  5.22E+16  6.50E-01  5.86E+11  1.21E+03  4.97E-16  5.63E+02  5.62E+02  1.18E+03
+  9.28E+16  1.15E+00  8.20E+11  1.68E+03  6.18E-16  8.10E+02  8.09E+02  1.19E+03
+  1.65E+17  2.03E+00  1.07E+12  2.12E+03  6.78E-16  1.03E+03  1.03E+03  1.19E+03
+  2.94E+17  3.61E+00  1.30E+12  2.48E+03  6.91E-16  1.16E+03  1.16E+03  1.19E+03
+  5.22E+17  6.41E+00  1.47E+12  2.78E+03  6.93E-16  1.19E+03  1.19E+03  1.20E+03
+  9.28E+17  1.14E+01  1.62E+12  3.05E+03  6.93E-16  1.20E+03  1.20E+03  1.20E+03
+  1.65E+18  2.02E+01  1.76E+12  3.29E+03  6.94E-16  1.20E+03  1.20E+03  1.20E+03
+  2.94E+18  3.59E+01  1.89E+12  3.52E+03  6.94E-16  1.20E+03  1.20E+03  1.20E+03
+  5.22E+18  6.39E+01  2.01E+12  3.73E+03  6.94E-16  1.20E+03  1.20E+03  1.20E+03
+  9.28E+18  1.14E+02  2.12E+12  3.92E+03  6.94E-16  1.20E+03  1.20E+03  1.20E+03
+  1.65E+19  2.02E+02  2.23E+12  4.11E+03  6.95E-16  1.20E+03  1.20E+03  1.20E+03
 
-         0.00 mic (   0.000 GHz) transition between levels 23 and 22
-     Upper Level:                                                                                 
-     Lower Level:                                                                                 
+      3451.95 mic (  86.847 GHz) transition between levels  3 and  2
+     Upper Level: v =  0,  J =  2                                                                 
+     Lower Level: v =  0,  J =  1                                                                 
 
     Nmol      tau       Flux   int(Tb dv)   Io      del(Tb)   del(TRJ)     Tex
   cm-2/kms               Jy      K km/s  W/m2/Hz/st    K         K          K
-  2.94E+14  0.00E+00  2.64E+24 -0.00E+00 -0.00E+00       NaN       NaN -0.00E+00
-  5.22E+14  0.00E+00  5.10E+24 -0.00E+00 -0.00E+00       NaN       NaN -0.00E+00
-  9.28E+14  0.00E+00  1.03E+25 -0.00E+00 -0.00E+00       NaN       NaN -0.00E+00
-  1.65E+15  0.00E+00  2.20E+25 -0.00E+00 -0.00E+00       NaN       NaN -0.00E+00
-  2.94E+15  0.00E+00  5.04E+25 -0.00E+00 -0.00E+00       NaN       NaN -0.00E+00
-  5.22E+15  0.00E+00  1.25E+26 -0.00E+00 -0.00E+00       NaN       NaN -0.00E+00
-  9.28E+15  0.00E+00  3.30E+26 -0.00E+00 -0.00E+00       NaN       NaN -0.00E+00
-  1.65E+16  0.00E+00  9.33E+26 -0.00E+00 -0.00E+00       NaN       NaN -0.00E+00
-  2.94E+16  0.00E+00  2.69E+27 -0.00E+00 -0.00E+00       NaN       NaN -0.00E+00
-  5.22E+16  0.00E+00  7.88E+27 -0.00E+00 -0.00E+00       NaN       NaN -0.00E+00
-  9.28E+16  0.00E+00  2.33E+28 -0.00E+00 -0.00E+00       NaN       NaN -0.00E+00
-  1.65E+17  0.00E+00  6.95E+28 -0.00E+00 -0.00E+00       NaN       NaN -0.00E+00
-  2.94E+17  0.00E+00  2.09E+29 -0.00E+00 -0.00E+00       NaN       NaN -0.00E+00
-  5.22E+17  0.00E+00  6.29E+29 -0.00E+00 -0.00E+00       NaN       NaN -0.00E+00
-  9.28E+17  0.00E+00  1.90E+30 -0.00E+00 -0.00E+00       NaN       NaN -0.00E+00
-  1.65E+18  0.00E+00  5.78E+30 -0.00E+00 -0.00E+00       NaN       NaN -0.00E+00
-  2.94E+18  0.00E+00  1.76E+31 -0.00E+00 -0.00E+00       NaN       NaN -0.00E+00
-  5.22E+18  0.00E+00  5.38E+31 -0.00E+00 -0.00E+00       NaN       NaN -0.00E+00
-  9.28E+18  0.00E+00  1.65E+32 -0.00E+00 -0.00E+00       NaN       NaN -0.00E+00
-  1.65E+19  0.00E+00  5.06E+32 -0.00E+00 -0.00E+00       NaN       NaN -0.00E+00
+  2.94E+14  9.62E-03  8.70E+10  4.07E+01  7.89E-17  1.91E+01  1.71E+01  1.79E+03
+  5.22E+14  1.86E-02  1.52E+11  7.18E+01  1.39E-16  3.23E+01  3.03E+01  1.64E+03
+  9.28E+14  3.58E-02  2.64E+11  1.26E+02  2.43E-16  5.54E+01  5.33E+01  1.52E+03
+  1.65E+15  6.78E-02  4.52E+11  2.20E+02  4.19E-16  9.54E+01  9.34E+01  1.43E+03
+  2.94E+15  1.27E-01  7.56E+11  3.75E+02  7.03E-16  1.63E+02  1.61E+02  1.36E+03
+  5.22E+15  2.34E-01  1.23E+12  6.21E+02  1.13E-15  2.74E+02  2.72E+02  1.31E+03
+  9.28E+15  4.29E-01  1.90E+12  9.79E+02  1.69E-15  4.43E+02  4.41E+02  1.27E+03
+  1.65E+16  7.78E-01  2.76E+12  1.43E+03  2.27E-15  6.73E+02  6.71E+02  1.24E+03
+  2.94E+16  1.40E+00  3.74E+12  1.90E+03  2.67E-15  9.25E+02  9.23E+02  1.23E+03
+  5.22E+16  2.52E+00  4.70E+12  2.31E+03  2.79E-15  1.12E+03  1.11E+03  1.22E+03
+  9.28E+16  4.50E+00  5.52E+12  2.63E+03  2.80E-15  1.19E+03  1.19E+03  1.21E+03
+  1.65E+17  8.02E+00  6.16E+12  2.91E+03  2.79E-15  1.20E+03  1.20E+03  1.21E+03
+  2.94E+17  1.43E+01  6.73E+12  3.16E+03  2.78E-15  1.20E+03  1.20E+03  1.20E+03
+  5.22E+17  2.54E+01  7.26E+12  3.39E+03  2.78E-15  1.20E+03  1.20E+03  1.20E+03
+  9.28E+17  4.53E+01  7.75E+12  3.61E+03  2.78E-15  1.20E+03  1.20E+03  1.20E+03
+  1.65E+18  8.06E+01  8.22E+12  3.81E+03  2.78E-15  1.20E+03  1.20E+03  1.20E+03
+  2.94E+18  1.43E+02  8.66E+12  4.00E+03  2.78E-15  1.20E+03  1.20E+03  1.20E+03
+  5.22E+18  2.55E+02  9.07E+12  4.19E+03  2.78E-15  1.20E+03  1.20E+03  1.20E+03
+  9.28E+18  4.53E+02  9.47E+12  4.36E+03  2.78E-15  1.20E+03  1.20E+03  1.20E+03
+  1.65E+19  8.06E+02  9.85E+12  4.53E+03  2.78E-15  1.20E+03  1.20E+03  1.20E+03
