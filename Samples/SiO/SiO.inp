@@ -6,7 +6,7 @@
 
     Data directory = DataBase 
 		Molecule data file = SiO_vib
-    Number of energy levels = 10 
+    Number of energy levels = 80 
     rot_correction =  on    
     jmax = 19
 
