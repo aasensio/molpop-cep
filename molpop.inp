@@ -36,7 +36,9 @@ Samples/CO/Rad3
 %Samples/OH/OH_overlap
 % Samples/OH/OH_old_dust
 
-Samples/SiO/SiO
+Samples/SiO/SiO_vib
+Samples/SiO/SiO_no_vib
+Samples/SiO/SiO_jmax_error
 
 
 

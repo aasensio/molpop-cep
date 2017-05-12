@@ -4,9 +4,9 @@ use maths_molpop, only: Pass_Header, error_message, inmin, inmax, attach2, order
                         optdep, Tbr4Tx, BB, simpson, clear_string
 use cep_molpop_interface
 implicit none
-double precision Xdust
-integer basic_cols, maser_cols
-logical maser_prt
+double precision :: Xdust, n_renorm
+integer :: basic_cols, maser_cols
+logical :: maser_prt, Lockett_corr
 
 contains
 
@@ -18,10 +18,10 @@ contains
 
   integer i,j, npr, iunit, L, L2, L3
   integer k, npoints_local
-  integer :: j_max, vib_max
+  integer :: j_max
   integer unit,unit2,mol_maxlev
   double precision aux, w,Tbb,tau_d, T_d, Lbol,dist, temp
-  double precision mol_const, temp1, temp2, temp3, temp4, Jbol
+  double precision B_rot, temp1, temp2, temp3, temp4, Jbol
   character*168 str, Method, Option, OPT, header
   character*168 dustFile, fn_dusty
   logical iequal, error, UCASE,NoCase, stat, norm
@@ -129,19 +129,26 @@ contains
 
 !     Is there a correction for finite number of rotation levels in ground vib state?
       call rdinps2(iequal,15,str,L,UCASE)
-      if(str(1:L) .eq. 'OFF') then
-          j_max = -1          
-      endif
       if(str(1:L) .eq. 'ON') then
-        j_max     = rdinp(iequal,15,16)
+         Lockett_corr = .TRUE.
+         j_max = rdinp(iequal,15,16)
+         if (j_max .gt. n) then
+             WRITE (16,"(/,' *** When specifying Number of energy levels = ', I3,/,&
+                     ' *** max J in the ground vibration state cannot exceed', I3,/,&
+                     ' *** Cannot specify jmax = ', I3)") n, n-1, j_max
+             OPT = 'jmax'
+             write (Option, '(i3)') j_max 
+             error = error_message(OPT,Option)
+             return
+         endif
+      else if(str(1:L) .eq. 'OFF') then
+         Lockett_corr = .FALSE.
+      else
+         OPT = 'rot_correction'
+         error = error_message(opt,str(1:L))
+         return
       endif
 
-
-      ! vib_max = rdinp(iequal,15,16)
-      ! if (vib_max .gt. 0) then
-      !    j_max     = rdinp(iequal,15,16)
-      !    mol_const = rdinp(iequal,15,16)
-      ! endif
 
       call attach2(mol_name, '.molecule', fn_lev)
 
@@ -187,7 +194,7 @@ contains
 !_______________________________________________________________
 
 !     Load molecular data:
-      call data(error, mol_const)
+      call data(error)
       if (error) return
 
       do unit = 16, unit2
@@ -696,13 +703,16 @@ contains
 
 !     Finish up: renormalize density with the partition function when needed
 !
-      if(j_max .ne. -1) then
+      if (Lockett_corr) then
           write(16,*)'Correct for Finite Number of Rotational Levels'
-          write(16,*)'Using Method of Lockett & Elitzur,ApJ,399,704'
-          write(16,"(' Original Molecular Density = ',1pe9.2)") nmol
-!         renormalize:
-          nmol=nmol*part_func(t,mol_const,j_max)
-          write(16,"(' Renormalized Molecular Density = ',1pe9.2)") nmol
+          write(16,*)'Using Method of Lockett & Elitzur 1992, ApJ 399, 704:'
+          write(16,"(' The molecular Density of',1pe9.2,' cm^-3 is renormalized')") nmol
+!         renormalize; simple rotor has nu(J = 1-0) = 2B
+!         so the rotational constant in K is  
+          B_rot    = 0.5*Tij(2,1)
+          n_renorm = part_func(T, B_rot, j_max)
+          nmol     = nmol*n_renorm
+          write(16,"('     in level population calculations to',1pe9.2,' cm^-3')") nmol
       end if
 
 !     Write intermediate file in case a CEP calculations is being done
@@ -960,13 +970,13 @@ contains
   end subroutine print_mol_data
   
 
-  subroutine data(error, mol_const)
+  subroutine data(error)
 !     Get molecular data: level properties and Einstein A-coefficients
   use global_molpop
   character*80 line
   character*128 fn_lev,fn_aij  
   integer i,j,in,k,l,ii,i1,j1,i2,j2
-  double precision aux, temp, mol_const
+  double precision aux, temp
   logical error, stat
 
 
@@ -1010,8 +1020,6 @@ contains
        read(4,*,end=5) in,g(i),fr(i),ledet(i)
     end do
 
-! Rotational constant in K, used for Lockett correction
-    mol_const = 0.5 * (fr(2) - fr(1)) * (hpl * cl) / bk
 
       do i=1,n
           if(i .gt. 1) then
@@ -1228,6 +1236,7 @@ contains
 !     Detailed Printing of Individual Transitions
 !     Start with some instructions for the detailed output:
       write (unit,"(/,' *** Parameters for selected transitions')")
+      write (unit,"(T6, 'Flux (in W/m2) is integrated over the line')")
       write (unit,"(T6,'Io is the source line-center intensity')", advance='no')
       if (kbeta .ge. 2) then
          write (unit, "(' at mu =',f6.2,' to slab face')") mu_output
@@ -1244,14 +1253,15 @@ contains
                         'Xdust is the fractional dust contribution to the line optical depth')")
       if (maser_prt) then
          write (unit,"(T6,'Maser pumping parameters are tabulated for inverted transitions;')")
-         write (unit,"(T6,'for definitions, see Elitzur ''Astronomical Masers'' secs. 4.2 and 7.1')")
+         write (unit,"(T6,'for definitions see Elitzur ''Astronomical Masers'' secs. 4.2 & 7.1,')")
+         write (unit,"(T6,'and Hollenbach+ 2013, ApJ 773:70')")
       end if
       write(unit,"(' ***')")
 
      !Headres for the Tabulation:
       if (kbeta < 3) then
         hdr =  'Nmol      tau       Flux   int(Tb dv)   Io      del(Tb)   del(TRJ)     Tex'
-        hdr2='cm-2/kms               Jy      K km/s  W/m2/Hz/st    K         K          K '
+        hdr2='cm-2/kms              W/m2     K km/s  W/m2/Hz/st    K         K          K '
       else
         hdr =  'Nmol      tau       Flux   int(Tb dv)   Io      del(Tb)   del(TRJ)'
         hdr2='cm-2/kms               Jy      K km/s  W/m2/Hz/st    K         K'
@@ -1338,8 +1348,9 @@ contains
       if (R.eq.0.0) return
 
 !     for final summary printing
+!     Want to print the actual, not Lockett-renormalized column:
+      if (Lockett_corr) mcol = mcol/n_renorm
       nprint = nprint + 1
-      aux = 1.D18*mcol*CL
       final(1,nprint) = r
       final(2,nprint) = hcol
       final(3,nprint) = mcol
@@ -1349,13 +1360,15 @@ contains
 
 !  Printing elements for every selected transition:
 !     1 - Molecular column per velocity bandwidth
-!     2 - Excitation temperature
-!     3 - tau
-!     4 - flux density in Jy, obtained from COOL(i,j) which is in erg/s/mol
-!     5 - velocity-integrated line brightness temperature (at angle mu) in K*km/s 
-!     6 - line intensity (at angle mu for slab)
-!     7 - line brightness temperature against CMB, Tbr
-!     8 - RJ equivalent of Tbr
+!     2 - tau
+!     3 - overall line flux in W/m^2; obtained from COOL(i,j), which is in erg/s/mol,
+!         with the conversion factor 
+      aux = 0.5D-3*nmol*R
+!     4 - velocity-integrated line brightness temperature (at angle mu) in K*km/s 
+!     5 - line intensity (at angle mu for slab)
+!     6 - line brightness temperature against CMB, Tbr
+!     7 - RJ equivalent of Tbr
+!     8 - line excitation temperature
 !     When dust absorption is on, next element is
 !     9 - fractional contribution of dust to tau when there's dust absorption
 !
@@ -1365,6 +1378,7 @@ contains
          nu    = freq(m(2),m(1))
          Tl    = TIJ(m(2),m(1))
          Tex   = Tl/DLOG(POP(m(1))/POP(m(2)))
+         flux  = aux*cool(m(2),m(1))
          depth = tau(m(2),m(1))
 !        Integrate (1 - exp(-tau_v)) over the line
          call simpson(100,1,100,freq_axis,1.0 - dexp(-(depth/mu_output)*exp(-freq_axis**2)),integral)
@@ -1372,7 +1386,7 @@ contains
 
          fin_tr(k,1,nprint) = mcol         
          fin_tr(k,2,nprint) = depth
-         fin_tr(k,3,nprint) = aux*cool(m(2),m(1))/freq(m(2),m(1))
+         fin_tr(k,3,nprint) = flux
          fin_tr(k,4,nprint) = Tex*(vt/1.d5)*integral
          fin_tr(k,5,nprint) = BB(nu,Tex)*(1. - dexp(-depth/mu_output))
          fin_tr(k,6,nprint) = Tbr
