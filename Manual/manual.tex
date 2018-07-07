@@ -1,6 +1,6 @@
 \documentclass[12pt]{article}
 \usepackage{natbib}
-\usepackage[hypertex]{hyperref}
+\usepackage[driverfallback=dvipdfm]{hyperref}
 \usepackage{dirtree}
 
 
@@ -268,20 +268,23 @@ chosen as the first input:
 
 \vspace{\separation}
 \begin{verbatim}
-    Method (LVG, LVGPP, slab, CEP-NEWTON, CEP-NAG or CEP-ALI) = CEP-ALI
+  Solution Method of Radiative Transfer (LVG / LVGPP / slab / CEP) = CEP
 \end{verbatim}
 The first three options use the escape probability approximation for large
-velocity gradients (in spherical and plane-parallel geometries) or a quiescent slab. The other options invoke the full CEP
-technique with three different solution methods. CEP-NEWTON uses a standard
-Newton method for directly solving the nonlinear statistical equilibrium
-equations \ref{eq:statis_equil_eq} of the CEP formalism. CEP-NAG is similar,
-but uses a convex combination of Newton and scaled gradient directions to
-ensure global convergence. In both cases, the derivatives of the Jacobian are
-calculated analytically as a consequence of the analytical treatment of the CEP
-method. CEP-ALI uses the accelerated $\Lambda$-iteration approach, iterating
-from the calculation of the radiation field at each zone with the aid of eqs.\
-(\ref{eq:pi}) and the solution of the preconditioned linearized statistical
-equilibrium eqs.\ (\ref{eq:statis_equil_eq}).
+velocity gradients (in spherical and plane-parallel geometries) or a quiescent slab. 
+The last option invokes the full CEP
+technique. 
+
+% CEP-NEWTON uses a standard
+% Newton method for directly solving the nonlinear statistical equilibrium
+% equations \ref{eq:statis_equil_eq} of the CEP formalism. CEP-NAG is similar,
+% but uses a convex combination of Newton and scaled gradient directions to
+% ensure global convergence. In both cases, the derivatives of the Jacobian are
+% calculated analytically as a consequence of the analytical treatment of the CEP
+% method. CEP-ALI uses the accelerated $\Lambda$-iteration approach, iterating
+% from the calculation of the radiation field at each zone with the aid of eqs.\
+% (\ref{eq:pi}) and the solution of the preconditioned linearized statistical
+% equilibrium eqs.\ (\ref{eq:statis_equil_eq}).
 
 In the case of LVG calculations, you need to provide the expansion velocity
 instead of the local linewidth and one must specify an additional entry, the
@@ -289,7 +292,7 @@ logarithmic velocity gradient:
 %
 \smallskip
 \begin{verbatim}
-     dlogV/dlogr = 1.0 (in effect only for LVG)
+     dlogV/dlogr = 1.0 (in effect only for LVG and LVGPP)
 \end{verbatim}
 
 
@@ -320,15 +323,15 @@ this number should not exceed the maximum listed in
         Number of energy levels = 11
 \end{verbatim}
 
-Currently, the database contains one species, SiO, with data for the lowest 19
-rotational levels in the first four vibration states. In this case \M\ corrects
+Currently, the database contains some species with data for the lowest 
+rotational levels in the first vibration states. \M\ can correct
 for the finite number of rotational levels in the ground vibrational level, as
 described in \cite{lockett_elitzur92}.  The input is then
 
 \vspace{\separation}
 \begin{verbatim}
-        rot_correction = on    
-        jmax = 19
+        rot_correction = on  
+        jmax = 19  
 \end{verbatim}
 Otherwise, set 
 \vspace{\separation}
@@ -442,8 +445,6 @@ and enter the physical conditions directly in the input file as follows:
 \begin{verbatim}
      Gas Temperature = 100 K
      n = 1.0e4  cm^-3
-     Molecular abundance (n_mol/n) = 1.0e-4
-     Velocity = 1 km/sec (linewidth for slab)
 \end{verbatim}
 You can use this input method for physical conditions also in the case of CEP
 calculations if the physical conditions in the slab are uniform.
@@ -496,12 +497,12 @@ determines whether the effect of the maser radiation on the level populations
 
 \vspace{\separation}
 \begin{verbatim}
-        Maser saturation (on/off) = no
+        Maser saturation (on/off) = off
 \end{verbatim}
-Selecting {\tt yes} invokes an escape probability calculation for the
+Selecting {\tt on} invokes an escape probability calculation for the
 saturation effect \citep[see \S 5.3 in][]{elitzur92}. This calculation can be
 selected only if the solution method is \LVG\ or \slab. All CEP calculations
-must have {\tt no} for the saturation entry. Calculations with the {\tt no}
+must have {\tt off} for the saturation entry. Calculations with the {\tt no}
 option produce the maser pump and loss rates that can be used to estimate maser
 emission from the standard phenomenological maser model (see \S\ref{sec:output} below).
 
@@ -561,6 +562,7 @@ always end the list with the \texttt{W = 0}:
 
 \vspace{\separation}
 \begin{verbatim}
+            diluted blackbody fields:    
              W = 0.1
              T_bb = 2500 K
              Illumination from (left/right/both/internal) = left
@@ -583,6 +585,7 @@ terminated by an entry with zero optical depth:
 
 \vspace{\separation}
 \begin{verbatim}
+  Dust radiation:
              Dust tau at visual = 3.
              Dust temperature = 100 K
              Illumination from (left/right/both/internal) = internal
@@ -603,12 +606,12 @@ the distance to it:
 
 \vspace{\separation}
 \begin{verbatim}
-  Radiation from file = none
-%           Type of entry for the bolometric scale (ENERGY_DEN/L&R) = L&R
-%           Jbol = 3.E-6 W/m^2
-%           Luminosity = 1.E4 Lo  
+  Radiation from file = Samples/ISRF.dat
+           Type of entry for the bolometric scale (ENERGY_DEN/L&R) = Energy_den
+           Jbol = 3.E-6 W/m^2
+%           Luminosity = 1.E4 Lo
 %           Distance from source = 1.E15 cm
-%           Illumination from (left/right/both/internal) = internal
+           Illumination from (left/right/both/internal) = internal
 \end{verbatim}
 Two possible options are available for the bolometric scale. Either \texttt{ENERGY\_DEN}, so then
 a bolometric radiation density should be provided with \texttt{Jbol} or \texttt{L\&R}, i.e., luminosity
@@ -666,13 +669,14 @@ example of the {\tt increasing} strategy:
 
 \vspace{\separation}
 \begin{verbatim}
-       Solution strategy = increasing
-       start with all optical depths less than tau_m        = 1
-       Initial number of steps per decade                   = 4
-       Maximum number of dimension steps allowed per decade = 20
-       Total number of steps allowed to reach any limit     = 100
-       stop when dimension exceeds R_m                      = 1.0E20 cm
-       or total column exceeds N_col                        = 1.E26 cm^-2
+  Solution strategy (increasing/decreasing)            = increasing 
+  start with every tau smaller/greater than tau_m      = 1
+  stop when molecular column density reaches Nmol_m    = 1.E19 cm-2/kms
+  Number of printings per decade                       = 4
+  Max # of dimension steps allowed per decade          = 20
+  Total number of steps allowed to reach Nmol_m        = 100
+  Accuracy in solution of the equations                = 1.0e-3
+  Max # of iterations allowed to reach solution        = 50
 \end{verbatim}
 In a {\tt decreasing} input, {\tt tau\_m} would be a large optical depth
 providing a lower limit for all transitions in the initial solution while
@@ -690,7 +694,11 @@ given grid. This strategy is chosen by using a zero:
 
 \vspace{\separation}
 \begin{verbatim}
-   Precision in CEP grid convergence (0 to ignore convergence) = 1.d-1
+  NUMERICS CONTROLS RELEVANT ONLY FOR CEP:
+    CEP solution method (NEWTON/ALI) = NEWTON
+    Precision in grid CEP convergence (0 to ignore convergence) = 0
+    Initial # of zones (relevant only if no file with phys. conditions) = 10   
+    Angle of output intensity mu = 0.5
 \end{verbatim}
 
 \section{Which files call each other}
