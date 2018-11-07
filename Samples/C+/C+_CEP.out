@@ -1,10 +1,10 @@
-          *** MOLPOP-CEP; version of June 8, 2015 ***
+          *** MOLPOP-CEP; version of May 12, 2017 ***
 
 * C+
 * These lines are echoed in the output because they start with a '*'
 *
       CEP Exact Radiative Transfer Calculation
-      Molecule --- C+
+      Molecule data file --- DataBase/C+.molecule                                                                                                            
       Number of levels =  2
 
         Collision information:
@@ -21,6 +21,7 @@
         Collision rates from data file DataBase/Coll/C+_e.kij
 
       Using file with physical conditions: Samples/C+/test.physical
+      Molecule --- C+
       No considerations of dust absorption
       No considerations of Line Overlap
       No maser saturation effects
@@ -674,9 +675,30 @@
   2    1   1900.534287   2.300000E-06    yes                
 
 
- *******************************************************************************
- N(mol) [cm^-2]:  1.61867E+17   -  nzones:  234
- *******************************************************************************
-  up    low     tau (line center)     cooling         N(up)/N(low)    I_lc(mu= 1.000)   delta(Tb) [K]      del(TRJ) [K]    Int(Tb dv)    % emission
-                                                                        [W/m2/Hz/sr]        [K]               [K]           [K km/s]              
-   2     1       2.02154E-01       1.72506E-03       8.56116E-01       1.35656E-14       4.27111E+01       1.22241E+01        22.458            100.00    
+      Terminated. Number of steps reached  100
+
+
+        *** SUMMARY ***
+
+        mol column     emission
+         cm-2/kms      erg/s/mol
+        1.619E+17      1.066E-20
+
+ *** Parameters for selected transitions
+     Flux (in W/m2) is integrated over the line
+     Io is the source line-center intensity at mu =  1.00 to slab face
+     del(Tb) is obtained from (B is the Planck function):
+                B(del(Tb)) = I(observed) - B(Tcmb)
+     del(TRJ) is obtained from the same with the RJ approximation for B
+     Excitation temperature is not part of the output in CEP
+                because it changes with position in the slab. The excitation temperature
+                will be placed in the file with extension CEP.texc for all column densities
+ ***
+
+       157.74 mic (1900.534 GHz) transition between levels  2 and  1
+     Upper Level: J =   1.5                                                                       
+     Lower Level: J =   0.5                                                                       
+
+    Nmol      tau       Flux   int(Tb dv)   Io      del(Tb)   del(TRJ)
+  cm-2/kms               Jy      K km/s  W/m2/Hz/st    K         K
+  1.62E+17  2.02E-01  2.72E+13  5.62E+01  1.36E-14  4.27E+01  1.22E+01

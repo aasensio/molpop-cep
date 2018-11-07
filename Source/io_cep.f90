@@ -496,7 +496,8 @@ contains
 			write(32,FMT='(A,I3,A,I3)') 'Transition : ', itran(1,it), ' -> ', itran(2,it)
 			write(32,*) '    v (km/s)       flux          I(mu=1)   I(selected mu)'
 			do j = 1, 100
-				write(32,FMT='(5(2X,1PE12.5))') freq_axis(j) / dtran(2,it) * PC / 1.d5, (flux_out(k,j),k=1,3)
+				!write(32,FMT='(5(2X,1PE12.5))') freq_axis(j) / dtran(2,it) * PC / 1.d5, (flux_out(k,j),k=1,3)
+				write(32,FMT='(5(2X,1PE12.5))') freq_axis(j), (flux_out(k,j),k=1,3)
 			enddo
 			write(32,*)
 		enddo
@@ -663,7 +664,8 @@ contains
 			write(32,FMT='(A,I3,A,I3)') 'Transition : ', itran(1,it), ' -> ', itran(2,it)
 			write(32,*) '    v (km/s)       flux          I(mu=1)   I(selected mu)'
 			do j = 1, 100
-				write(32,FMT='(5(2X,1PE12.5))') freq_axis(j) / dtran(2,it) * PC / 1.d5, (flux_out(k,j),k=1,3)
+				!write(32,FMT='(5(2X,1PE12.5))') freq_axis(j) / dtran(2,it) * PC / 1.d5, (flux_out(k,j),k=1,3)
+				write(32,FMT='(5(2X,1PE12.5))') freq_axis(j), (flux_out(k,j),k=1,3)
 			enddo
 			write(32,*)
 		enddo
