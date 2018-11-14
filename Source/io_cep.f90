@@ -238,10 +238,10 @@ contains
 		do ip = 1, nz
 			do i = 1, size(freq_axis)			
 				f = freq_axis(i) * maxval(dopplerw(it,:)) / dopplerw(it,ip)
+				! f = freq_axis(i) / dopplerw(it,ip)
 				line_profile = exp(-f**2) / sqrt(PI)
 
-! Flux in the line times the Doppler width so that we can later integrate over the reduced wavelength axis
-				flux_out(1,i) = flux_out(1,i) + 2.d0 * PI	* dopplerw(it,ip) * abs(Sl(ip)) * &
+				flux_out(1,i) = flux_out(1,i) + 2.d0 * PI	* abs(Sl(ip)) * &
 					(expint(3,abs(tau(it,nz)-tau(it,ip))*line_profile) - &
 					expint(3,abs(tau(it,ip)-tau(it,0))*line_profile) + &
 					expint(3,abs(tau(it,ip-1)-tau(it,0))*line_profile) - &
@@ -249,10 +249,21 @@ contains
 
 ! Intensity at mu=1
 				flux_out(2,i) = flux_out(2,i) + Sl(ip) * ( exp(-(tau(it,nz)-tau(it,ip))*line_profile / (1.d0)) - &
-					exp(-(tau(it,nz)-tau(it,ip-1))*line_profile / (1.d0)) ) * dopplerw(it,ip)
+					exp(-(tau(it,nz)-tau(it,ip-1))*line_profile / (1.d0)) ) 
 ! Intensity at the desired mu
 				flux_out(3,i) = flux_out(3,i) + Sl(ip) * ( exp(-(tau(it,nz)-tau(it,ip))*line_profile / (mu_output)) - &
-					exp(-(tau(it,nz)-tau(it,ip-1))*line_profile / (mu_output)) ) * dopplerw(it,ip)
+					exp(-(tau(it,nz)-tau(it,ip-1))*line_profile / (mu_output)) ) 
+
+! Flux in the line times the Doppler width so that we can later integrate over the reduced wavelength axis
+				flux_out(4,i) = flux_out(4,i) + 2.d0 * PI	* dopplerw(it,ip) * abs(Sl(ip)) * &
+					(expint(3,abs(tau(it,nz)-tau(it,ip))*line_profile) - &
+					expint(3,abs(tau(it,ip)-tau(it,0))*line_profile) + &
+					expint(3,abs(tau(it,ip-1)-tau(it,0))*line_profile) - &
+					expint(3,abs(tau(it,nz)-tau(it,ip-1))*line_profile))
+
+! Intensity at mu=1
+				flux_out(5,i) = flux_out(5,i) + Sl(ip) * ( exp(-(tau(it,nz)-tau(it,ip))*line_profile / (1.d0)) - &
+					exp(-(tau(it,nz)-tau(it,ip-1))*line_profile / (1.d0)) ) * dopplerw(it,ip)
 			enddo
 
 		enddo
@@ -473,12 +484,12 @@ contains
 		total_radius = sum(dz)
 
 ! Write output flux		
-		allocate(flux_out(3,100))
+		allocate(flux_out(5,100))
 		allocate(total_flux(ntran_output))
 		allocate(total_intensity(ntran_output))
 						
 		do i = 1, ntran_output			
-			it = output_transition(i)
+			it = output_transition(i)			
 			
 ! Generate a frequency axis for this transition so that it can accomodate at least
 ! four Doppler widths for the zone with the largest Doppler width
@@ -618,10 +629,11 @@ contains
 	real(kind=8), allocatable :: flux_out(:,:), Slte(:), total_flux(:), total_intensity(:)
 	
 		column_density = sum(dz * factor_abundance * abundance * nh)
+		print *, dz, factor_abundance, abundance, nh
 		total_radius = sum(dz)
 
 ! Write output flux		
-		allocate(flux_out(3,100))
+		allocate(flux_out(5,100))
 		allocate(total_flux(ntran_output))
 		allocate(total_intensity(ntran_output))
 
@@ -641,17 +653,18 @@ contains
 			
 ! Generate a frequency axis for this transition so that it can accomodate at least
 ! four Doppler widths for the zone with the largest Doppler width
-! 			freq_max = 4.d0 * maxval(dopplerw(it,:))
-! 			do ip = 1, 100
-! 				freq_axis(ip) = (ip-1.d0) / 99.d0 * 2.d0 * freq_max - freq_max
-! 			enddo
+
+			freq_max = 4.d0 * maxval(dopplerw(it,:))
+			do ip = 1, 100
+				! freq_axis(ip) = (ip-1.d0) / 99.d0 * 2.d0 * freq_max - freq_max
+			enddo
 			
 			call calcflux_cep(pop, flux_out, it)
 
 			! total_flux(i) = totFlux
 
-			total_flux(i) = 1.d23 * int_tabulated(freq_axis, flux_out(1,:)) / maxval(dopplerw(it,:))
-			total_intensity(i) = int_tabulated(freq_axis, flux_out(2,:)) / maxval(dopplerw(it,:))
+			total_flux(i) = 1.d23 * int_tabulated(freq_axis, flux_out(4,:)) / maxval(dopplerw(it,:))
+			total_intensity(i) = int_tabulated(freq_axis, flux_out(5,:)) / maxval(dopplerw(it,:))	
 
 ! Now
 ! 1.d23 * int_tabulated(freq_axis, flux_out(1,:)) == 4.0*PI*1d23*flux_total(it+nr*(nz-1))
@@ -662,10 +675,9 @@ contains
 			
 ! Output in velocity [km/s] and emergent flux
 			write(32,FMT='(A,I3,A,I3)') 'Transition : ', itran(1,it), ' -> ', itran(2,it)
-			write(32,*) '    v (km/s)       flux          I(mu=1)   I(selected mu)'
+			write(32,*) '      v (km/s)        flux [erg/s/cm/Hz]    I(mu=1)      I(selected mu)  [both in erg/s/cm2/st/Hz]'
 			do j = 1, 100
-				!write(32,FMT='(5(2X,1PE12.5))') freq_axis(j) / dtran(2,it) * PC / 1.d5, (flux_out(k,j),k=1,3)
-				write(32,FMT='(5(2X,1PE12.5))') freq_axis(j), (flux_out(k,j),k=1,3)
+				write(32,FMT='(5(5X,1PE12.5))') freq_axis(j), (flux_out(k,j),k=1,3)				
 			enddo
 			write(32,*)
 		enddo
@@ -722,7 +734,7 @@ contains
 			final(2,colIndex) = sum(dz * factor_abundance * nh)
 			final(3,colIndex) = column_density
 			final(4,colIndex) = sum(total_flux) / 1d23 / (column_density / maxval(dopplerw))
-			fin_tr(i,1,colIndex) = column_density			
+			fin_tr(i,1,colIndex) = column_density
 			fin_tr(i,2,colIndex) = tau(it,nz)/sqrt(PI)
 			fin_tr(i,3,colIndex) = total_flux(i) !flux_total(it+nr*(nz-1)) * 4.d0*PI * 1.d23
 			fin_tr(i,4,colIndex) = PH * dtran(2,i) / (PK*Inv_plexp(PC**2 * total_intensity(i) / (2.d0*PH*dtran(2,i)**3)))!(PC/dtran(2,i))**3 / (2.d0*PK*1d5) * total_intensity(i)

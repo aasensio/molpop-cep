@@ -1344,7 +1344,7 @@ contains
       end do
       hcol = nh2*r
 !     Molecular column per bandwith in kms:
-      mcol = nmol*r*1.d5/V
+      mcol = nmol*r*1.d5/V      
       if (R.eq.0.0) return
 
 !     for final summary printing

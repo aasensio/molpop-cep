@@ -682,7 +682,7 @@
 
         mol column     emission
          cm-2/kms      erg/s/mol
-        1.619E+17      1.066E-20
+        1.619E+17      4.455E-20
 
  *** Parameters for selected transitions
      Flux (in W/m2) is integrated over the line
@@ -701,4 +701,4 @@
 
     Nmol      tau       Flux   int(Tb dv)   Io      del(Tb)   del(TRJ)
   cm-2/kms               Jy      K km/s  W/m2/Hz/st    K         K
-  1.62E+17  2.02E-01  2.72E+13  5.62E+01  1.36E-14  4.27E+01  1.22E+01
+  1.62E+17  2.02E-01  1.14E+14  1.38E+02  1.36E-14  4.27E+01  1.22E+01
