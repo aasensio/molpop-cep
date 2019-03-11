@@ -170,11 +170,7 @@ contains
 ! Initialize in LTE
 		if (verbose == 3) then
 			write(*,*) 'Initializing in LTE...'
-		endif
-		
-		call poplte
-		pop(1:nl*nz) = popl(1:nl*nz)
-		pop_previous_regrid(1:nl*nz) = popl(1:nl*nz)
+		endif		
 						
 		if (verbose == 3) then
 			write(*,*) 'End of initialization'		
@@ -378,7 +374,7 @@ contains
 		
 ! In this case, col_density is the column density -> N(O) = n(O) * l -> l = N(O) / n(O)		
 			deltaz = col_density / (abund * hydrogen_density) / nz
-			
+						
 			if (verbose == 1 .and. .not.reset) then
 				print *, '  Number of zones : ', nz, ' -- deltaz : ', deltaz
 			endif
@@ -685,12 +681,12 @@ contains
 					fi(i) = fi(i) * fi(i+1)
 					tot = tot + fi(i)
 				enddo
-				tot = factor_abundance * abundance(ip) *  nh(ip) / tot
+				tot = factor_abundance * abundance(ip) *  nh(ip) / tot				
 				do i = 1, nl
 					popl(i+ipl) = fl(i) * fi(nli(i)) * tot
 				enddo
 			else
-				tot = factor_abundance * abundance(ip) * nh(ip) / u(1)
+				tot = factor_abundance * abundance(ip) * nh(ip) / u(1)				
 				do i = 1, nl
 					popl(i + ipl) = fl(i) * tot
 				enddo

@@ -624,12 +624,11 @@ contains
 	subroutine calculate_intermediate_results(x,xlte,colIndex)
 	real(kind=8) :: x(:), xlte(:), column_density, total_radius
 	integer :: ii, ip, ipl, i, j, up, low, it, k, colIndex
-	real(kind=8) :: sig, glu, acon, chim, chip, tau0, deltaz, chilp, col_up, col_low
+	real(kind=8) :: sig, glu, acon, chim, chip, tau0, deltaz, chilp, col_up, col_low, tmp2, tmp
 	real(kind=8) :: z, intensity, e1, e2, freq_max, deltaTBR, deltaTBRJ, columnH2, column
 	real(kind=8), allocatable :: flux_out(:,:), Slte(:), total_flux(:), total_intensity(:)
 	
-		column_density = sum(dz * factor_abundance * abundance * nh)
-		print *, dz, factor_abundance, abundance, nh
+		column_density = sum(dz * factor_abundance * abundance * nh)		
 		total_radius = sum(dz)
 
 ! Write output flux		
@@ -664,7 +663,7 @@ contains
 			! total_flux(i) = totFlux
 
 			total_flux(i) = 1.d23 * int_tabulated(freq_axis, flux_out(4,:)) / maxval(dopplerw(it,:))
-			total_intensity(i) = int_tabulated(freq_axis, flux_out(5,:)) / maxval(dopplerw(it,:))	
+			total_intensity(i) = int_tabulated(freq_axis, flux_out(5,:)) / maxval(dopplerw(it,:))
 
 ! Now
 ! 1.d23 * int_tabulated(freq_axis, flux_out(1,:)) == 4.0*PI*1d23*flux_total(it+nr*(nz-1))
@@ -675,7 +674,7 @@ contains
 			
 ! Output in velocity [km/s] and emergent flux
 			write(32,FMT='(A,I3,A,I3)') 'Transition : ', itran(1,it), ' -> ', itran(2,it)
-			write(32,*) '      v (km/s)        flux [erg/s/cm/Hz]    I(mu=1)      I(selected mu)  [both in erg/s/cm2/st/Hz]'
+			write(32,*) '      v (km/s)        flux [erg/s/cm2/Hz]    I(mu=1)      I(selected mu)  [both in erg/s/cm2/st/Hz]'
 			do j = 1, 100
 				write(32,FMT='(5(5X,1PE12.5))') freq_axis(j), (flux_out(k,j),k=1,3)				
 			enddo
@@ -758,16 +757,16 @@ contains
          write(35,"(5x,'Lower Level: ',a)")ledet(jtr(i))
 
          write(35,FMT='(A)') '       z          N(H2)        N(mol)        T          Texc '
-         write(35,FMT='(A)') '       km         cm^-3        cm^-3         K            K '
+         write(35,FMT='(A)') '       cm         cm^-3        cm^-3         K            K '
 
 			z = 0.d00
 			columnH2 = 0.d0
 			column = 0.d0
 			do j = 1, nz
-				z = z + dz(j)
+				z = z + dz(j)				
 				columnH2 = columnH2 + nh(j) * dz(j) * factor_abundance
 				column = column + nh(j) * dz(j) * abundance(i) * factor_abundance
-				write(35,FMT='(5(1P8E13.5))') z, columnH2, column, temperature(i), PHK*dtran(2,i)/log(1.d0+acon/Sl(j))
+				write(35,FMT='(5(1P8E13.5))') z * factor_abundance, columnH2, column, temperature(i), PHK*dtran(2,i)/log(1.d0+acon/Sl(j))
 			enddo
 
 		enddo
@@ -779,13 +778,14 @@ contains
 		write(31,FMT='(A,1PE12.5,A,I4)') ' N(mol) [cm^-2]: ', column_density, '    -  nzones: ', nz 
 		write(31,*) '**********************************************************'
 		write(31,FMT='(A)') 'Level   n [cm^-3]        n/n*       n* [cm^-3]'
+		
 		do ip = 1, nz
 			ipl = nl * (ip-1)
 			write(31,FMT='(A,I4)') 'Zone ', ip			
 			do ii = 1, nl
-				write(31,FMT='(I4, 3(2X,1PE12.5))') ii, pop(ii+ipl), pop(ii+ipl)/popl(ii+ipl),&
-					popl(ii+ipl)
-			enddo
+				write(31,FMT='(I4, 3(2X,1PE12.5))') ii, pop(ii+ipl) / factor_abundance, pop(ii+ipl)/popl(ii+ipl),&
+					popl(ii+ipl) / factor_abundance				
+			enddo			
 		enddo
 				
 		deallocate(Slte)

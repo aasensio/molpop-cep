@@ -24,11 +24,11 @@ Samples/CO/Rad3
 %Samples/CO/SLED_nE4_T100
 
 % CO with constant physical conditions, increasing strategy and grid convergence. Takes long time
-% Samples/CO/CEP_const
+%Samples/CO/CEP_const
 
 %Samples/ME_tests/ortho_sphere
 
-Samples/C+/C+_CEP2
+%Samples/C+/C+_CEP2
  
 %Samples/H2O/para
 %Samples/H2O/ortho
@@ -39,6 +39,8 @@ Samples/C+/C+_CEP2
 Samples/SiO/SiO_vib
 Samples/SiO/SiO_no_vib
 Samples/SiO/SiO_jmax_error
+
+Samples/OI/nE2_CEP
 
 
 

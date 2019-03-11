@@ -325,7 +325,8 @@ contains
 		endif
 		
 		factor_abundance = factor
-				
+
+						
 		col_density = sum(dz * factor_abundance * abundance * nh)
 		
 		deltaz = col_density / (abund * hydrogen_density) / nz

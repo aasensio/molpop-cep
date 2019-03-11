@@ -47,12 +47,15 @@ contains
 		factor_abundance = 1.d0
 		
 ! Initialization
-   	call init
+		call init
 
-		
-! Precalculation of the beta and alpha functions
-   	call precalculate_beta
-		
+		call poplte
+		pop(1:nl*nz) = popl(1:nl*nz)
+		pop(1:nl*nz) = popl(1:nl*nz)
+			
+	! Precalculation of the beta and alpha functions
+		call precalculate_beta
+			
 		open (UNIT=31,FILE=trim(adjustl(output_file))//'.CEP.pop',&
 			STATUS='replace',ACTION='write')
 		open (UNIT=32,FILE=trim(adjustl(output_file))//'.CEP.flux',&
@@ -64,7 +67,7 @@ contains
 
 		write(35,"(/T9,'*** SUMMARY ***')")
 
-! If we start from optically thin, the system is linear. Solve it once	
+	! If we start from optically thin, the system is linear. Solve it once	
 		if (start_mode == 1 .and. read_previous_flag /= 1) then
 			if (verbose == 2) then
 				write(*,*) 'Calculating optically thin solution...'
@@ -72,7 +75,7 @@ contains
 			optically_thin = 1
 			call calcJbar_Lstar_cep(pop)
 
-      	call correct_populations
+		call correct_populations
 			optically_thin = 0			
 		endif
 				
@@ -81,13 +84,15 @@ contains
 ! 			trim(adjustl(file_physical_conditions)) == 'none') then
 		if ((kthick_strategy == 0 .or. kthick_strategy == 1)) then
 			
-			call adapt_col_density_strategy(pop)
+			call adapt_col_density_strategy(pop)			
 			col_density_now = sum(dz * factor_abundance * abundance * nh)
 			write(*,*) 'Abundance factor : ', factor_abundance
 			write(*,*) 'Using column density : ', col_density_now
 			write(*,*) 'deltaz : ', dz(1)
 			
 		endif
+
+		call poplte
 									
 ! Perform a first non-linear solution
 		if (verbose == 2) then
@@ -111,8 +116,7 @@ contains
 		
 		successful = 0
 		
-		call write_results		
-				
+		call write_results				
 		call calculate_intermediate_results(pop,popl,colIndex)
 
 		! call write_intermediate_results(pop,popl)
@@ -157,6 +161,7 @@ contains
 					endif
 				endif
 				
+				call poplte
 				popold = pop
 				call CEP_solver(error)
 							
