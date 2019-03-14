@@ -757,7 +757,7 @@ contains
          write(35,"(5x,'Lower Level: ',a)")ledet(jtr(i))
 
          write(35,FMT='(A)') '       z          N(H2)        N(mol)        T          Texc '
-         write(35,FMT='(A)') '       cm         cm^-3        cm^-3         K            K '
+         write(35,FMT='(A)') '       cm         cm^-2        cm^-2         K            K '
 
 			z = 0.d00
 			columnH2 = 0.d0
