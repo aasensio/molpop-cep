@@ -518,7 +518,7 @@ contains
  
 		write(16,*)
 		write(16,*) '*******************************************************************************'
-		write(16,FMT='(A,1PE12.5,A,I4)') ' N(mol) [cm^-2]: ', column_density, '   -  nzones: ', nz
+		write(16,FMT='(A,1PE12.5,A,I4)') ' N(mol) [cm-2/kms]: ', column_density, '   -  nzones: ', nz
 		write(16,*) '*******************************************************************************'
 		
 		write(16,FMT='(1X,A,F6.3,A)') ' up    low     tau (line center)     cooling         N(up)/N(low)    I_lc(mu=',&
@@ -537,7 +537,7 @@ contains
 		
 ! Write populations
 		write(35,*) '**********************************************************'
-		write(35,FMT='(A,1PE12.5,A,I4)') ' N(mol) [cm^-2]: ', column_density, '    -  nzones: ', nz 
+		write(35,FMT='(A,1PE12.5,A,I4)') ' N(mol) [cm-2/kms]: ', column_density, '    -  nzones: ', nz 
 		write(35,*) '**********************************************************'
 		write(35,FMT='(A)') 'Upper  Lower   Trad (all zones)'
 
@@ -601,7 +601,7 @@ contains
 
 ! Write populations
 		write(31,*) '**********************************************************'
-		write(31,FMT='(A,1PE12.5,A,I4)') ' N(mol) [cm^-2]: ', column_density, '    -  nzones: ', nz 
+		write(31,FMT='(A,1PE12.5,A,I4)') ' N(mol) [cm-2/kms]: ', column_density, '    -  nzones: ', nz 
 		write(31,*) '**********************************************************'
 		write(31,FMT='(A)') 'Level   n [cm^-3]        n/n*       n* [cm^-3]'
 		do ip = 1, nz
@@ -639,12 +639,12 @@ contains
 ! Write line fluxes
 		write(32,*)
 		write(32,*) '*******************************************************************************'
-		write(32,FMT='(A,1PE12.5,A,I4)') ' N(mol) [cm^-2]: ', column_density, '   -  nzones: ', nz
+		write(32,FMT='(A,1PE12.5,A,I4)') ' N(mol) [cm-2/kms]: ', column_density, '   -  nzones: ', nz
 		write(32,*) '*******************************************************************************'
 
 ! Write excitation temperature
 		write(35,*) '**********************************************************'
-		write(35,FMT='(A,1PE12.5,A,I4)') ' N(mol) [cm^-2]: ', column_density, '    -  nzones: ', nz 
+		write(35,FMT='(A,1PE12.5,A,I4)') ' N(mol) [cm-2/kms]: ', column_density, '    -  nzones: ', nz 
 		write(35,*) '**********************************************************'		
 						
 		do i = 1, ntran_output			
@@ -757,7 +757,7 @@ contains
          write(35,"(5x,'Lower Level: ',a)")ledet(jtr(i))
 
          write(35,FMT='(A)') '       z          N(H2)        N(mol)        T          Texc '
-         write(35,FMT='(A)') '       cm         cm^-2        cm^-2         K            K '
+         write(35,FMT='(A)') '       cm         cm-2/kms     cm-2/kms      K            K '
 
 			z = 0.d00
 			columnH2 = 0.d0
@@ -775,9 +775,9 @@ contains
 
 ! Write populations
 		write(31,*) '**********************************************************'
-		write(31,FMT='(A,1PE12.5,A,I4)') ' N(mol) [cm^-2]: ', column_density, '    -  nzones: ', nz 
+		write(31,FMT='(A,1PE12.5,A,I4)') ' N(mol) [cm-2/kms]: ', column_density, '    -  nzones: ', nz 
 		write(31,*) '**********************************************************'
-		write(31,FMT='(A)') 'Level   n [cm^-3]        n/n*       n* [cm^-3]'
+		write(31,FMT='(A)') 'Level   n [cm-3]        n/n*       n* [cm-3]'
 		
 		do ip = 1, nz
 			ipl = nl * (ip-1)
