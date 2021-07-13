@@ -56,6 +56,8 @@ contains
       i_sum = 0
       unit2 = 16 + i_sum
 
+      Tcmb = 2.725d0
+
 !     read solution method for radiative transfer
       call rdinps2(iequal,iunit,str,L,UCASE)
       eps  = rdinp(iequal,iunit,16)
@@ -349,6 +351,8 @@ contains
       rad_tauT = 0.d0
       rad_internal = 0.d0
 
+      Tcmb   = rdinp(iequal,15,16)
+      
       DO unit = 16,unit2
          write(unit,'(/6x,a)') 'External Radiation field includes:'
          write(unit,'(8x,a,f6.3,a)') '-', Tcmb, 'K Cosmic Background'

@@ -628,7 +628,7 @@ contains
 	real(kind=8) :: z, intensity, e1, e2, freq_max, deltaTBR, deltaTBRJ, columnH2, column
 	real(kind=8), allocatable :: flux_out(:,:), Slte(:), total_flux(:), total_intensity(:)
 	
-		column_density = sum(dz * factor_abundance * abundance * nh)		
+		column_density = sum(dz * factor_abundance * abundance * nh)
 		total_radius = sum(dz)
 
 ! Write output flux		
@@ -639,12 +639,12 @@ contains
 ! Write line fluxes
 		write(32,*)
 		write(32,*) '*******************************************************************************'
-		write(32,FMT='(A,1PE12.5,A,I4)') ' N(mol) [cm-2/kms]: ', column_density, '   -  nzones: ', nz
+		write(32,FMT='(A,1PE12.5,A,I4)') ' N(mol) [cm-2]: ', column_density, '   -  nzones: ', nz
 		write(32,*) '*******************************************************************************'
 
 ! Write excitation temperature
 		write(35,*) '**********************************************************'
-		write(35,FMT='(A,1PE12.5,A,I4)') ' N(mol) [cm-2/kms]: ', column_density, '    -  nzones: ', nz 
+		write(35,FMT='(A,1PE12.5,A,I4)') ' N(mol) [cm-2]: ', column_density, '    -  nzones: ', nz 
 		write(35,*) '**********************************************************'		
 						
 		do i = 1, ntran_output			
@@ -775,7 +775,7 @@ contains
 
 ! Write populations
 		write(31,*) '**********************************************************'
-		write(31,FMT='(A,1PE12.5,A,I4)') ' N(mol) [cm-2/kms]: ', column_density, '    -  nzones: ', nz 
+		write(31,FMT='(A,1PE12.5,A,I4)') ' N(mol) [cm-2]: ', column_density, '    -  nzones: ', nz 
 		write(31,*) '**********************************************************'
 		write(31,FMT='(A)') 'Level   n [cm-3]        n/n*       n* [cm-3]'
 		

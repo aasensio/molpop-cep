@@ -545,9 +545,14 @@ emission from the standard phenomenological maser model (see \S\ref{sec:output} 
 
 \subsection{External Radiation}
 
-The cosmic microwave background (CMB) blackbody radiation at a temperature of
-$T_\mathrm{CMB}=2.725$ K is always included. In addition, a number of other
-radiation fields can be added and in each case the radiation can illuminate
+The cosmic microwave background (CMB) blackbody radiation is always included. 
+The specific temperarature is set by the keyword
+\vspace{\separation}
+\begin{verbatim}
+            T_cmb=2.725 K
+\end{verbatim}
+
+In addition, a number of other radiation fields can be added and in each case the radiation can illuminate
 either side of the source or both. Furthermore, the molecules can be immersed
 in a radiation bath with the specified spectral shape. This is specified with
 the keywords \texttt{left, right, both} and \texttt{internal}. Note that

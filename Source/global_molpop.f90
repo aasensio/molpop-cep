@@ -4,7 +4,7 @@ implicit none
    real(kind=8) pi,twopi,fourpi,eitpi,rootpi
    real(kind=8) cl,hpl,bk,xme,xmp
    real(kind=8) solarl,solarm,solarr,pc
-   real(kind=8), parameter ::  Tcmb = 2.725d0
+   real(kind=8) Tcmb
 
    real(kind=8) freq_axis(100)
 

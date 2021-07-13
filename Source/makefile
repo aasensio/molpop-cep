@@ -10,7 +10,7 @@
 # It should be easy to find the equivalent flags in your compiler
 
 #COMPILER = ifort
-COMPILER = gfortran
+COMPILER = $(FC) #gfortran
 
 OPTIONS = -c -O3
 # c -O3 

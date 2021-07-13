@@ -40,6 +40,7 @@
       
 
       Optional External Radiation:
+      T_cmb = 2.725 K
       diluted blackbody fields:                                       
              W = 0.0     
 %             T_bb = 500 K      
