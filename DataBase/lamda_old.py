@@ -5,8 +5,11 @@ try:
 except:
 	from HTMLParser import HTMLParser
 
-from urllib.request import urlopen
-from urllib.parse import urljoin, urlparse
+try:
+	from urllib.request import urlopen
+except:
+	from urllib import urlopen
+	
 
 class AnchorParser(HTMLParser):
     "Basic HTML parser that gathers a set of all href values in a webpage by targetting the anchor tag"
@@ -51,6 +54,59 @@ class AnchorParser(HTMLParser):
                     if urlparse(absoluteUrl).scheme in ["http", "https"]:
                         # Once a new hyperlink is obtained, add it to the set
                         self.pageLinks.add(absoluteUrl)
+
+class AnchorParser2(HTMLParser):
+	def __init__(self, verbose, datafiles):
+		HTMLParser.__init__(self)		
+		self.loop = 0
+		self.files = []
+		self.goodSection = False
+		self.inside = False
+		self.recording = False
+		self.data = []
+		self.verbose = verbose
+		self.datafiles = datafiles		
+		
+	def setLimits(self, labelFrom, labelTo):
+		self.labelFrom = labelFrom
+		self.labelTo = labelTo
+		
+	def handle_starttag(self, tag, attrs):
+		if (self.datafiles):
+			if (tag.lower() =='a'):
+				for key, value in attrs:
+					if (key.lower() == 'href'):						
+						if (value.find("http://www.strw.leidenuniv.nl/~moldata/datafiles/") != -1):
+							if (self.verbose):
+								print(self.loop, value)
+							self.loop = self.loop + 1
+							self.files.append(value)
+		else:
+			if (tag.lower() == 'div' and attrs[0][1] == 'sidebar'):
+				self.inside = True
+				
+			if (tag.lower() == 'b'):
+				self.recording = True
+				
+			if (tag.lower() =='a' and self.inside and self.goodSection):
+				for key, value in attrs:
+					if (key.lower() == 'href'):						
+						if (value.find("http://www.strw.leidenuniv.nl/~moldata/") != -1):
+							if (self.verbose):
+								print(self.loop, value)
+							self.loop = self.loop + 1
+							self.files.append(value)
+						
+	def handle_endtag(self, tag):
+		if (tag.lower() == 'div' and self.inside):
+			self.inside = False
+			
+	def handle_data(self, data):
+		if (self.recording):
+			if (data.find(self.labelFrom) != -1):
+				self.goodSection = True				
+			if (data.find(self.labelTo) != -1):
+				self.goodSection = False				
 				
 						
 class molpop():
@@ -160,38 +216,30 @@ parser = AnchorParser('http://home.strw.leidenuniv.nl/~moldata/datafiles') #Fals
 data = urlopen('http://home.strw.leidenuniv.nl/~moldata/').read().decode('utf-8', 'replace')
 print("List of available molecules")
 parser.feed(data)
-link = list(parser.getLinks())
 
-all_mol = []
-index = 0
+breakpoint()
 
-for l in link[0:3]:
-	if ('moldata' in l):
-		parser2 = AnchorParser(l)
-		data = urlopen(l).read().decode('utf-8', 'replace')
-		parser2.feed(data)
-		link_mol = parser2.getLinks()
-		for l2 in link_mol:
-			if ('datafiles' in l2):			
-				print(f'{index} - {l2}')
-				all_mol.append(l2)
-				index += 1
 
+parser2 = AnchorParser(True, True)
+parser2.setLimits('Datafiles', 'Links')
+for f in parser.files:
+	data = urlopen(f).read().decode('utf-8', 'replace')
+	parser2.feed(data)
 
 # Select the desired molecule
 try:
-	nb = input("Select which one to download (separated with spaces if many)")
+	nb = input("Select which one to download (separated with spaces if many) (0-"+str(parser2.loop-1)+") ")
 except:
-	nb = raw_input("Select which one to download (separated with spaces if many)")
+	nb = raw_input("Select which one to download (separated with spaces if many) (0-"+str(parser2.loop-1)+") ")
 
 nb = nb.split()
 
 for iterator in nb:
 	indexMolecule = int(iterator)
-	print("Downloading "+all_mol[indexMolecule])
+	print("Downloading "+parser2.files[indexMolecule])
 
 # Download the molecule and parse it, generating the appropriate files
-	ur = urlopen(all_mol[indexMolecule])
+	ur = urlopen(parser2.files[indexMolecule])
 	data = ur.readlines()
 
 	for i in range(len(data)):
@@ -199,4 +247,4 @@ for iterator in nb:
 
 	mol = molpop()
 
-	mol.parse(all_mol[indexMolecule],data)
+	mol.parse(parser2.files[indexMolecule],data)
