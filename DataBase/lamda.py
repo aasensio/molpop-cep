@@ -165,7 +165,7 @@ link = list(parser.getLinks())
 all_mol = []
 index = 0
 
-for l in link[0:3]:
+for l in link:
 	if ('moldata' in l):
 		parser2 = AnchorParser(l)
 		data = urlopen(l).read().decode('utf-8', 'replace')
