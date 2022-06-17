@@ -357,20 +357,22 @@ contains
         ICOL=ICOL-DIM
 !     POINTER TO EXACT PIVOT LINE
         I3=MAIN-DIM
-        DO 5 I=1,EMAT
+        DO I=1,EMAT
           ICOL=ICOL+DIM
           I3=I3+DIM
           SWAP=A(I3)
           A(I3)=A(ICOL)
-    5     A(ICOL)=SWAP
+          A(ICOL)=SWAP
+        END DO
       endif
 !     COMPUTE DETERMINANT
     6 DETER=DETER*PIVOT
       PIVOT=1./PIVOT
 !     TRANSFORM PIVOT COLUMN
       I3=PIVCOL+NMIN1
-      DO 7 I=PIVCOL,I3
-    7 A(I)=-A(I)*PIVOT
+      DO I=PIVCOL,I3
+        A(I)=-A(I)*PIVOT
+      END DO
       A(PIVCL1)=PIVOT
 !     PIVOT ELEMENT TRANSFORMED
 !
@@ -389,9 +391,10 @@ contains
     8   JCOL=ICOL+NMIN1
         SWAP=A(I1)
         I3=PIVCOL-1
-        DO 9 I2=ICOL,JCOL
-        I3=I3+1
-    9   A(I2)=A(I2)+SWAP*A(I3)
+        DO I2=ICOL,JCOL
+          I3=I3+1
+          A(I2)=A(I2)+SWAP*A(I3)
+        END DO
         A(I1)=SWAP*PIVOT
       endif
    10 CONTINUE
@@ -405,11 +408,12 @@ contains
    12   ICOL=(LPIV-1)*DIM+1
         JCOL=ICOL+NMIN1
         PIVCOL=(MAIN-1)*DIM+1-ICOL
-        DO 13 I2=ICOL,JCOL
-        I3=I2+PIVCOL
-        SWAP=A(I2)
-        A(I2)=A(I3)
-   13   A(I3)=SWAP
+        DO I2=ICOL,JCOL
+          I3=I2+PIVCOL
+          SWAP=A(I2)
+          A(I2)=A(I3)
+          A(I3)=SWAP
+        END DO
       endif
    14 CONTINUE
       DETERM=DETER

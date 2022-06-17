@@ -41,8 +41,6 @@ __________________________________________________________________
     Dust properties file = DataBase/Standard_ISM.dat
     Dust abundance = 0.    relative to standard ISM abundance; 
                            when not 0, dust absorption effects are included 
-                           The following two input parameters are in effect 
-                           only when the dust abundance is not 0
     Molecular abundance = 1.d-4     
     linewidth = 1 km/sec 
 
@@ -52,6 +50,7 @@ __________________________________________________________________
 
     
   OPTIONAL EXTERNAL RADIATION:
+T_cmb = 2.725 K
     diluted blackbody fields:                                       
            W = 0.0     
 %           T_bb = 500 K      

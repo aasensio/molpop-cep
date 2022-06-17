@@ -499,7 +499,7 @@ contains
            d(K,UP)=d(K,UP)+isn*a(UP,LOW)*(1+rs)
            d(K,LOW)=d(K,LOW)-isn*a(UP,LOW)*rs*gap(UP,LOW) 
          end if
-    2 CONTINUE
+      2 CONTINUE
 !
 !  THE N-TH TERMS:
 !

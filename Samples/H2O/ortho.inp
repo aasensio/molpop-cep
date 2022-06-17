@@ -37,8 +37,6 @@ __________________________________________________________________
     Dust properties file = DataBase/Standard_ISM.dat
     Dust abundance = 0.    relative to standard ISM abundance; 
                            when not 0, dust absorption effects are included 
-                           The following two input parameters are in effect 
-                           only when the dust abundance is not 0
     Molecular abundance = 2.d-4     
     linewidth = 1 km/sec 
 
