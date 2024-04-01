@@ -12,7 +12,7 @@
 #COMPILER = ifort
 COMPILER = $(FC) #gfortran
 
-OPTIONS = -c -O3
+OPTIONS = -c -O2
 # c -O3 
 # -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Wunused
 

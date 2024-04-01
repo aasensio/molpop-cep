@@ -533,6 +533,14 @@ contains
 ! Output value of mu; applicable only for slab
       mu_output = rdinp(iequal,15,16)
       if (kbeta .lt. 2) mu_output = 1
+      vmax_profile = rdinp(iequal,15,16)
+      if (vmax_profile .ne. 4.0) write(16,*) 'vmax profile : ', vmax_profile
+      
+      !     Frequency grid for integration over Doppler profile:
+      do k = 1, 100
+         freq_axis(k) = - vmax_profile + 2.d0 * vmax_profile*(k - 1.d0)/99.d0 
+      enddo
+      
 !__________________________________________________________
 
 

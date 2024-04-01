@@ -1510,10 +1510,6 @@ contains
       eitpi   = 8.0*pi
       rootpi  = dsqrt(pi)
 
-!     Frequency grid for integration over Doppler profile:
-      do k = 1, 100
-         freq_axis(k) = - 4.d0 + 8.d0*(k - 1.d0)/99.d0 
-      enddo
 
       return
       end subroutine const

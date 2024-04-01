@@ -80,13 +80,14 @@ __________________________________________________________________
     Max # of dimension steps allowed per decade          = 20
     Total number of steps allowed to reach Nmol_m        = 100
 	  Accuracy in solution of the equations                = 1.0e-3
-    Max # of iterations allowed to reach solution        = 50
+    Max # of iterations allowed to reach solution        = 50    
    
   NUMERICS CONTROLS RELEVANT ONLY FOR CEP:
     CEP solution method (NEWTON/ALI) = NEWTON
     Precision in grid CEP convergence (0 to ignore convergence) = 0
     Initial # of zones (relevant only if no file with phys. conditions) = 10   
     Angle of output intensity mu = 0.5
+    vmax profile = 4.0
     
   PRINT CONTROL PARAMATERS
       Printing of molecular data (on or off):

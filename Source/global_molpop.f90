@@ -86,6 +86,8 @@ implicit none
    logical overlaptest
   
    real(kind=8) :: mu_output
+
+   real(kind=8) :: vmax_profile
   
    character(len=168) :: file_physical_conditions
    character(len=20) :: auxiliary_functions

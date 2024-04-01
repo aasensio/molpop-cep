@@ -90,6 +90,7 @@ __________________________________________________________________
     Precision in grid CEP convergence (0 to ignore convergence) = 0     
     Initial # of zones (relevant only if no file with phys. conditions) = 5   
     Angle of output intensity mu = 1.0
+    vmax profile = 4.0
     
   PRINT CONTROL PARAMATERS
       Printing of molecular data (on or off):

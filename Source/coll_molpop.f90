@@ -181,6 +181,7 @@ contains
 				fr_col(i) = fr_col(i) / aux
 			end do
 		endif
+
 	      
 	end subroutine read_collisions
 
@@ -199,7 +200,7 @@ contains
       do l=1,n_col			        
       	select case (i_col_src(l))          
       		case(1)
-      			call loadcij_norm_table(fn_kij(l),fr_col(l),i_col_exsub(l),gxsec(l))
+      			call loadcij_norm_table(fn_kij(l),fr_col(l),i_col_exsub(l),gxsec(l))				
       		case(2)
             	call loadcij_spec_table1(fn_kij(l),fr_col(l),gxsec(l))
             case(3)
@@ -304,12 +305,12 @@ contains
         	if(i .gt. j .and. i <= n .and. j <= n) then
           	c(i,j) = c(i,j) + fraction*(col(kk)*f1+col(kk+1)*f2)*xsec
 !     *     + coll_factor*fraction*(col(kk)*f1+col(kk+1)*f2) 
-        	end if
+        	end if			
       end do
   10  close(4)
       return
  100  write(6,'(3a)') 'File ',filen(inmin(filen):inmax(filen)),' is missing! Stop.'
-      stop
+      
 	end subroutine loadcij_norm_table
 
 !-----------------------------------------
