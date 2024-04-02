@@ -653,10 +653,10 @@ contains
 ! Generate a frequency axis for this transition so that it can accomodate at least
 ! four Doppler widths for the zone with the largest Doppler width
 
-			freq_max = 4.d0 * maxval(dopplerw(it,:))
-			do ip = 1, 100
+			! freq_max = 4.d0 * maxval(dopplerw(it,:))
+			! do ip = 1, 100
 				! freq_axis(ip) = (ip-1.d0) / 99.d0 * 2.d0 * freq_max - freq_max
-			enddo
+			! enddo
 			
 			call calcflux_cep(pop, flux_out, it)
 
