@@ -233,7 +233,7 @@ implicit none
           if (allocated(g)) deallocate(g)
           if (allocated(pop)) deallocate(pop)
           if (allocated(coolev)) deallocate(coolev)
-          if (allocated(xp)) deallocate(xp)
+          if (allocated(xp)) deallocate(xp)          
           if (allocated(ledet)) deallocate(ledet)
           if (allocated(imaser)) deallocate(imaser)
           if (allocated(jmaser)) deallocate(jmaser)

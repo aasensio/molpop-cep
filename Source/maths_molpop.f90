@@ -1250,8 +1250,8 @@ contains
       use global_molpop
   double precision temp,d,dtau,delta,tautot,z,f
   integer it,ip,iter,ll,i
-  integer m,i2(50),j2(50)
-    double precision arg(50),tauf(50,50)
+  integer m,i2(500),j2(500)
+    double precision arg(500),tauf(500,500)
 !  x(i) and w(i) are the abscissas and weights from Abramowitz and Stegun
   double precision x(8),w(8)
       data (x(i),i=1,8)/.27348104613815d0,.82295144914466d0,1.38025853919888,&

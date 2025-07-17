@@ -156,7 +156,7 @@ contains
 
       do unit = 16, unit2
          write(unit,"(6x,'Molecule data file --- ',a)")fn_lev !s_mol(1:L)         
-         write(unit,"(6x,'Number of levels = ',I2)")n
+         write(unit,"(6x,'Number of levels = ',I4)")n
          write(unit,"(/,8x,'Collision information:')")
       end do
 !     Read collisional partners

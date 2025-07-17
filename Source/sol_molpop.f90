@@ -530,7 +530,7 @@ contains
     use maths_molpop
   double precision delta, freqdif,t1ovt2,dtau,p0,p1,p2
       integer i,j,k,l,it,lin,lin1,lin2,m,iter
-  integer i2(50),j2(50)
+  integer i2(500),j2(500)
 !     p(N_OV,N_OV) are the line absorption probabilites
 !     dp(N_OV,N_OV,N_OV) are the derivatives of the absorption probabilities
 !     they are passed between subroutines EQ and OVERLAP
